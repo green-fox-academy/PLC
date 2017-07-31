@@ -36,4 +36,3 @@ The main goals are to:
 - SQL
 - PLC programming
 - lwIP
-- STM32 GUI framework
