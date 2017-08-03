@@ -16,6 +16,7 @@ https://drive.google.com/open?id=0B52tdnlpOfxdbE1TWWQ1MzJjbkk
 https://trello.com/b/qOi4b2WM/plc
 ## STM32L476RG - Nucleo-64 board support page
 NUCLEO-L476RG: http://www.st.com/content/st_com/en/products/evaluation-tools/product-evaluation-tools/mcu-eval-tools/stm32-mcu-eval-tools/stm32-mcu-nucleo/nucleo-l476rg.html
+
 STM32L476RG: http://www.st.com/en/microcontrollers/stm32l476rg.html
 ## Useful links
 * Git Extension tutorial: http://bmeaut.github.io/snippets/snippets/0103_GitPeldafejlesztes/
