@@ -148,7 +148,7 @@ void uart_init(void)
 	UartHandle.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
 
 	if(HAL_UART_DeInit(&UartHandle) != HAL_OK)
-
+		;
 	if(HAL_UART_Init(&UartHandle) != HAL_OK)
 		;
 		// Error_Handler();

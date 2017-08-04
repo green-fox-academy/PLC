@@ -96,7 +96,7 @@ int main(void)
 	uint16_t counter = 0;
 
 	/* We should never get here as control is now taken by the scheduler */
-/*
+
 	while(1) {
 
 	if (BSP_PB_GetState(BUTTON_KEY)) {
@@ -104,6 +104,7 @@ int main(void)
 	//		LCD_UsrLog("%d.Error: Sending failed.\n", counter);
 			HAL_Delay(500);
 		} else {
+
 			HAL_Delay(500);
 			BSP_LED_Toggle(LED_GREEN);
 		}
@@ -112,7 +113,7 @@ int main(void)
 
 		//modbus_listen();
   }
-*/
+
 /*
 	while(1) {
 
@@ -122,7 +123,7 @@ int main(void)
 		}
 	}
 */
-	modbus_receive_measure_test();
+//	modbus_receive_measure_test();
 
 }
 

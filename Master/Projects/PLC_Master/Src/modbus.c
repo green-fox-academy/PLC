@@ -85,7 +85,7 @@ int modbus_send_command(uint8_t slave_address)
 
 	} else {
 
-		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 2);
+		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 3);
 
 		if (receive != HAL_OK) {
 			LCD_UsrLog("Receive, ");

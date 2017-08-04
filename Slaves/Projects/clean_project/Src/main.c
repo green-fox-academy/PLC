@@ -1,43 +1,3 @@
-/**
-  ******************************************************************************
-  * @file    UART/UART_TwoBoards_ComPolling/Src/main.c
-  * @author  MCD Application Team
-  * @version V1.8.0
-  * @date    21-April-2017
-  * @brief   This sample code shows how to use UART HAL API to transmit
-  *          and receive a data buffer with a communication process based on
-  *          polling transfer.
-  *          The communication is done using 2 Boards.
-  ******************************************************************************
-  * @attention
-  *
-  * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
-  *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
-  ******************************************************************************
-  */
-
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
@@ -59,16 +19,12 @@
 UART_HandleTypeDef UartHandle;
 //__IO uint32_t UserButtonStatus = 0;  /* set to 1 after User Button interrupt  */
 
-/* Buffer used for transmission */
-uint8_t aTxBuffer[] = " * PLC_UART_COMPOLLING_TEST *";
-
-/* Buffer used for reception */
-uint8_t aRxBuffer[RXBUFFERSIZE];
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void Error_Handler(void);
 static uint16_t Buffercmp(uint8_t* pBuffer1, uint8_t* pBuffer2, uint16_t BufferLength);
+void system_init();
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -80,53 +36,9 @@ static uint16_t Buffercmp(uint8_t* pBuffer1, uint8_t* pBuffer2, uint16_t BufferL
 int main(void)
 {
 
-  /* STM32L4xx HAL library initialization:
-       - Configure the Flash prefetch
-       - Systick timer is configured by default as source of time base, but user 
-         can eventually implement his proper time base source (a general purpose
-         timer for example or other time source), keeping in mind that Time base
-         duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and
-         handled in milliseconds basis.
-       - Set NVIC Group Priority to 4
-       - Low Level Initialization
-     */
-  HAL_Init();
+	system_init();
 
-  /* Configure the system clock to 80 MHz */
-  SystemClock_Config();
-
-  /* Configure LED2 */
-  BSP_LED_Init(LED2);
-  BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
-  HAL_UART_MspInit(&UartHandle);
-
-  /*##-1- Configure the UART peripheral ######################################*/
-  /* Put the USART peripheral in the Asynchronous mode (UART Mode) */
-  /* UART configured as follows:
-      - Word Length = 8 Bits
-      - Stop Bit = One Stop bit
-      - Parity = None
-      - BaudRate = 9600 baud
-      - Hardware flow control disabled (RTS and CTS signals) */
-  UartHandle.Instance        = USARTx;
-
-  UartHandle.Init.BaudRate   = 115200;
-  UartHandle.Init.WordLength = UART_WORDLENGTH_8B;
-  UartHandle.Init.StopBits   = UART_STOPBITS_1;
-  UartHandle.Init.Parity     = UART_PARITY_NONE;
-  UartHandle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
-  UartHandle.Init.Mode       = UART_MODE_TX_RX;
-  UartHandle.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-
-  if(HAL_UART_DeInit(&UartHandle) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if(HAL_UART_Init(&UartHandle) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
+  /*
   while (1) {
 
 	  if(HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 1000) != HAL_OK) {
@@ -139,7 +51,8 @@ int main(void)
 			  BSP_LED_Toggle(LED2);
 	  }
   }
-
+*/
+	modbus_listen();
 
   /*##-4- Compare the sent and received buffers ##############################*/
  /*
@@ -149,6 +62,30 @@ int main(void)
   }
   */
 
+}
+
+void system_init()
+{
+	  /* STM32L4xx HAL library initialization:
+	       - Configure the Flash prefetch
+	       - Systick timer is configured by default as source of time base, but user
+	         can eventually implement his proper time base source (a general purpose
+	         timer for example or other time source), keeping in mind that Time base
+	         duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and
+	         handled in milliseconds basis.
+	       - Set NVIC Group Priority to 4
+	       - Low Level Initialization
+	     */
+	  HAL_Init();
+
+	  /* Configure the system clock to 80 MHz */
+	  SystemClock_Config();
+
+	  /* Configure LED2 */
+	  BSP_LED_Init(LED2);
+	  BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
+
+	  modbus_init();
 }
 
 /**
