@@ -113,13 +113,17 @@ int main(void)
 		//modbus_listen();
   }
 */
+/*
 	while(1) {
 
 		if (BSP_PB_GetState(BUTTON_KEY)) {
 			modbus_sender_measure_test();
 			HAL_Delay(500);
 		}
-}
+	}
+*/
+	modbus_receive_measure_test();
+
 }
 
 /**

@@ -1,10 +1,13 @@
 /**
   ******************************************************************************
-  * @file    Templates/Src/main.c 
+  * @file    UART/UART_TwoBoards_ComPolling/Src/main.c
   * @author  MCD Application Team
   * @version V1.8.0
   * @date    21-April-2017
-  * @brief   Main program body
+  * @brief   This sample code shows how to use UART HAL API to transmit
+  *          and receive a data buffer with a communication process based on
+  *          polling transfer.
+  *          The communication is done using 2 Boards.
   ******************************************************************************
   * @attention
   *
@@ -42,16 +45,30 @@
   * @{
   */
 
-/** @addtogroup Templates
+/** @addtogroup UART_TwoBoards_ComPolling
   * @{
   */
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
+#define TRANSMITTER_BOARD
+
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+/* UART handler declaration */
+UART_HandleTypeDef UartHandle;
+//__IO uint32_t UserButtonStatus = 0;  /* set to 1 after User Button interrupt  */
+
+/* Buffer used for transmission */
+uint8_t aTxBuffer[] = " * PLC_UART_COMPOLLING_TEST *";
+
+/* Buffer used for reception */
+uint8_t aRxBuffer[RXBUFFERSIZE];
+
 /* Private function prototypes -----------------------------------------------*/
-static void SystemClock_Config(void);
+void SystemClock_Config(void);
+static void Error_Handler(void);
+static uint16_t Buffercmp(uint8_t* pBuffer1, uint8_t* pBuffer2, uint16_t BufferLength);
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -64,32 +81,79 @@ int main(void)
 {
 
   /* STM32L4xx HAL library initialization:
-       - Configure the Flash prefetch, Flash preread and Buffer caches
+       - Configure the Flash prefetch
        - Systick timer is configured by default as source of time base, but user 
-             can eventually implement his proper time base source (a general purpose 
-             timer for example or other time source), keeping in mind that Time base 
-             duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and 
-             handled in milliseconds basis.
+         can eventually implement his proper time base source (a general purpose
+         timer for example or other time source), keeping in mind that Time base
+         duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and
+         handled in milliseconds basis.
+       - Set NVIC Group Priority to 4
        - Low Level Initialization
      */
   HAL_Init();
 
-  /* Configure the System clock to have a frequency of 80 MHz */
+  /* Configure the system clock to 80 MHz */
   SystemClock_Config();
 
+  /* Configure LED2 */
+  BSP_LED_Init(LED2);
+  BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
+  HAL_UART_MspInit(&UartHandle);
 
-  /* Add your application code here
-     */
+  /*##-1- Configure the UART peripheral ######################################*/
+  /* Put the USART peripheral in the Asynchronous mode (UART Mode) */
+  /* UART configured as follows:
+      - Word Length = 8 Bits
+      - Stop Bit = One Stop bit
+      - Parity = None
+      - BaudRate = 9600 baud
+      - Hardware flow control disabled (RTS and CTS signals) */
+  UartHandle.Instance        = USARTx;
 
-  /* Infinite loop */
-  while (1)
+  UartHandle.Init.BaudRate   = 115200;
+  UartHandle.Init.WordLength = UART_WORDLENGTH_8B;
+  UartHandle.Init.StopBits   = UART_STOPBITS_1;
+  UartHandle.Init.Parity     = UART_PARITY_NONE;
+  UartHandle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
+  UartHandle.Init.Mode       = UART_MODE_TX_RX;
+  UartHandle.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+
+  if(HAL_UART_DeInit(&UartHandle) != HAL_OK)
   {
+    Error_Handler();
   }
+  if(HAL_UART_Init(&UartHandle) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  while (1) {
+
+	  if(HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 1000) != HAL_OK) {
+		 ;
+	  } else {
+		  BSP_LED_Toggle(LED2);
+		  if(HAL_UART_Transmit(&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE, 1000)!= HAL_OK)
+			  ;
+		  else
+			  BSP_LED_Toggle(LED2);
+	  }
+  }
+
+
+  /*##-4- Compare the sent and received buffers ##############################*/
+ /*
+  if(Buffercmp((uint8_t*)aTxBuffer,(uint8_t*)aRxBuffer,RXBUFFERSIZE))
+  {
+    Error_Handler();
+  }
+  */
+
 }
 
 /**
   * @brief  System Clock Configuration
-  *         The system Clock is configured as follow : 
+  *         The system Clock is configured as follows :
   *            System Clock source            = PLL (MSI)
   *            SYSCLK(Hz)                     = 80000000
   *            HCLK(Hz)                       = 80000000
@@ -106,10 +170,10 @@ int main(void)
   * @param  None
   * @retval None
   */
-static void SystemClock_Config(void)
+void SystemClock_Config(void)
 {
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
-  RCC_OscInitTypeDef RCC_OscInitStruct;
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
 
   /* MSI is enabled after System reset, activate PLL with MSI as source */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
@@ -143,6 +207,57 @@ static void SystemClock_Config(void)
   }
 }
 
+/**
+  * @brief  UART error callbacks
+  * @param  UartHandle: UART handle
+  * @note   This example shows a simple way to report transfer error, and you can
+  *         add your own implementation.
+  * @retval None
+  */
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *UartHandle)
+{
+    Error_Handler();
+}
+
+/**
+  * @brief  Compares two buffers.
+  * @param  pBuffer1, pBuffer2: buffers to be compared.
+  * @param  BufferLength: buffer's length
+  * @retval 0  : pBuffer1 identical to pBuffer2
+  *         >0 : pBuffer1 differs from pBuffer2
+  */
+static uint16_t Buffercmp(uint8_t* pBuffer1, uint8_t* pBuffer2, uint16_t BufferLength)
+{
+  while (BufferLength--)
+  {
+    if ((*pBuffer1) != *pBuffer2)
+    {
+      return BufferLength;
+    }
+    pBuffer1++;
+    pBuffer2++;
+  }
+
+  return 0;
+}
+
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @param  None
+  * @retval None
+  */
+static void Error_Handler(void)
+{
+  /* Turn LED2 on */
+  BSP_LED_On(LED2);
+  while(1)
+  {
+    /* Error if LED2 is slowly blinking (1 sec. period) */
+    BSP_LED_Toggle(LED2);
+    HAL_Delay(1000);
+  }
+}
+
 #ifdef  USE_FULL_ASSERT
 
 /**
@@ -166,10 +281,10 @@ void assert_failed(char *file, uint32_t line)
 
 /**
   * @}
-  */ 
+  */
 
 /**
   * @}
-  */ 
+  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -29,9 +29,9 @@ void modbus_sender_measure_test()
 	uint16_t counter_ok = 0;
 	uint16_t counter_nope = 0;
 
-	for (uint16_t i = 0; i < 10000; i++) {
+	for (uint16_t i = 0; i < 1000; i++) {
 
-		transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)num_to_send, 1, 2);
+		transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)aTxBuffer, 11, 2);
 
 		if (transmit != HAL_OK) {
 			counter_nope++;
@@ -52,15 +52,15 @@ void modbus_receive_measure_test()
 
 	while (1) {
 
-		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 1);
+		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 2);
 
-		if (receive != HAL_OK) {
-			counter_nope++;
-		} else {
+		if (receive == HAL_OK) {
 			counter_ok++;
+		} else if (counter_ok != 0) {
+			counter_nope++;
 		}
 
-		if ((counter_nope + counter_ok) == 1000) {
+		if (counter_ok + counter_nope == 1000) {
 			LCD_UsrLog("OK: %d, NOPE: %d\n", counter_ok, counter_nope);
 			counter_nope = 0;
 			counter_ok = 0;
@@ -152,7 +152,7 @@ void modbus_init(void)
 void uart_init(void)
 {
 	UartHandle.Instance 	   	= USARTx;
-	UartHandle.Init.BaudRate   	= 921600;
+	UartHandle.Init.BaudRate   	= 115200;
 	UartHandle.Init.WordLength	= UART_WORDLENGTH_8B;
 	UartHandle.Init.StopBits  	= UART_STOPBITS_1;
 	UartHandle.Init.Parity     	= UART_PARITY_NONE;
