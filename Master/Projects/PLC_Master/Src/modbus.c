@@ -12,22 +12,84 @@
 UART_HandleTypeDef UartHandle;
 
 /* Buffers for Send, and Receive messages */
- uint8_t aTxBuffer[] = "PLC MSG TEST";
+ uint8_t aTxBuffer[] = "0123456789A";
  uint8_t aRxBuffer[RXBUFFERSIZE];
+
+ uint8_t num_to_send = 1;
 
 /* Private function prototypes -----------------------------------------------*/
 
 /* Private functions ---------------------------------------------------------*/
 
+
+
+void modbus_sender_measure_test()
+{
+	uint8_t transmit = 0;
+	uint16_t counter_ok = 0;
+	uint16_t counter_nope = 0;
+
+	for (uint16_t i = 0; i < 10000; i++) {
+
+		transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)num_to_send, 1, 2);
+
+		if (transmit != HAL_OK) {
+			counter_nope++;
+		} else {
+			counter_ok++;
+		}
+	}
+
+	LCD_UsrLog("OK: %d, NOPE: %d\n", counter_ok, counter_nope);
+
+}
+
+void modbus_receive_measure_test()
+{
+	uint16_t counter_ok = 0;
+	uint16_t counter_nope = 0;
+	uint8_t receive = 0;
+
+	while (1) {
+
+		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 1);
+
+		if (receive != HAL_OK) {
+			counter_nope++;
+		} else {
+			counter_ok++;
+		}
+
+		if ((counter_nope + counter_ok) == 1000) {
+			LCD_UsrLog("OK: %d, NOPE: %d\n", counter_ok, counter_nope);
+			counter_nope = 0;
+			counter_ok = 0;
+		}
+
+	}
+
+}
+
+
 int modbus_send_command(uint8_t slave_address)
 {
-	if (HAL_UART_Transmit (&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE, 100)!= HAL_OK) {
-		LCD_UsrLog("Sent failed.\n");
+	uint8_t receive;
+	uint8_t transmit;
+
+	transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE, 2);
+
+	if (transmit != HAL_OK) {
+		LCD_UsrLog("Transmit, ");
+		modbus_error_handler(transmit);
 		return -1;
 
 	} else {
-		if (HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 100) != HAL_OK) {
-			LCD_UsrLog("Receive failed.\n");
+
+		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 2);
+
+		if (receive != HAL_OK) {
+			LCD_UsrLog("Receive, ");
+			modbus_error_handler(receive);
 			return -1;
 		} else {
 			LCD_UsrLog("Received msg: %s\n", aRxBuffer);
@@ -39,18 +101,47 @@ int modbus_send_command(uint8_t slave_address)
 
 void modbus_listen()
 {
+	uint8_t receive;
+	uint8_t transmit;
+
 	while (1) {
-		if (HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 100) != HAL_OK) {
-				;
+
+		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 2);
+		if (receive != HAL_OK) {
+			;
+			//LCD_UsrLog("Receive, ");
+			//modbus_error_handler(receive);
 		} else {
 			LCD_UsrLog("Received msg: %s\n", aRxBuffer);
 
-			if (HAL_UART_Transmit (&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE, 100)!= HAL_OK) {
-				LCD_UsrLog("Sent failed.\n");
+			transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE, 2);
+
+			if (transmit != HAL_OK) {
+				LCD_UsrLog("Transmit, ");
+				modbus_error_handler(transmit);
 			}
 		}
 	}
 }
+
+void modbus_error_handler(uint8_t error)
+{
+	switch (error) {
+
+	case 1 :
+		LCD_UsrLog("Uart Error: HAL_ERROR\n");
+		break;
+	case 2 :
+		LCD_UsrLog("Uart Error: HAL_BUSY\n");
+		break;
+	case 3 :
+		LCD_UsrLog("Uart Error: HAL_TIMEOUT\n");
+		break;
+	default :
+		LCD_UsrLog("Uart Error: Something else.\n");
+	}
+}
+
 
 void modbus_init(void)
 {
@@ -61,7 +152,7 @@ void modbus_init(void)
 void uart_init(void)
 {
 	UartHandle.Instance 	   	= USARTx;
-	UartHandle.Init.BaudRate   	= 9600;
+	UartHandle.Init.BaudRate   	= 921600;
 	UartHandle.Init.WordLength	= UART_WORDLENGTH_8B;
 	UartHandle.Init.StopBits  	= UART_STOPBITS_1;
 	UartHandle.Init.Parity     	= UART_PARITY_NONE;

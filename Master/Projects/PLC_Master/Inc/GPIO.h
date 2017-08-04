@@ -23,6 +23,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
+#include "GPIO.h"
 
 /* Exported types ------------------------------------------------------------*/
 
@@ -33,12 +34,6 @@ typedef struct {
 	GPIO_TypeDef *port;
 	uint16_t pin;
 } gpio_pins_t;
-
-typedef struct {
-	GPIO_TypeDef *port;
-	uint16_t pin;
-	uint32_t ADC_channel
-}gpio_analog_pins_t;
 
 /* Exported macro ------------------------------------------------------------*/
 
