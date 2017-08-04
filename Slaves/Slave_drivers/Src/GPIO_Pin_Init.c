@@ -1,5 +1,5 @@
 /* Includes ------------------------------------------------------------------*/
-#include "GPIO_Pin_Init.h"
+#include "../Inc/GPIO_Pin_Init.h"
 #include "stm32l4xx_hal.h"
 
 
@@ -30,12 +30,6 @@ void gpio_clk_enable(GPIO_TypeDef *port)
 		__HAL_RCC_GPIOG_CLK_ENABLE();
 	else if (port == GPIOH)
 		__HAL_RCC_GPIOH_CLK_ENABLE();
-	else if (port == GPIOI)
-		__HAL_RCC_GPIOI_CLK_ENABLE();
-	else if (port == GPIOJ)
-		__HAL_RCC_GPIOJ_CLK_ENABLE();
-	else if (port == GPIOK)
-		__HAL_RCC_GPIOK_CLK_ENABLE();
 }
 
 

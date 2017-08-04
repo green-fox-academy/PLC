@@ -39,7 +39,7 @@ typedef struct {
 typedef struct {
 	GPIO_TypeDef *port;
 	uint16_t pin;
-	uint32_t ADC_channel
+	uint32_t ADC_channel;
 }gpio_analog_pins_t;
 
 /* Exported macro ------------------------------------------------------------*/
