@@ -43,6 +43,7 @@
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx_nucleo.h"
 #include "modbus.h"
+#include "GPIO.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
