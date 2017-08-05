@@ -12,8 +12,7 @@
 UART_HandleTypeDef UartHandle;
 
 /* Buffers for Send, and Receive messages */
- uint8_t aTxBuffer[] = "0123456789A";
- uint8_t aRxBuffer[RXBUFFERSIZE];
+
 
  uint8_t num_to_send = 1;
 

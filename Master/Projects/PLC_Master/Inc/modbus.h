@@ -24,9 +24,11 @@
 #define USARTx_RX_GPIO_PORT              GPIOC
 #define USARTx_RX_AF                     GPIO_AF8_USART6
 
-#define TXBUFFERSIZE                     (COUNTOF(aTxBuffer) - 1)
-#define RXBUFFERSIZE                  	 TXBUFFERSIZE
-#define COUNTOF(__BUFFER__)   			 (sizeof(__BUFFER__) / sizeof(*(__BUFFER__)))
+#define TXBUFFERSIZE                     2
+#define RXBUFFERSIZE                  	 1
+
+ uint8_t aTxBuffer[TXBUFFERSIZE];
+ uint8_t aRxBuffer[RXBUFFERSIZE];
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */

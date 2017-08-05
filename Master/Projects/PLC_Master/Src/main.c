@@ -137,17 +137,12 @@ int main(void)
 		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
 	}
 
-	uint8_t adress =  slave_adress_set();
-
-	LCD_UsrLog("Slave Address: %d\n", adress);
+	aTxBuffer[0] = 0b00010101; 	//Slave Address
+	aTxBuffer[1] = 0b10101010;	// Data for slave
 
 	while (1) {
-		for (int i = 2; i < 7; i++) {
-			if (gpio_read_digital_pin(i) == GPIO_PIN_SET) {
-				LCD_UsrLog("PIN: %d is ON\n", i);
-			}
-		}
-		HAL_Delay(500);
+		modbus_send_command(aTxBuffer[0]);
+		HAL_Delay(2000);
 	}
 
 }
