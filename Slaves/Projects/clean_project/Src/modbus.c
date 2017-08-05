@@ -1,7 +1,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "modbus.h"
-#include "lcd_log.h"
-#include "stm32f7xx_hal_uart.h"
+#include "stm32l4xx_hal_uart.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -39,9 +38,6 @@ void modbus_sender_measure_test()
 			counter_ok++;
 		}
 	}
-
-	LCD_UsrLog("OK: %d, NOPE: %d\n", counter_ok, counter_nope);
-
 }
 
 void modbus_receive_measure_test()
@@ -61,7 +57,6 @@ void modbus_receive_measure_test()
 		}
 
 		if (counter_ok + counter_nope == 1000) {
-			LCD_UsrLog("OK: %d, NOPE: %d\n", counter_ok, counter_nope);
 			counter_nope = 0;
 			counter_ok = 0;
 		}
@@ -79,20 +74,17 @@ int modbus_send_command(uint8_t slave_address)
 	transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE, 2);
 
 	if (transmit != HAL_OK) {
-		LCD_UsrLog("Transmit, ");
 		modbus_error_handler(transmit);
 		return -1;
 
 	} else {
 
-		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 3);
+		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 2);
 
 		if (receive != HAL_OK) {
-			LCD_UsrLog("Receive, ");
 			modbus_error_handler(receive);
 			return -1;
 		} else {
-			LCD_UsrLog("Received msg: %s\n", aRxBuffer);
 		}
 	}
 
@@ -109,15 +101,10 @@ void modbus_listen()
 		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 2);
 		if (receive != HAL_OK) {
 			;
-			//LCD_UsrLog("Receive, ");
-			//modbus_error_handler(receive);
 		} else {
-			LCD_UsrLog("Received msg: %s\n", aRxBuffer);
-
 			transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE, 2);
 
 			if (transmit != HAL_OK) {
-				LCD_UsrLog("Transmit, ");
 				modbus_error_handler(transmit);
 			}
 		}
@@ -129,16 +116,16 @@ void modbus_error_handler(uint8_t error)
 	switch (error) {
 
 	case 1 :
-		LCD_UsrLog("Uart Error: HAL_ERROR\n");
+		;
 		break;
 	case 2 :
-		LCD_UsrLog("Uart Error: HAL_BUSY\n");
+		;
 		break;
 	case 3 :
-		LCD_UsrLog("Uart Error: HAL_TIMEOUT\n");
+		;
 		break;
 	default :
-		LCD_UsrLog("Uart Error: Something else.\n");
+		;
 	}
 }
 
@@ -161,14 +148,10 @@ void uart_init(void)
 	UartHandle.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
 
 	if(HAL_UART_DeInit(&UartHandle) != HAL_OK)
-		LCD_UsrLog("Uart deinit error.\n");
-	 // Error_Handler();
-
+		;
 	if(HAL_UART_Init(&UartHandle) != HAL_OK)
-		LCD_UsrLog("Uart init error.\n");
+		;
 		// Error_Handler();
-
-	LCD_UsrLog("UART - Initialized.\n");
 }
 
 void rx_tx_GPIO_init(void)
@@ -199,6 +182,4 @@ void rx_tx_GPIO_init(void)
 	GPIO_InitStruct.Alternate = USARTx_RX_AF;
 
 	HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &GPIO_InitStruct);
-
-	LCD_UsrLog("GPIO - Rx,Tx - Initialized.\n");
 }

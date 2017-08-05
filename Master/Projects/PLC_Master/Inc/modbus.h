@@ -33,6 +33,9 @@
 void modbus_init(void);
 int modbus_send_command(uint8_t slave_address);
 void modbus_listen();
+void modbus_error_handler(uint8_t error);
+void modbus_sender_measure_test();
+void modbus_receive_measure_test();
 
 #endif /* __SOCKET__MODBUS_H */
 
