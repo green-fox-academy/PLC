@@ -15,59 +15,12 @@
  * Reset:   gpio_reset_digital_pin(5);
  */
 
-
-
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __GPIO_H
 #define __GPIO_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
-
-/* Exported types ------------------------------------------------------------*/
-
-/* Exported constants --------------------------------------------------------*/
-
-/* Exported typedef -----------------------------------------------------------*/
-typedef struct {
-	GPIO_TypeDef *port;
-	uint16_t pin;
-} gpio_pins_t;
-
-typedef struct {
-	GPIO_TypeDef *port;
-	uint16_t pin;
-	uint32_t ADC_channel
-}gpio_analog_pins_t;
-
-/* Exported macro ------------------------------------------------------------*/
-
-/* Exported variables --------------------------------------------------------*/
-const gpio_pins_t stm32f7_digital_pins[] = {
-	{GPIOC, GPIO_PIN_7},     //PIN: D0
-	{GPIOC, GPIO_PIN_6},     //PIN: D1
-	{GPIOG, GPIO_PIN_6},     //PIN: D2
-	{GPIOB, GPIO_PIN_4},     //PIN: D3
-	{GPIOG, GPIO_PIN_7},     //PIN: D4
-	{GPIOI, GPIO_PIN_0},     //PIN: D5
-	{GPIOH, GPIO_PIN_6},     //PIN: D6
-	{GPIOI, GPIO_PIN_3},     //PIN: D7
-	{GPIOI, GPIO_PIN_2},     //PIN: D8
-	{GPIOA, GPIO_PIN_15},    //PIN: D9
-	{GPIOA, GPIO_PIN_8},     //PIN: D10
-	{GPIOB, GPIO_PIN_15},    //PIN: D11
-	{GPIOB, GPIO_PIN_14},    //PIN: D12
-	{GPIOI, GPIO_PIN_1},     //PIN: D13
-	{GPIOB, GPIO_PIN_9},     //PIN: D14
-	{GPIOB, GPIO_PIN_8},     //PIN: D15
-	{GPIOA, GPIO_PIN_0},     //PIN: A0 - As a Digital PIN
-	{GPIOF, GPIO_PIN_10},    //PIN: A1 - As a Digital PIN
-	{GPIOF, GPIO_PIN_9},     //PIN: A2 - As a Digital PIN
-	{GPIOF, GPIO_PIN_8},     //PIN: A3 - As a Digital PIN
-	{GPIOF, GPIO_PIN_7},     //PIN: A4 - As a Digital PIN
-	{GPIOF, GPIO_PIN_6},     //PIN: A5 - As a Digital PIN
-
-};
 
 /* Exported functions ------------------------------------------------------- */
 
