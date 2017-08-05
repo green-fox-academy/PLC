@@ -47,6 +47,7 @@ const gpio_pins_t stm32f7_digital_pins[] = {
 
 /* Private functions ---------------------------------------------------------*/
 
+
 void gpio_clk_enable(GPIO_TypeDef *port)
 {
 	if (port == GPIOA)
@@ -81,7 +82,7 @@ void gpio_init_digital_pin(uint8_t pin_index, uint32_t mode, uint32_t pull)
 	GPIO_InitTypeDef gpio_init_structure;
 
 	// Set the clock
-	GPIO_clk_enable(stm32f7_digital_pins[pin_index].port);
+	gpio_clk_enable(stm32f7_digital_pins[pin_index].port);
 
 	// Set the init structure
 	gpio_init_structure.Pin = stm32f7_digital_pins[pin_index].pin;

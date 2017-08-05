@@ -58,6 +58,7 @@
 #include "socket_server.h"
 #include "socket_client.h"
 #include "modbus.h"
+#include "GPIO.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -92,10 +93,8 @@ int main(void)
 
 	/* Start scheduler */
 	//  osKernelStart();
-
+/*
 	uint16_t counter = 0;
-
-	/* We should never get here as control is now taken by the scheduler */
 
 	while(1) {
 
@@ -113,7 +112,7 @@ int main(void)
 
 		//modbus_listen();
   }
-
+*/
 /*
 	while(1) {
 
@@ -124,6 +123,17 @@ int main(void)
 	}
 */
 //	modbus_receive_measure_test();
+
+	for (int i = 2; i < 16; i++) {
+		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
+	}
+
+	while (1) {
+		for (int i = 2; i < 16; i++) {
+			gpio_toggle_digital_pin(i);
+		}
+		HAL_Delay(250);
+	}
 
 }
 
