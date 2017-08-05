@@ -76,6 +76,8 @@ static void MPU_Config(void);
 static void Error_Handler(void);
 static void CPU_CACHE_Enable(void);
 
+uint8_t slave_adress_set();
+
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -124,15 +126,28 @@ int main(void)
 */
 //	modbus_receive_measure_test();
 
-	for (int i = 2; i < 16; i++) {
+
+
+
+	for (int i = 7; i < 12; i++) {
 		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
 	}
 
+	for (int i = 2; i < 7; i++) {
+		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
+	}
+
+	uint8_t adress =  slave_adress_set();
+
+	LCD_UsrLog("Slave Address: %d\n", adress);
+
 	while (1) {
-		for (int i = 2; i < 16; i++) {
-			gpio_toggle_digital_pin(i);
+		for (int i = 2; i < 7; i++) {
+			if (gpio_read_digital_pin(i) == GPIO_PIN_SET) {
+				LCD_UsrLog("PIN: %d is ON\n", i);
+			}
 		}
-		HAL_Delay(250);
+		HAL_Delay(500);
 	}
 
 }
@@ -171,6 +186,17 @@ void system_init(void)
 
 	/* Initialize Modbus */
 	modbus_init();
+}
+
+uint8_t slave_adress_set()
+{
+	uint8_t slave_adress = 0;
+
+	for (uint8_t i = 2; i < 7; i++) {
+		slave_adress += (gpio_read_digital_pin(i) << (i - 2));
+	}
+
+	return slave_adress;
 }
 
 static void StartThread(void const * argument)

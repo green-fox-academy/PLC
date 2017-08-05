@@ -25,6 +25,7 @@ void SystemClock_Config(void);
 static void Error_Handler(void);
 static uint16_t Buffercmp(uint8_t* pBuffer1, uint8_t* pBuffer2, uint16_t BufferLength);
 void system_init();
+uint8_t slave_adress_set();
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -62,15 +63,23 @@ int main(void)
   }
   */
 
-	for (int i = 2; i < 16; i++) {
+	for (int i = 7; i < 16; i++) {
 		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
 	}
 
+	for (int i = 2; i < 7; i++) {
+		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
+	}
+
 	while (1) {
-		for (int i = 2; i < 16; i++) {
-			gpio_toggle_digital_pin(i);
+		for (int i = 2; i < 7; i++) {
+			if (gpio_read_digital_pin(i) == GPIO_PIN_SET) {
+				gpio_set_digital_pin(i + 5);
+			} else {
+				gpio_reset_digital_pin(i + 5);
+			}
 		}
-		HAL_Delay(250);
+		HAL_Delay(100);
 	}
 
 }
@@ -97,6 +106,17 @@ void system_init()
 	  BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
 
 	  modbus_init();
+}
+
+uint8_t slave_adress_set()
+{
+	uint8_t slave_adress = 0;
+
+	for (uint8_t i = 2; i < 7; i++) {
+		slave_adress += (gpio_read_digital_pin(i) << (i - 2));
+	}
+
+	return slave_adress;
 }
 
 /**
