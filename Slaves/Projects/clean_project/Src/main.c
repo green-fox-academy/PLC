@@ -52,7 +52,7 @@ int main(void)
 	  }
   }
 */
-	modbus_listen();
+//	modbus_listen();
 
   /*##-4- Compare the sent and received buffers ##############################*/
  /*
@@ -61,6 +61,17 @@ int main(void)
     Error_Handler();
   }
   */
+
+	for (int i = 2; i < 16; i++) {
+		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
+	}
+
+	while (1) {
+		for (int i = 2; i < 16; i++) {
+			gpio_toggle_digital_pin(i);
+		}
+		HAL_Delay(250);
+	}
 
 }
 
