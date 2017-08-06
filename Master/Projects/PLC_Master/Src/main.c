@@ -101,7 +101,7 @@ int main(void)
 	for (int i = 2; i < 7; i++) {
 		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
 	}
-/*
+
 	uint8_t command[2];
 	command[0] = 12;	//Slave Address
 	command[1] = 42;	//Command
@@ -110,15 +110,14 @@ int main(void)
 
 	while (1) {
 		modbus_send_command(command, 2);
-		modbus_receive_data(2);
+		modbus_receive_data(1);
 		HAL_Delay(1000);
 	}
-*/
 
-	aTxBuffer[0] = 50;
-	aTxBuffer[1] = 100;
+//	aTxBuffer[0] = 50;
+//	aTxBuffer[1] = 100;
 
-	modbus_listen();
+//	modbus_listen();
 
 
 }

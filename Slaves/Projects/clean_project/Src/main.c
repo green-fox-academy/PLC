@@ -19,12 +19,9 @@
 /* UART handler declaration */
 UART_HandleTypeDef UartHandle;
 
-uint8_t slave_address;
-
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void Error_Handler(void);
-static uint16_t Buffercmp(uint8_t* pBuffer1, uint8_t* pBuffer2, uint16_t BufferLength);
 void system_init();
 uint8_t slave_address_set();
 
@@ -40,44 +37,17 @@ int main(void)
 
 	system_init();
 
-  /*
-  while (1) {
+	slave_address = 13;
 
-	  if(HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 1000) != HAL_OK) {
-		 ;
-	  } else {
-		  BSP_LED_Toggle(LED2);
-		  if(HAL_UART_Transmit(&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE, 1000)!= HAL_OK)
-			  ;
-		  else
-			  BSP_LED_Toggle(LED2);
-	  }
-  }
-*/
-//	modbus_listen();
-
-  /*##-4- Compare the sent and received buffers ##############################*/
- /*
-  if(Buffercmp((uint8_t*)aTxBuffer,(uint8_t*)aRxBuffer,RXBUFFERSIZE))
-  {
-    Error_Handler();
-  }
-  */
-
-	//modbus_listen();
-
+	/*
 	uint8_t msg[2];
 	msg[0] = 20;
 	msg[1] = 100;
 	uint8_t transmit;
+	*/
 
-	while (1) {
-		transmit = modbus_send_message(&msg, 2);
-		if (transmit == 1) {
-			BSP_LED_Toggle(LED2);
-			HAL_Delay(500);
-		}
-	}
+	modbus_listen();
+
 }
 
 void system_init()
@@ -200,28 +170,6 @@ void SystemClock_Config(void)
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *UartHandle)
 {
     Error_Handler();
-}
-
-/**
-  * @brief  Compares two buffers.
-  * @param  pBuffer1, pBuffer2: buffers to be compared.
-  * @param  BufferLength: buffer's length
-  * @retval 0  : pBuffer1 identical to pBuffer2
-  *         >0 : pBuffer1 differs from pBuffer2
-  */
-static uint16_t Buffercmp(uint8_t* pBuffer1, uint8_t* pBuffer2, uint16_t BufferLength)
-{
-  while (BufferLength--)
-  {
-    if ((*pBuffer1) != *pBuffer2)
-    {
-      return BufferLength;
-    }
-    pBuffer1++;
-    pBuffer2++;
-  }
-
-  return 0;
 }
 
 /**

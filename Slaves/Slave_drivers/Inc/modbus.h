@@ -38,11 +38,9 @@
 /* Exported macro ------------------------------------------------------------*/
 
 void modbus_init(void);
-int modbus_send_command(uint8_t slave_address);
-void modbus_listen();
 void modbus_error_handler(uint8_t error);
-void modbus_sender_measure_test();
-void modbus_receive_measure_test();
+
+void modbus_listen();
 uint8_t modbus_send_message(uint8_t *msg, uint8_t msg_len);
 
 #endif /* __SOCKET__MODBUS_H */
