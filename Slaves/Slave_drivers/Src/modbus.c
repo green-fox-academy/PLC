@@ -2,6 +2,7 @@
 #include "modbus.h"
 #include "stm32l4xx_hal_uart.h"
 #include "main.h"
+#include "GPIO.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -36,6 +37,7 @@ void modbus_listen()
 	uint8_t receive;
 	uint8_t transmit;
 	aTxBuffer[0] = 222;
+	aRxBuffer[1] = 0;
 
 	while (1) {
 
@@ -44,11 +46,16 @@ void modbus_listen()
 			;
 		} else {
 			if (aRxBuffer[0] == slave_address) {
+
+				aTxBuffer[0] = aRxBuffer[1];
 				transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE, 2);
 
 				if (transmit != HAL_OK) {
 					modbus_error_handler(transmit);
 				}
+
+				gpio_set_8_pin(8,15,aRxBuffer[1]);
+
 			}
 		}
 	}

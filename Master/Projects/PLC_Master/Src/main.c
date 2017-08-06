@@ -104,28 +104,21 @@ int main(void)
 
 	uint8_t command[2];
 	command[0] = 12;	//Slave Address
-	command[1] = 42;	//Command
+	command[1] = 0b11111111;	//Command
 
 	uint8_t data[2];
 
 	while (1) {
-		command[0] = 12;
+		command[1] = 0b11111111;
 		modbus_send_command(command, 2);
 		modbus_receive_data(1);
 		HAL_Delay(500);
 
-		command[0] = 13;
+		command[1] = 0b00000000;
 		modbus_send_command(command, 2);
 		modbus_receive_data(1);
 		HAL_Delay(500);
 	}
-
-//	aTxBuffer[0] = 50;
-//	aTxBuffer[1] = 100;
-
-//	modbus_listen();
-
-
 }
 
 void system_init(void)

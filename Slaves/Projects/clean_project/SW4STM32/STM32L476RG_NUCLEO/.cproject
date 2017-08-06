@@ -48,7 +48,7 @@
 									<listOptionValue builtIn="false" value="USE_STM32L4XX_NUCLEO"/>
 								</option>
 								<option id="fr.ac6.managedbuild.gnu.c.compiler.option.misc.other.1660539386" superClass="fr.ac6.managedbuild.gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-fmessage-length=0" valueType="string"/>
-								<option id="fr.ac6.managedbuid.gnu.c.compiler.option.misc.other.970465007" superClass="fr.ac6.managedbuid.gnu.c.compiler.option.misc.other" value="-fmessage-length=0 -Wno-strict-aliasing" valueType="string"/>
+								<option id="fr.ac6.managedbuid.gnu.c.compiler.option.misc.other.970465007" superClass="fr.ac6.managedbuid.gnu.c.compiler.option.misc.other" useByScannerDiscovery="false" value="-fmessage-length=0 -Wno-strict-aliasing" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.480916559" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 								<inputType id="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.490349396"/>
 								<inputType id="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.c.34889148" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.c"/>

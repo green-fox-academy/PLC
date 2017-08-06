@@ -75,7 +75,7 @@ void system_init()
 	modbus_init();
 
 	/* Init PINs from DPIN7 to DPIN15 as a digital outputs */
-	for (int i = 7; i < 16; i++) {
+	for (int i = 8; i < 16; i++) {
 		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
 	}
 

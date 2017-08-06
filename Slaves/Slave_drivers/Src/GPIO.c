@@ -40,7 +40,6 @@ const gpio_pins_t stm32l476rg_digital_pins[] = {
 	{GPIOB, GPIO_PIN_0},     //PIN: A3 - As a Digital PIN
 	{GPIOC, GPIO_PIN_1},     //PIN: A4 - As a Digital PIN
 	{GPIOC, GPIO_PIN_0},     //PIN: A5 - As a Digital PIN
-
 };
 
 const gpio_analog_pins_t stm32l476rg_analog_pins[] = {
@@ -92,7 +91,6 @@ void gpio_init_digital_pin(uint8_t pin_index, uint32_t mode, uint32_t pull)
 
 	// Init the pin
 	HAL_GPIO_Init(stm32l476rg_digital_pins[pin_index].port, &gpio_init_structure);
-
 }
 
 
@@ -127,7 +125,6 @@ GPIO_PinState gpio_read_digital_pin(uint8_t pin_index)
  * 	Function input - uint8_t to:			Last Pin  (D15)
  * 	Function Output - uint8_t pins_states:	This is the pins states example: 0b10110101 (The last bit is the D8 and the first bit is the D15)
  */
-
 uint8_t gpio_read_8_pin(uint8_t from, uint8_t to)
 {
 	uint8_t pins_states = 0;
@@ -139,16 +136,24 @@ uint8_t gpio_read_8_pin(uint8_t from, uint8_t to)
 	return pins_states;
 }
 
-gpio_set_8_pin(uint8_t from, uint8_t to, uint8_t data)
+/*	Function name:							gpio_set_8_pin
+ * 	Function purpose:						Sets the Digital outputs
+ * 	Function input - uint8_t from:			First Pin (D8)
+ * 	Function input - uint8_t to:			Last Pin  (D15)
+ * 	Function input - uint8_t data:			Data came from Master, last bit is the from(index), first bit is the to(index).
+ */
+void gpio_set_8_pin(uint8_t from, uint8_t to, uint8_t data)
 {
-	for (uint8_t i = from; i  <= to; i++) {
+	uint8_t pin_index;
+
+	for (uint8_t i = from; i <= to; i++) {
 		/* this will move the i bit from behind to the first place, then it will move it back to last bits place
 		   example: we want this numbers 3th bit 01001101 << (7-2) -> 10100000, and now 10100000 >> 7 -> 00000001 = 1 */
-		gpio_write_digital_pin(i, ((data << 7 - i -from) >> 7));
+
+		pin_index = data & (1 << (i - from));
+		gpio_write_digital_pin(i, (pin_index >> i - from));
 	}
 }
-
-
 
 /* ########## Functions for Analoge pins ########## */
 
