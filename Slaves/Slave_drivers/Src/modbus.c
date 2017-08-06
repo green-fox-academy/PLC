@@ -35,7 +35,7 @@ void modbus_listen()
 {
 	uint8_t receive;
 	uint8_t transmit;
-	aTxBuffer[0] = 111;
+	aTxBuffer[0] = 222;
 
 	while (1) {
 
@@ -43,13 +43,12 @@ void modbus_listen()
 		if (receive != HAL_OK) {
 			;
 		} else {
-			if (aRxBuffer[0] != slave_address) {
-				aTxBuffer[0] = 0;
-			}
-			transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE, 2);
+			if (aRxBuffer[0] == slave_address) {
+				transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE, 2);
 
-			if (transmit != HAL_OK) {
-				modbus_error_handler(transmit);
+				if (transmit != HAL_OK) {
+					modbus_error_handler(transmit);
+				}
 			}
 		}
 	}

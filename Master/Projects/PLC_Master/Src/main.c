@@ -109,9 +109,15 @@ int main(void)
 	uint8_t data[2];
 
 	while (1) {
+		command[0] = 12;
 		modbus_send_command(command, 2);
 		modbus_receive_data(1);
-		HAL_Delay(1000);
+		HAL_Delay(500);
+
+		command[0] = 13;
+		modbus_send_command(command, 2);
+		modbus_receive_data(1);
+		HAL_Delay(500);
 	}
 
 //	aTxBuffer[0] = 50;

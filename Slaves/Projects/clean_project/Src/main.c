@@ -37,7 +37,7 @@ int main(void)
 
 	system_init();
 
-	slave_address = 13;
+	slave_address = 12;
 
 	/*
 	uint8_t msg[2];
