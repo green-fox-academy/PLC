@@ -13,8 +13,7 @@ UART_HandleTypeDef UartHandle;
 
 /* Buffers for Send, and Receive messages */
 
-
- uint8_t num_to_send = 1;
+ uint8_t data[10];
 
 /* Private function prototypes -----------------------------------------------*/
  void rx_tx_GPIO_init();
@@ -119,7 +118,6 @@ uint8_t modbus_send_command(uint8_t *command, uint8_t command_len)
  */
 uint8_t* modbus_receive_data(uint8_t data_len)
 {
-	uint8_t data[data_len];
 	uint8_t receive = 0;
 
 	receive = HAL_UART_Receive(&UartHandle, data, (sizeof(data[0]) * data_len) , 3);

@@ -33,7 +33,6 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 void modbus_init();
-uint8_t modbus_send_command(uint8_t *command, uint8_t command_len);
 void modbus_listen();
 void modbus_error_handler(uint8_t error);
 void modbus_sender_measure_test();
@@ -41,6 +40,8 @@ void modbus_receive_measure_test();
 
 uint8_t modbus_send_message(uint8_t *msg, uint8_t msg_len);
 
+uint8_t* modbus_receive_data(uint8_t data_len);
+uint8_t modbus_send_command(uint8_t *command, uint8_t command_len);
 #endif /* __SOCKET__MODBUS_H */
 
 

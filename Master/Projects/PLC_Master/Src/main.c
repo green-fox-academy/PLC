@@ -76,8 +76,6 @@ static void MPU_Config(void);
 static void Error_Handler(void);
 static void CPU_CACHE_Enable(void);
 
-uint8_t slave_adress_set();
-
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -90,44 +88,11 @@ int main(void)
 	system_init();
 
 	/* Init thread */
-//	osThreadDef(Start, StartThread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 5);
-//	osThreadCreate (osThread(Start), NULL);
+	//	osThreadDef(Start, StartThread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 5);
+	//	osThreadCreate (osThread(Start), NULL);
 
 	/* Start scheduler */
 	//  osKernelStart();
-/*
-	uint16_t counter = 0;
-
-	while(1) {
-
-	if (BSP_PB_GetState(BUTTON_KEY)) {
-		if (modbus_send_command(100) < 0) {
-	//		LCD_UsrLog("%d.Error: Sending failed.\n", counter);
-			HAL_Delay(500);
-		} else {
-
-			HAL_Delay(500);
-			BSP_LED_Toggle(LED_GREEN);
-		}
-		counter++;
-	}
-
-		//modbus_listen();
-  }
-*/
-/*
-	while(1) {
-
-		if (BSP_PB_GetState(BUTTON_KEY)) {
-			modbus_sender_measure_test();
-			HAL_Delay(500);
-		}
-	}
-*/
-//	modbus_receive_measure_test();
-
-
-
 
 	for (int i = 7; i < 12; i++) {
 		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
@@ -136,32 +101,28 @@ int main(void)
 	for (int i = 2; i < 7; i++) {
 		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
 	}
-
-	aTxBuffer[0] = 0b00010101; 	//Slave Address
-	aTxBuffer[1] = 0b10101010;	// Data for slave
 /*
+	uint8_t command[2];
+	command[0] = 12;	//Slave Address
+	command[1] = 42;	//Command
+
+	uint8_t data[2];
+
 	while (1) {
-		modbus_send_command(aTxBuffer[0]);
-		HAL_Delay(2000);
+		modbus_send_command(command, 2);
+		modbus_receive_data(2);
+		HAL_Delay(1000);
 	}
 */
+
+	aTxBuffer[0] = 50;
+	aTxBuffer[1] = 100;
+
 	modbus_listen();
 
-/*
-	while (1) {
-		if (!modbus_send_message(aTxBuffer, 2)) {
-			LCD_UsrLog("Message sent.\n");
-		}
-		HAL_Delay(500);
-	}
-*/
+
 }
 
-/**
-  * @brief  Start Thread 
-  * @param  argument not used
-  * @retval None
-  */
 void system_init(void)
 {
 	/* Configure the MPU attributes as Device memory for ETH DMA descriptors */
@@ -193,17 +154,11 @@ void system_init(void)
 	modbus_init();
 }
 
-uint8_t slave_adress_set()
-{
-	uint8_t slave_adress = 0;
-
-	for (uint8_t i = 2; i < 7; i++) {
-		slave_adress += (gpio_read_digital_pin(i) << (i - 2));
-	}
-
-	return slave_adress;
-}
-
+/**
+  * @brief  Start Thread
+  * @param  argument not used
+  * @retval None
+  */
 static void StartThread(void const * argument)
 { 
   /* Initialize LCD */
