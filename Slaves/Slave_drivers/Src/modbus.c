@@ -11,9 +11,6 @@
 UART_HandleTypeDef UartHandle;
 
 /* Buffers for Send, and Receive messages */
- uint8_t aTxBuffer[] = "0123456789A";
- uint8_t aRxBuffer[RXBUFFERSIZE];
-
  uint8_t num_to_send = 1;
 
 /* Private function prototypes -----------------------------------------------*/
@@ -91,10 +88,24 @@ int modbus_send_command(uint8_t slave_address)
 	return 0;
 }
 
+uint8_t modbus_send_message(uint8_t *msg, uint8_t msg_len)
+{
+	uint8_t msg_size = sizeof(msg[0]) * msg_len;
+
+	uint8_t transmit = HAL_UART_Transmit (&UartHandle, msg, msg_size, 2);
+
+	if (transmit == HAL_OK) {
+		return 1;
+	}
+
+	return 0;
+}
+
 void modbus_listen()
 {
 	uint8_t receive;
 	uint8_t transmit;
+	aTxBuffer[0] = 0b10100110;
 
 	while (1) {
 
@@ -183,3 +194,5 @@ void rx_tx_GPIO_init(void)
 
 	HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &GPIO_InitStruct);
 }
+
+

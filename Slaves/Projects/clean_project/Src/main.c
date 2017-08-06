@@ -15,17 +15,18 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+
 /* UART handler declaration */
 UART_HandleTypeDef UartHandle;
-//__IO uint32_t UserButtonStatus = 0;  /* set to 1 after User Button interrupt  */
 
+uint8_t slave_address;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void Error_Handler(void);
 static uint16_t Buffercmp(uint8_t* pBuffer1, uint8_t* pBuffer2, uint16_t BufferLength);
 void system_init();
-uint8_t slave_adress_set();
+uint8_t slave_address_set();
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -63,60 +64,74 @@ int main(void)
   }
   */
 
-	for (int i = 7; i < 16; i++) {
-		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
-	}
+	//modbus_listen();
 
-	for (int i = 2; i < 7; i++) {
-		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
-	}
+	uint8_t msg[2];
+	msg[0] = 20;
+	msg[1] = 100;
+	uint8_t transmit;
 
 	while (1) {
-		for (int i = 2; i < 7; i++) {
-			if (gpio_read_digital_pin(i) == GPIO_PIN_SET) {
-				gpio_set_digital_pin(i + 5);
-			} else {
-				gpio_reset_digital_pin(i + 5);
-			}
+		transmit = modbus_send_message(&msg, 2);
+		if (transmit == 1) {
+			BSP_LED_Toggle(LED2);
+			HAL_Delay(500);
 		}
-		HAL_Delay(100);
 	}
-
 }
 
 void system_init()
 {
-	  /* STM32L4xx HAL library initialization:
-	       - Configure the Flash prefetch
-	       - Systick timer is configured by default as source of time base, but user
-	         can eventually implement his proper time base source (a general purpose
-	         timer for example or other time source), keeping in mind that Time base
-	         duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and
-	         handled in milliseconds basis.
-	       - Set NVIC Group Priority to 4
-	       - Low Level Initialization
-	     */
-	  HAL_Init();
+	/* STM32L4xx HAL library initialization:
+	   - Configure the Flash prefetch
+	   - Systick timer is configured by default as source of time base, but user
+		 can eventually implement his proper time base source (a general purpose
+		 timer for example or other time source), keeping in mind that Time base
+		 duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and
+		 handled in milliseconds basis.
+	   - Set NVIC Group Priority to 4
+	   - Low Level Initialization
+	 */
+	HAL_Init();
 
-	  /* Configure the system clock to 80 MHz */
-	  SystemClock_Config();
+	/* Configure the system clock to 80 MHz */
+	SystemClock_Config();
 
-	  /* Configure LED2 */
-	  BSP_LED_Init(LED2);
-	  BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
+	/* Configure LED2 */
+	BSP_LED_Init(LED2);
+	BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
 
-	  modbus_init();
-}
+	/* Init Uart and modbus protocol DPIN0 : RX and DPIN1 : TX */
+	modbus_init();
 
-uint8_t slave_adress_set()
-{
-	uint8_t slave_adress = 0;
-
-	for (uint8_t i = 2; i < 7; i++) {
-		slave_adress += (gpio_read_digital_pin(i) << (i - 2));
+	/* Init PINs from DPIN7 to DPIN15 as a digital outputs */
+	for (int i = 7; i < 16; i++) {
+		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
 	}
 
-	return slave_adress;
+	/* Init Pins from DPIN2 to DPIN6 as an Digital inputs for Slave_address */
+	for (int i = 2; i < 7; i++) {
+		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
+	}
+
+	slave_address = slave_address_set();
+
+}
+
+
+/* Function name: 		slave_address_set
+ * Function purpose:
+ *
+ */
+uint8_t slave_address_set()
+{
+	uint8_t slave_adr = 0;
+
+	for (uint8_t i = 2; i < 7; i++) {
+		slave_adr += (gpio_read_digital_pin(i) << (i - 2));
+	}
+
+	return slave_adr;
 }
 
 /**

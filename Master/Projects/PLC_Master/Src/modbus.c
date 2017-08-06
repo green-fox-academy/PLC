@@ -17,7 +17,7 @@ UART_HandleTypeDef UartHandle;
  uint8_t num_to_send = 1;
 
 /* Private function prototypes -----------------------------------------------*/
-
+ void rx_tx_GPIO_init();
 /* Private functions ---------------------------------------------------------*/
 
 
@@ -69,6 +69,20 @@ void modbus_receive_measure_test()
 
 }
 
+uint8_t modbus_send_message(uint8_t *msg, uint8_t msg_len)
+{
+	uint8_t msg_size = sizeof(msg[0]) * msg_len;
+
+	uint8_t transmit = HAL_UART_Transmit (&UartHandle, msg, msg_size, 2);
+
+	if (transmit != HAL_OK) {
+		modbus_error_handler(transmit);
+		return 1;
+	}
+
+	return 0;
+}
+
 
 int modbus_send_command(uint8_t slave_address)
 {
@@ -105,13 +119,13 @@ void modbus_listen()
 
 	while (1) {
 
-		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 2);
+		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, 2, 1000);
 		if (receive != HAL_OK) {
 			;
 			//LCD_UsrLog("Receive, ");
-			//modbus_error_handler(receive);
+			modbus_error_handler(receive);
 		} else {
-			LCD_UsrLog("Received msg: %s\n", aRxBuffer);
+			LCD_UsrLog("Received msg[0]:%u msg[1]: %u\n", aRxBuffer[0], aRxBuffer[1]);
 
 			transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE, 2);
 
@@ -142,13 +156,13 @@ void modbus_error_handler(uint8_t error)
 }
 
 
-void modbus_init(void)
+void modbus_init()
 {
 	rx_tx_GPIO_init();
 	uart_init();
 }
 
-void uart_init(void)
+void uart_init()
 {
 	UartHandle.Instance 	   	= USARTx;
 	UartHandle.Init.BaudRate   	= 115200;

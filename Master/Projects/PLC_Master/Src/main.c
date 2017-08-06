@@ -139,12 +139,22 @@ int main(void)
 
 	aTxBuffer[0] = 0b00010101; 	//Slave Address
 	aTxBuffer[1] = 0b10101010;	// Data for slave
-
+/*
 	while (1) {
 		modbus_send_command(aTxBuffer[0]);
 		HAL_Delay(2000);
 	}
+*/
+	modbus_listen();
 
+/*
+	while (1) {
+		if (!modbus_send_message(aTxBuffer, 2)) {
+			LCD_UsrLog("Message sent.\n");
+		}
+		HAL_Delay(500);
+	}
+*/
 }
 
 /**
