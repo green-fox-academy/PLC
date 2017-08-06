@@ -33,7 +33,7 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 void modbus_init();
-int modbus_send_command(uint8_t slave_address);
+uint8_t modbus_send_command(uint8_t *command, uint8_t command_len);
 void modbus_listen();
 void modbus_error_handler(uint8_t error);
 void modbus_sender_measure_test();
