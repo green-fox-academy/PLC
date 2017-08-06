@@ -69,6 +69,10 @@ void gpio_toggle_digital_pin(uint8_t pin_index);
 
 GPIO_PinState gpio_read_digital_pin(uint8_t pin_index);
 
+uint8_t gpio_read_8_pin(uint8_t from, uint8_t to);
+gpio_set_8_pin(uint8_t from, uint8_t to, uint8_t data);
+
+
 /* ########## Functions for Analoge pins ########## */
 
 /* Function name: gpio_init_analoge_pin

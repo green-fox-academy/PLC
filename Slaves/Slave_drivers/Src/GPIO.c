@@ -121,6 +121,35 @@ GPIO_PinState gpio_read_digital_pin(uint8_t pin_index)
 	return HAL_GPIO_ReadPin(stm32l476rg_digital_pins[pin_index].port, stm32l476rg_digital_pins[pin_index].pin);
 }
 
+/*	Function name:							gpio_read_8_pin
+ * 	Function purpose:						Read pin states and make an uint8_t from them.
+ * 	Function input - uint8_t from:			First Pin (D8)
+ * 	Function input - uint8_t to:			Last Pin  (D15)
+ * 	Function Output - uint8_t pins_states:	This is the pins states example: 0b10110101 (The last bit is the D8 and the first bit is the D15)
+ */
+
+uint8_t gpio_read_8_pin(uint8_t from, uint8_t to)
+{
+	uint8_t pins_states = 0;
+
+	for (uint8_t i = from; i  <= to; i++) {
+		pins_states += (gpio_read_digital_pin(i) << (i - from));
+	}
+
+	return pins_states;
+}
+
+gpio_set_8_pin(uint8_t from, uint8_t to, uint8_t data)
+{
+	for (uint8_t i = from; i  <= to; i++) {
+		/* this will move the i bit from behind to the first place, then it will move it back to last bits place
+		   example: we want this numbers 3th bit 01001101 << (7-2) -> 10100000, and now 10100000 >> 7 -> 00000001 = 1 */
+		gpio_write_digital_pin(i, ((data << 7 - i -from) >> 7));
+	}
+}
+
+
+
 /* ########## Functions for Analoge pins ########## */
 
 void gpio_init_analoge_pin(uint8_t pin_index)
