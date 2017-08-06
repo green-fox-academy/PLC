@@ -40,7 +40,8 @@
 void modbus_init(void);
 void modbus_error_handler(uint8_t error);
 
-void modbus_listen();
+void modbus_DOUT_listen();
+void modbus_DIN_listen();
 uint8_t modbus_send_message(uint8_t *msg, uint8_t msg_len);
 
 #endif /* __SOCKET__MODBUS_H */

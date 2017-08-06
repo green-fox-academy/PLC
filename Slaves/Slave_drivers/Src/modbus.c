@@ -32,11 +32,11 @@ uint8_t modbus_send_message(uint8_t *msg, uint8_t msg_len)
 	return 0;
 }
 
-void modbus_listen()
+void modbus_DOUT_listen()
 {
 	uint8_t receive;
 	uint8_t transmit;
-	aTxBuffer[0] = 222;
+	aTxBuffer[0] = 0;
 	aRxBuffer[1] = 0;
 
 	while (1) {
@@ -56,6 +56,34 @@ void modbus_listen()
 
 				gpio_set_8_pin(8,15,aRxBuffer[1]);
 
+			}
+		}
+	}
+}
+
+void modbus_DIN_listen()
+{
+	uint8_t receive;
+	uint8_t transmit;
+	aTxBuffer[0] = 0;
+	aRxBuffer[1] = 0;
+
+	while (1) {
+
+		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 2);
+		if (receive != HAL_OK) {
+			;
+		} else {
+			if (aRxBuffer[0] == slave_address) {
+
+				// Read pins from 8 to 15
+				aTxBuffer[0] = gpio_read_8_pin(8, 15);
+
+				transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE, 2);
+
+				if (transmit != HAL_OK) {
+					modbus_error_handler(transmit);
+				}
 			}
 		}
 	}

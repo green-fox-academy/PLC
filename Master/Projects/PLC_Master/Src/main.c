@@ -109,12 +109,13 @@ int main(void)
 	uint8_t data[2];
 
 	while (1) {
-		command[1] = 0b11111111;
+		command[0] = 13;
 		modbus_send_command(command, 2);
-		modbus_receive_data(1);
+		command[1] = modbus_receive_data(1)[0];
+
 		HAL_Delay(500);
 
-		command[1] = 0b00000000;
+		command[0] = 12;
 		modbus_send_command(command, 2);
 		modbus_receive_data(1);
 		HAL_Delay(500);

@@ -37,7 +37,7 @@ int main(void)
 
 	system_init();
 
-	slave_address = 12;
+	slave_address = 13;
 
 	/*
 	uint8_t msg[2];
@@ -46,7 +46,7 @@ int main(void)
 	uint8_t transmit;
 	*/
 
-	modbus_listen();
+	modbus_DIN_listen();
 
 }
 
@@ -74,10 +74,17 @@ void system_init()
 	/* Init Uart and modbus protocol DPIN0 : RX and DPIN1 : TX */
 	modbus_init();
 
-	/* Init PINs from DPIN7 to DPIN15 as a digital outputs */
+	/* Init PINs from DPIN8 to DPIN15 as a digital outputs */
+/*
 	for (int i = 8; i < 16; i++) {
 		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
 	}
+*/
+	/* Init PINs from DPIN8 to DPIN15 as a digital inputs */
+	for (int i = 8; i < 16; i++) {
+		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
+	}
+
 
 	/* Init Pins from DPIN2 to DPIN6 as an Digital inputs for Slave_address */
 	for (int i = 2; i < 7; i++) {
