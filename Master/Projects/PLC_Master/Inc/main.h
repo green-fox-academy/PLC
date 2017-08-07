@@ -59,8 +59,6 @@
 #include "stm32746g_discovery_lcd.h"
 #include "stm32746g_discovery_ts.h"
 
-/* Exported types ------------------------------------------------------------*/
-
 /* Exported constants --------------------------------------------------------*/
 
 #define USE_DHCP       /* enable DHCP, if disabled static address is used*/
@@ -82,9 +80,6 @@
 #define GW_ADDR1   168
 #define GW_ADDR2   0
 #define GW_ADDR3   1 
-
-/* Exported variables ------------------------------------------------------- */
-
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */  

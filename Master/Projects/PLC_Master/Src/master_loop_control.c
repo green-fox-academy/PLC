@@ -23,14 +23,13 @@ void control_slaves_thread(void const * argument)
 		/* */
 		// system_check();
 		// slaves_check();
+		scan_inputs();
+		execute_program();
+		upadte_outputs();
+
+		osDelay(1);
 
 	}
-}
-
-void master_logic_thread(void const * argument)
-{
-
-
 }
 
 

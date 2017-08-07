@@ -94,14 +94,6 @@ int main(void)
 	/* Start scheduler */
 	//  osKernelStart();
 
-	for (int i = 7; i < 12; i++) {
-		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
-	}
-
-	for (int i = 2; i < 7; i++) {
-		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
-	}
-
 	uint8_t command[2];
 	command[0] = 12;	//Slave Address
 	command[1] = 0b11111111;	//Data
@@ -140,6 +132,7 @@ void system_init(void)
 
 	/* Configure the system clock to 200 MHz */
 	SystemClock_Config();
+
 	/* Initialize LCD */
 	BSP_Config();
 
@@ -148,6 +141,15 @@ void system_init(void)
 
 	/* Initialize Led */
 	BSP_LED_Init(LED_GREEN);
+
+	/* Initialize digital inputs and outputs*/
+	for (int i = 8; i < 16; i++) {
+		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
+	}
+
+	for (int i = 2; i < 8; i++) {
+		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
+	}
 
 	/* Initialize Modbus */
 	modbus_init();
@@ -159,53 +161,43 @@ void system_init(void)
   * @retval None
   */
 static void StartThread(void const * argument)
-{ 
-  /* Initialize LCD */
-  BSP_Config();
-  
-  /* Initialize Button */
-  BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
+{
 
-  /* Initialize Led */
-  BSP_LED_Init(LED_GREEN);
+	/* Create tcp_ip stack thread */
+	tcpip_init(NULL, NULL);
 
-  /* Initialize Modbus */
-  modbus_init();
+	/* Initialize the LwIP stack */
+	Netif_Config();
 
-  /* Create tcp_ip stack thread */
-//  tcpip_init(NULL, NULL);
-  
-  /* Initialize the LwIP stack */
-//  Netif_Config();
+	/* Notify user about the network interface config */
+	User_notification(&gnetif);
 
-  /* Notify user about the network interface config */
-//  User_notification(&gnetif);
-  
-  /* Start DHCPClient */
+	/* Start  */
+	osThreadDef(CONTROL_SLAVES, control_slaves_thread, osPriorityBelowNormal, 0, configMINIMAL_STACK_SIZE * 2);
+	osThreadCreate (osThread(CONTROL_SLAVES), &gnetif);
+
+	/* Start DHCPClient */
 /*
-  osThreadDef(DHCP, DHCP_thread, osPriorityBelowNormal, 0, configMINIMAL_STACK_SIZE * 2);
-  osThreadCreate (osThread(DHCP), &gnetif);
-  osDelay(2000);
+	osThreadDef(DHCP, DHCP_thread, osPriorityBelowNormal, 0, configMINIMAL_STACK_SIZE * 2);
+	osThreadCreate (osThread(DHCP), &gnetif);
+	osDelay(2000);
 
-  // TODO:
-  // Define and start the server thread
-  osThreadDef(Servi, socket_server_thread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 2);
-  osThreadCreate (osThread(Servi), &gnetif);
-  osDelay(2000);
+	// Define and start the server thread
+	osThreadDef(Servi, socket_server_thread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 2);
+	osThreadCreate (osThread(Servi), &gnetif);
+	osDelay(2000);
 
-  // TODO:
-  // Define and start the client thread
-  osThreadDef(send_message, socket_client_thread, osPriorityLow, 0, configMINIMAL_STACK_SIZE * 2);
-  osThreadCreate (osThread(send_message), &gnetif);
-
-  osDelay(2000);
-  BSP_LCD_Clear(LCD_COLOR_WHITE);
+	// Define and start the client thread
+	osThreadDef(send_message, socket_client_thread, osPriorityLow, 0, configMINIMAL_STACK_SIZE * 2);
+	osThreadCreate (osThread(send_message), &gnetif);
 */
 
-  while (1) {
-    /* Delete the Init Thread */
-    osThreadTerminate(NULL);
-  }
+	osDelay(2000);
+
+	while (1) {
+		/* Delete the Init Thread */
+		osThreadTerminate(NULL);
+	}
 }
 
 /**
