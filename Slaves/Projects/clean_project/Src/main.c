@@ -46,7 +46,9 @@ int main(void)
 	uint8_t transmit;
 	*/
 
-	modbus_DIN_listen();
+//	modbus_DIN_listen();
+
+	modbus_DOUT_listen();
 
 }
 
@@ -104,8 +106,8 @@ uint8_t slave_address_set()
 {
 	uint8_t slave_adr = 0;
 
-	for (uint8_t i = 2; i < 7; i++) {
-		slave_adr += (gpio_read_digital_pin(i) << (i - 2));
+	for (uint8_t i = 0; i < 5; i++) {
+		slave_adr += (gpio_read_digital_pin(i+2) << i);
 	}
 
 	return slave_adr;

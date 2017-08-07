@@ -104,7 +104,7 @@ int main(void)
 
 	uint8_t command[2];
 	command[0] = 12;	//Slave Address
-	command[1] = 0b11111111;	//Command
+	command[1] = 0b11111111;	//Data
 
 	uint8_t data[2];
 

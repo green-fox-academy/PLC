@@ -10,12 +10,6 @@ typedef struct {
 	uint16_t pin;
 } gpio_pins_t;
 
-typedef struct {
-	GPIO_TypeDef *port;
-	uint16_t pin;
-	uint32_t ADC_channel;
-}gpio_analog_pins_t;
-
 /* Private variables ---------------------------------------------------------*/
 const gpio_pins_t stm32f7_digital_pins[] = {
 	{GPIOC, GPIO_PIN_7},     //PIN: D0

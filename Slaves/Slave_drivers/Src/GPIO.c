@@ -125,12 +125,12 @@ GPIO_PinState gpio_read_digital_pin(uint8_t pin_index)
  * 	Function input - uint8_t to:			Last Pin  (D15)
  * 	Function Output - uint8_t pins_states:	This is the pins states example: 0b10110101 (The last bit is the D8 and the first bit is the D15)
  */
-uint8_t gpio_read_8_pin(uint8_t from, uint8_t to)
+uint8_t gpio_read_8_pin(uint8_t from_pin_index, uint8_t to_pin_index)
 {
 	uint8_t pins_states = 0;
 
-	for (uint8_t i = from; i  <= to; i++) {
-		pins_states += (gpio_read_digital_pin(i) << (i - from));
+	for (uint8_t i = from_pin_index; i  <= to_pin_index; i++) {
+		pins_states += (gpio_read_digital_pin(i) << (i - from_pin_index));
 	}
 
 	return pins_states;

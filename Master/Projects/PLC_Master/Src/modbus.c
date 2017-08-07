@@ -103,7 +103,7 @@ uint8_t modbus_send_command(uint8_t *command, uint8_t command_len)
 	transmit = HAL_UART_Transmit (&UartHandle, command, (sizeof(command[0]) * command_len), 2);
 
 	if (transmit != HAL_OK) {
-		LCD_UsrLog("RTransmit, ");
+		LCD_UsrLog("Transmit, ");
 		modbus_error_handler(transmit);
 		return 1;
 	}
@@ -128,6 +128,7 @@ uint8_t* modbus_receive_data(uint8_t data_len)
 		return NULL;
 
 	} else {
+		// This has to be removed
 		for (uint8_t i = 0; i < data_len; i++) {
 			LCD_UsrLog("data[%d]: %d ", i, data[i]);
 		}
