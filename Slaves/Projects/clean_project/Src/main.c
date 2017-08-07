@@ -45,10 +45,9 @@ int main(void)
 	msg[1] = 100;
 	uint8_t transmit;
 	*/
+	modbus_DIN_listen();
 
-//	modbus_DIN_listen();
-
-	modbus_DOUT_listen();
+//	modbus_DOUT_listen();
 
 }
 
