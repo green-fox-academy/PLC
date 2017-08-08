@@ -37,17 +37,11 @@ int main(void)
 
 	system_init();
 
-	slave_address = 13;
+	slave_address = 5;
 
-	/*
-	uint8_t msg[2];
-	msg[0] = 20;
-	msg[1] = 100;
-	uint8_t transmit;
-	*/
-	modbus_DIN_listen();
+//	modbus_DIN_listen();
 
-//	modbus_DOUT_listen();
+	modbus_DOUT_listen();
 
 }
 
@@ -76,23 +70,24 @@ void system_init()
 	modbus_init();
 
 	/* Init PINs from DPIN8 to DPIN15 as a digital outputs */
-/*
+
 	for (int i = 8; i < 16; i++) {
 		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
 	}
-*/
+
 	/* Init PINs from DPIN8 to DPIN15 as a digital inputs */
+/*
 	for (int i = 8; i < 16; i++) {
 		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
 	}
-
+*/
 
 	/* Init Pins from DPIN2 to DPIN6 as an Digital inputs for Slave_address */
 	for (int i = 2; i < 7; i++) {
 		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
 	}
 
-	slave_address = slave_address_set();
+	//slave_address = slave_address_set();
 
 }
 

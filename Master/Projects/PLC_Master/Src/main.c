@@ -95,12 +95,13 @@ int main(void)
 	//  osKernelStart();
 
 	/* Variables for Digital Slaves */
-	uint8_t d_in_msg[1];		// This array holds the message for digital input slave (now it has only one element the address)
+	uint8_t d_in_msg[2];		// This array holds the message for digital input slave (now it has only one element the address)
 	uint8_t d_out_msg[2];		// First element of this array is the address, second is the state we want to see on digital output.
 	uint8_t d_in_state;			// Pinstates of digital input will be stored in this variable.
 	uint8_t d_out_state;		// Pinstates of digital output will be stored in this variable.
 
 	d_in_msg[0] = 1;			// Digital input address.
+	d_in_msg[1] = 0;
 	d_out_msg[0] = 5;			// DIgital output address.
 	d_out_msg[1] = 0;			// Set msg[2] to 0 for safety.
 	d_in_state = 0;				// Set in state to 0 for safety.
@@ -125,15 +126,15 @@ int main(void)
 	while (1) {
 
 		/* ask for inputs */
-		modbus_send_command(din_slave_msg, 1);			// Send the address to the digital input slave
-		d_slave_pinstate = *modbus_receive_data(1);	// Receive pin states from digital input slave
-		d_slave_msg[1] = din_slave_pinstate;
+		LCD_UsrLog("Input: ");
+		modbus_send_command(d_in_msg, 2);			// Send the address to the digital input slave
+		d_out_msg[1] = modbus_receive_data(1)[0];		// Receive pin states from digital input slave
 
 		HAL_Delay(500);
 
-		d_slave_msg[0] = 5;								// Digital output address
-		modbus_send_command(d_slave_msg, 2);			// Send message to digital output
-		modbus_receive_data(1);							// Receive data from digital output
+		LCD_UsrLog("Output: ");
+		modbus_send_command(d_out_msg, 2);			// Send message to digital output
+		modbus_receive_data(1);						// Receive data from digital output
 		HAL_Delay(500);
 	}
 }
