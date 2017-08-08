@@ -1,36 +1,15 @@
-/**
+/** TOTORO PLC Project - Slave 3 - Analog In
   ******************************************************************************
-  * @file    Templates/Src/main.c 
-  * @author  MCD Application Team
-  * @version V1.8.0
-  * @date    21-April-2017
+  * @file    PLC\Slaves\Projects\Slave_3_An_in\Src\main.c
+  * @author  Gyula Rasztovich
+  * @version V1.0
+  * @date    08-08-2017
   * @brief   Main program body
   ******************************************************************************
   * @attention
+  * Slave Analog In
+  * base: L4 cube template file
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
-  *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
   */
@@ -50,6 +29,8 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+ADC_HandleTypeDef adc_handle;
+
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
 
@@ -60,6 +41,66 @@ static void SystemClock_Config(void);
   * @param  None
   * @retval None
   */
+
+void led_on()
+{
+	// LED on Digital 2 output!
+	// PIN: D2 - PA10 --> GPIOA, PIN10
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	GPIO_InitTypeDef led_init;
+	led_init.Mode 	= GPIO_MODE_OUTPUT_PP;
+	led_init.Pin 	= GPIO_PIN_10;
+	led_init.Pull 	= GPIO_NOPULL;
+	led_init.Speed 	= GPIO_SPEED_FAST;
+	HAL_GPIO_Init(GPIOA, &led_init);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
+}
+
+void adc_init()
+{
+	// ADC init test, only for A1 analog pin
+	// PIN: A1 - ADC12_IN6 --> GPIOA, PIN1, Channel 6, ADC1, 12 bit
+	__HAL_RCC_ADC_CLK_ENABLE();
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+
+	GPIO_InitTypeDef adc_init_struct;
+	adc_init_struct.Mode 	= GPIO_MODE_ANALOG;
+	adc_init_struct.Pin 	= GPIO_PIN_1;
+	adc_init_struct.Pull 	= GPIO_NOPULL;
+	adc_init_struct.Speed 	= GPIO_SPEED_FAST;
+	HAL_GPIO_Init(GPIOA, &adc_init_struct);
+
+
+	adc_handle.Instance 			= ADC1;
+	adc_handle.Init.ClockPrescaler 	= ADC_CLOCK_SYNC_PCLK_DIV2;
+	adc_handle.Init.Resolution 		= ADC_RESOLUTION_12B;
+	adc_handle.Init.DataAlign 		= ADC_DATAALIGN_RIGHT;
+	HAL_ADC_Init(&adc_handle);
+
+	ADC_ChannelConfTypeDef adc_channel;
+	adc_channel.Channel 		= ADC_CHANNEL_6;
+	adc_channel.Offset 			= 0;
+	adc_channel.Rank 			= 1;
+	adc_channel.SamplingTime 	= ADC_SAMPLETIME_640CYCLES_5;
+	HAL_ADC_ConfigChannel(&adc_handle, &adc_channel);
+
+/*	if (HAL_ADC_Init(&adc_handle) != HAL_OK)
+	{
+	// ADC initialization error
+	Error_Handler();
+	}
+	*/
+}
+
+uint32_t adc_measure()
+{
+	uint32_t measurement = 0;
+	HAL_ADC_Start(&adc_handle);
+	HAL_ADC_PollForConversion(&adc_handle, HAL_MAX_DELAY);
+	measurement = HAL_ADC_GetValue(&adc_handle);
+	return measurement;
+}
+
 int main(void)
 {
 
@@ -77,13 +118,19 @@ int main(void)
   /* Configure the System clock to have a frequency of 80 MHz */
   SystemClock_Config();
 
+  /* Initialize LED on board */
+  BSP_LED_Init(LED2);
 
-  /* Add your application code here
-     */
+  /* Add your application code here */
+  adc_init();
+  BSP_PB_Init(BUTTON_USER, BUTTON_MODE_GPIO);
 
-  /* Infinite loop */
-  while (1)
-  {
+  while (1) {
+  	BSP_LED_On(LED2);
+  	HAL_Delay(adc_measure());
+  	//led_on();
+  	BSP_LED_Off(LED2);
+  	HAL_Delay(adc_measure());
   }
 }
 
@@ -142,6 +189,27 @@ static void SystemClock_Config(void)
     while(1);
   }
 }
+
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @param  None
+  * @retval None
+  */
+
+
+ /* static void Error_Handler(void)
+{
+  // User may add here some code to deal with a potential error
+
+  // In case of error, LED2 is toggling at a frequency of 1Hz
+  while(1)
+  {
+    // Toggle LED2
+    BSP_LED_Toggle(LED2);
+    HAL_Delay(500);
+  }
+}
+*/
 
 #ifdef  USE_FULL_ASSERT
 

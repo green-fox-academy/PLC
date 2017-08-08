@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    Templates/Inc/main.h 
+  * @file    UART/UART_HyperTerminal_TxPolling_RxIT/Inc/main.h
   * @author  MCD Application Team
   * @version V1.8.0
   * @date    21-April-2017
@@ -34,7 +34,7 @@
   *
   ******************************************************************************
   */
-  
+
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __MAIN_H
 #define __MAIN_H
@@ -42,19 +42,49 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx_nucleo.h"
-#include "stm32l4xx_hal_gpio.h"
-#include "stm32l4xx_hal_rcc.h"
 
-#include "stm32l4xx_hal_adc.h"
+#include "stm32l4xx_ll_bus.h"
+#include "stm32l4xx_ll_rcc.h"
+#include "stm32l4xx_ll_system.h"
+#include "stm32l4xx_ll_utils.h"
+#include "stm32l4xx_ll_gpio.h"
+#include "stm32l4xx_ll_exti.h"
+#include "stm32l4xx_ll_usart.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
-/* Exported macro ------------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */
+/* User can use this section to tailor USARTx/UARTx instance used and associated
+   resources */
+/* Definition for USARTx clock resources */
+#define USARTx                           USART2
+#define USARTx_CLK_ENABLE()              __HAL_RCC_USART2_CLK_ENABLE()
+#define USARTx_RX_GPIO_CLK_ENABLE()      __HAL_RCC_GPIOA_CLK_ENABLE()
+#define USARTx_TX_GPIO_CLK_ENABLE()      __HAL_RCC_GPIOA_CLK_ENABLE()
 
-void led_on();
-void adc_init();
-uint32_t adc_measure();
+#define USARTx_FORCE_RESET()             __HAL_RCC_USART2_FORCE_RESET()
+#define USARTx_RELEASE_RESET()           __HAL_RCC_USART2_RELEASE_RESET()
+
+/* Definition for USARTx Pins */
+#define USARTx_TX_PIN                    GPIO_PIN_2
+#define USARTx_TX_GPIO_PORT              GPIOA
+#define USARTx_TX_AF                     GPIO_AF7_USART2
+#define USARTx_RX_PIN                    GPIO_PIN_3
+#define USARTx_RX_GPIO_PORT              GPIOA
+#define USARTx_RX_AF                     GPIO_AF7_USART2
+
+/* Definition for USARTx's NVIC IRQ and IRQ Handlers */
+#define USARTx_IRQn                      USART2_IRQn
+#define USARTx_IRQHandler                USART2_IRQHandler
+
+/* Size of Reception buffer */
+#define RX_BUFFER_SIZE                   10
+
+/* Exported macro ------------------------------------------------------------*/
+#define COUNTOF(__BUFFER__)   (sizeof(__BUFFER__) / sizeof(*(__BUFFER__)))
+/* Exported functions ------------------------------------------------------- */
+/* IRQ Handler treatment functions */
+void UART_CharReception_Callback(void); 
+void UART_Error_Callback(void); 
 
 #endif /* __MAIN_H */
 
