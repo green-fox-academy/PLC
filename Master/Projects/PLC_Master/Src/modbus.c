@@ -17,6 +17,7 @@ UART_HandleTypeDef UartHandle;
 
 /* Private function prototypes -----------------------------------------------*/
  void rx_tx_GPIO_init();
+ void uart_init();
 /* Private functions ---------------------------------------------------------*/
 
  /*	Function name:
@@ -72,7 +73,6 @@ void modbus_receive_measure_test()
 	}
 
 }
-
 
 /*	Function name: 							modbus_send_command
  * 	Function purpose:						Send command to a target slave

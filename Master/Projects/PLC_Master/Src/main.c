@@ -94,21 +94,19 @@ int main(void)
 	/* Start scheduler */
 	//  osKernelStart();
 
-	uint8_t command[2];
-	command[0] = 12;	//Slave Address
-	command[1] = 0b11111111;	//Data
-
-	uint8_t data[2];
+	uint8_t message[2];
 
 	while (1) {
-		command[0] = 13;
-		modbus_send_command(command, 2);
-		command[1] = modbus_receive_data(1)[0];
+
+		/* ask for inputs */
+		message[0] = 10; 							// Digital In address
+		modbus_send_command(message, 1);
+		message[1] = modbus_receive_data(1)[0];
 
 		HAL_Delay(500);
 
-		command[0] = 12;
-		modbus_send_command(command, 2);
+		message[0] = 12;
+		modbus_send_command(message, 2);
 		modbus_receive_data(1);
 		HAL_Delay(500);
 	}
@@ -172,9 +170,9 @@ static void StartThread(void const * argument)
 	/* Notify user about the network interface config */
 	User_notification(&gnetif);
 
-	/* Start  */
-	osThreadDef(CONTROL_SLAVES, control_slaves_thread, osPriorityBelowNormal, 0, configMINIMAL_STACK_SIZE * 2);
-	osThreadCreate (osThread(CONTROL_SLAVES), &gnetif);
+	/* Start  control_slaves_thread*/
+//	osThreadDef(CONTROL_SLAVES, control_slaves_thread, osPriorityBelowNormal, 0, configMINIMAL_STACK_SIZE * 2);
+//	osThreadCreate (osThread(CONTROL_SLAVES), &gnetif);
 
 	/* Start DHCPClient */
 /*
