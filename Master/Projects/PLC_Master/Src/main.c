@@ -77,6 +77,8 @@ static void Error_Handler(void);
 static void CPU_CACHE_Enable(void);
 
 /* Private functions ---------------------------------------------------------*/
+void copy_array(uint16_t *target_array, uint16_t *source_array, uint8_t array_len);
+
 
 /**
   * @brief  Main program
@@ -130,18 +132,27 @@ int main(void)
 		d_out_msg[1] = modbus_receive_data(1)[0];		// Receive pin states from digital input slave
 */
 		LCD_UsrLog("AN Input: ");
-		modbus_send_command(a_in_msg, 2);				// Send the address to the analog input slave
-		modbus_receive_u16_data(6);			// Receive adc datas from analog input slave
+		modbus_send_command(a_in_msg, 2);						// Send the address to the analog input slave
+		copy_array(a_in_state, modbus_receive_u16_data(6), 6); // Receive adc datas from analog input slave
+		copy_array(a_out_state, a_in_state, 6);					// Copy in to out table
+
 /*
 		for (uint8_t i = 0; i < 6; i++) {
 			LCD_UsrLog("%d ADC: %u\n", i, a_in_state[i]);
 		}
 */
+		// Command to analog output
+		LCD_UsrLog("AN Input: ");
+		modbus_send_command(a_in_msg, 2);				// Send the address to the analog output slave
+		modbus_receive_u16_data(6);						// Receive datas from analog input slave
+
 		HAL_Delay(500);
 /*
 		LCD_UsrLog("DIG Output: ");
 		modbus_send_command(d_out_msg, 2);			// Send message to digital output
 		modbus_receive_data(1);						// Receive data from digital output
+
+
 		HAL_Delay(500);
 */
 	}
@@ -232,6 +243,16 @@ static void StartThread(void const * argument)
 		osThreadTerminate(NULL);
 	}
 }
+
+void copy_array(uint16_t *target_array, uint16_t *source_array, uint8_t array_len)
+{
+	for (uint8_t i = 0; i < array_len; i++) {
+		target_array[i] = source_array[i];
+	}
+}
+
+
+
 
 /**
   * @brief  Initializes the lwIP stack
