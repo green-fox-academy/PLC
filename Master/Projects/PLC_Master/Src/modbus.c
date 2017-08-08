@@ -73,20 +73,6 @@ void modbus_receive_measure_test()
 
 }
 
-uint8_t modbus_send_message(uint8_t *msg, uint8_t msg_len)
-{
-	uint8_t msg_size = sizeof(msg[0]) * msg_len;
-
-	uint8_t transmit = HAL_UART_Transmit (&UartHandle, msg, msg_size, 2);
-
-	if (transmit != HAL_OK) {
-		modbus_error_handler(transmit);
-		return 1;
-	}
-
-	return 0;
-}
-
 
 /*	Function name: 							modbus_send_command
  * 	Function purpose:						Send command to a target slave
@@ -126,13 +112,6 @@ uint8_t* modbus_receive_data(uint8_t data_len)
 		LCD_UsrLog("Receive, ");
 		modbus_error_handler(receive);
 		return NULL;
-
-	} else {
-		// This has to be removed
-		for (uint8_t i = 0; i < data_len; i++) {
-			LCD_UsrLog("data[%d]: %d ", i, data[i]);
-		}
-		LCD_UsrLog("\n");
 	}
 
 	return data;

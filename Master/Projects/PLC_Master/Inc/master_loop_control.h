@@ -5,7 +5,15 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
 
+/* Exported constants --------------------------------------------------------*/
+
+/* Command list */
+#define SCAN_SLAVE
+#define READ_DATA
+#define WRITE_DATA
+
 /* Exported types ------------------------------------------------------------*/
+
 /* Struct for store digital slave pin state*/
 typedef struct {
 	uint8_t slave_address;
@@ -17,6 +25,15 @@ typedef struct {
 	uint8_t slave_address;
 	uint16_t analoge_pins_state[6];
 }slave_analog_t;
+
+/* Struct for frame format */
+typedef struct {
+	uint8_t address;
+	uint8_t command;
+	uint8_t* data;
+	uint8_t data_length;
+	uint16_t crc;
+}frame_t;
 
 /* Exported variables ------------------------------------------------------- */
 
@@ -37,6 +54,7 @@ const uint8_t digital_input_slaves_address[]  = {1,2,3,4};
 const uint8_t digital_output_slaves_address[] = {5,6,7,8};
 const uint8_t analog_input_slaves_address[]   = {9,10,11,12};
 const uint8_t analog_output_slaves_address[]  = {13,14,15,16};
+
 
 /* Exported functions ------------------------------------------------------- */
 

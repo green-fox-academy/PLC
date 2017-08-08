@@ -18,6 +18,9 @@
 
 void control_slaves_thread(void const * argument)
 {
+
+	scan_slaves();
+
 	while (1) {
 
 		/* */
@@ -31,6 +34,20 @@ void control_slaves_thread(void const * argument)
 
 	}
 }
+
+void scan_slaves()
+{
+	for (uint8_t i = 1; i < 5; i++) {
+		digital_input_slaves_address[i]
+	}
+
+}
+
+uint8_t* create_message(frame)
+{
+
+}
+
 
 
 
