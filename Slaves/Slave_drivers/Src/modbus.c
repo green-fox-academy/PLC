@@ -95,7 +95,7 @@ void modbus_ain_listen()
 	uint8_t transmit;
 
 	for (uint8_t i = 0; i < 6; i++) {
-		analoge_pins_state[i] = 111 * i;
+		analoge_pins_state[i] = 10 * (i+1);
 	}
 
 	while (1) {
