@@ -94,20 +94,46 @@ int main(void)
 	/* Start scheduler */
 	//  osKernelStart();
 
-	uint8_t message[2];
+	/* Variables for Digital Slaves */
+	uint8_t d_in_msg[1];		// This array holds the message for digital input slave (now it has only one element the address)
+	uint8_t d_out_msg[2];		// First element of this array is the address, second is the state we want to see on digital output.
+	uint8_t d_in_state;			// Pinstates of digital input will be stored in this variable.
+	uint8_t d_out_state;		// Pinstates of digital output will be stored in this variable.
+
+	d_in_msg[0] = 1;			// Digital input address.
+	d_out_msg[0] = 5;			// DIgital output address.
+	d_out_msg[1] = 0;			// Set msg[2] to 0 for safety.
+	d_in_state = 0;				// Set in state to 0 for safety.
+	d_out_state = 0;			// Set out state to 0 for safety.
+
+	/* Variables for Analog Slaves */
+	uint8_t a_in_msg[1];		// This array holds the message for analog input slave (now it has only one element the address)
+	uint16_t a_out_msg[7];		// First element of this array is the address, 2nd - 7th are the states we want to see on analog output.
+	uint16_t a_in_state[6];		// Pinstates of analog input will be stored in this variable.
+	uint16_t a_out_state[6];	// Pinstates of analog output will be stored in this variable.
+
+	a_in_msg[0] = 9;			// Analog input address.
+	a_out_msg[0] = 13;			// Analog output address.
+
+	/* Set the a_out_msg[1] - [6]; a_in_state; a_out_state to 0 for safety */
+	for (uint8_t i = 0; i < 6; i++) {
+		a_in_state[i] = 0;
+		a_out_state[i] = 0;
+		a_out_msg[i + 1] = 0;
+	}
 
 	while (1) {
 
 		/* ask for inputs */
-		message[0] = 10; 							// Digital In address
-		modbus_send_command(message, 1);
-		message[1] = modbus_receive_data(1)[0];
+		modbus_send_command(din_slave_msg, 1);			// Send the address to the digital input slave
+		d_slave_pinstate = *modbus_receive_data(1);	// Receive pin states from digital input slave
+		d_slave_msg[1] = din_slave_pinstate;
 
 		HAL_Delay(500);
 
-		message[0] = 12;
-		modbus_send_command(message, 2);
-		modbus_receive_data(1);
+		d_slave_msg[0] = 5;								// Digital output address
+		modbus_send_command(d_slave_msg, 2);			// Send message to digital output
+		modbus_receive_data(1);							// Receive data from digital output
 		HAL_Delay(500);
 	}
 }
