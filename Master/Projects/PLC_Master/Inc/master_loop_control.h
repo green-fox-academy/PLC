@@ -8,9 +8,9 @@
 /* Exported constants --------------------------------------------------------*/
 
 /* Command list */
-#define SCAN_SLAVE
-#define READ_DATA
-#define WRITE_DATA
+#define SCAN_SLAVE	3
+#define READ_DATA	14
+#define WRITE_DATA	48
 
 /* Exported types ------------------------------------------------------------*/
 
@@ -34,6 +34,34 @@ typedef struct {
 	uint8_t data_length;
 	uint16_t crc;
 }frame_t;
+
+typedef struct {
+	uint8_t address;
+	uint8_t command;
+	uint8_t data[2];
+	uint16_t crc;
+}frame_out_digital_in_t;
+
+typedef struct {
+	uint8_t address;
+	uint8_t command;
+	uint8_t data[2];
+	uint16_t crc;
+}frame_out_digital_out_t;
+
+typedef struct {
+	uint8_t address;
+	uint8_t command;
+	uint16_t data[6];
+	uint16_t crc;
+}frame_analog_out_t;
+
+typedef struct {
+	uint8_t address;
+	uint8_t command;
+	uint8_t range[2];
+	uint16_t crc;
+}frame_analog_in_t;
 
 /* Exported variables ------------------------------------------------------- */
 
