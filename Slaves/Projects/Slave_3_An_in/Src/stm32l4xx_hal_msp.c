@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
-  * @file    Templates/Inc/main.h 
+  * @file    Templates/Src/stm32l4xx_hal_msp.c
   * @author  MCD Application Team
   * @version V1.8.0
   * @date    21-April-2017
-  * @brief   Header for main.c module
+  * @brief   HAL MSP module.
   ******************************************************************************
   * @attention
   *
@@ -33,21 +33,59 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
-  */
-  
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
+  */ 
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_hal.h"
-#include "stm32l4xx_nucleo.h"
 
-/* Exported types ------------------------------------------------------------*/
-/* Exported constants --------------------------------------------------------*/
-/* Exported macro ------------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */
+/** @addtogroup STM32L4xx_HAL_Driver
+  * @{
+  */
 
-#endif /* __MAIN_H */
+/** @defgroup HAL_MSP
+  * @brief HAL MSP module.
+  * @{
+  */
+
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/* Private function prototypes -----------------------------------------------*/
+/* Private functions ---------------------------------------------------------*/
+
+/** @defgroup HAL_MSP_Private_Functions
+  * @{
+  */
+
+/**
+  * @brief  Initializes the Global MSP.
+  * @param  None
+  * @retval None
+  */
+void HAL_MspInit(void)
+{
+}
+
+/**
+  * @brief  DeInitializes the Global MSP.
+  * @param  None  
+  * @retval None
+  */
+void HAL_MspDeInit(void)
+{
+}
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

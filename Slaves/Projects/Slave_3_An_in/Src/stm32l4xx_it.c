@@ -1,11 +1,11 @@
-/** 
+/**
   ******************************************************************************
-  * @file    GPIO/GPIO_IOToggle/Src/stm32l4xx_it.c
+  * @file    Templates/Src/stm32l4xx_it.c 
   * @author  MCD Application Team
   * @version V1.8.0
   * @date    21-April-2017
   * @brief   Main Interrupt Service Routines.
-  *          This file provides template for all exceptions handler and
+  *          This file provides template for all exceptions handler and 
   *          peripherals interrupt service routine.
   ******************************************************************************
   * @attention
@@ -45,7 +45,7 @@
   * @{
   */
 
-/** @addtogroup GPIO_IOToggle
+/** @addtogroup Templates
   * @{
   */
 
@@ -62,7 +62,7 @@
 /******************************************************************************/
 
 /**
-  * @brief  This function handles NMI exception.
+  * @brief   This function handles NMI exception.
   * @param  None
   * @retval None
   */
@@ -163,7 +163,7 @@ void SysTick_Handler(void)
 /*                 STM32L4xx Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
 /*  available peripheral interrupt handler's name please refer to the startup */
-/*  file (startup_stm32l4xx.s).                                               */
+/*  file (startup_stm32l4xxxx.s).                                             */
 /******************************************************************************/
 
 /**
@@ -178,7 +178,7 @@ void SysTick_Handler(void)
 
 /**
   * @}
-  */
+  */ 
 
 /**
   * @}

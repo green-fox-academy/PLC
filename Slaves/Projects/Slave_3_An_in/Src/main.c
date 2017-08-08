@@ -1,11 +1,10 @@
 /**
   ******************************************************************************
-  * @file    GPIO/GPIO_IOToggle/Src/main.c
+  * @file    Templates/Src/main.c 
   * @author  MCD Application Team
   * @version V1.8.0
   * @date    21-April-2017
-  * @brief   This example describes how to configure and use GPIOs through
-  *          the STM32L4xx HAL API.
+  * @brief   Main program body
   ******************************************************************************
   * @attention
   *
@@ -43,7 +42,7 @@
   * @{
   */
 
-/** @addtogroup GPIO_IOToggle
+/** @addtogroup Templates
   * @{
   */
 
@@ -51,10 +50,8 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-static GPIO_InitTypeDef  GPIO_InitStruct;
-
 /* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
+static void SystemClock_Config(void);
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -65,47 +62,34 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
-  /* This sample code shows how to use GPIO HAL API to toggle LED2 IOs
-    in an infinite loop. */
 
   /* STM32L4xx HAL library initialization:
-       - Configure the Flash prefetch
+       - Configure the Flash prefetch, Flash preread and Buffer caches
        - Systick timer is configured by default as source of time base, but user 
-         can eventually implement his proper time base source (a general purpose 
-         timer for example or other time source), keeping in mind that Time base 
-         duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and 
-         handled in milliseconds basis.
-       - Set NVIC Group Priority to 4
+             can eventually implement his proper time base source (a general purpose 
+             timer for example or other time source), keeping in mind that Time base 
+             duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and 
+             handled in milliseconds basis.
        - Low Level Initialization
      */
   HAL_Init();
 
-  /* Configure the system clock to 80 MHz */
+  /* Configure the System clock to have a frequency of 80 MHz */
   SystemClock_Config();
-  
-  /* -1- Enable each GPIO Clock (to be able to program the configuration registers) */
-  LED2_GPIO_CLK_ENABLE();
 
-  /* -2- Configure IOs in output push-pull mode to drive external LEDs */
-  GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull  = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 
-  GPIO_InitStruct.Pin = LED2_PIN;
-  HAL_GPIO_Init(LED2_GPIO_PORT, &GPIO_InitStruct);
+  /* Add your application code here
+     */
 
-  /* -3- Toggle IOs in an infinite loop */
+  /* Infinite loop */
   while (1)
   {
-    HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_PIN);
-    /* Insert delay 100 ms */
-    HAL_Delay(250);
   }
 }
 
 /**
   * @brief  System Clock Configuration
-  *         The system Clock is configured as follows :
+  *         The system Clock is configured as follow : 
   *            System Clock source            = PLL (MSI)
   *            SYSCLK(Hz)                     = 80000000
   *            HCLK(Hz)                       = 80000000
@@ -122,10 +106,10 @@ int main(void)
   * @param  None
   * @retval None
   */
-void SystemClock_Config(void)
+static void SystemClock_Config(void)
 {
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct;
+  RCC_OscInitTypeDef RCC_OscInitStruct;
 
   /* MSI is enabled after System reset, activate PLL with MSI as source */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
@@ -159,7 +143,6 @@ void SystemClock_Config(void)
   }
 }
 
-
 #ifdef  USE_FULL_ASSERT
 
 /**
@@ -170,7 +153,7 @@ void SystemClock_Config(void)
   * @retval None
   */
 void assert_failed(char *file, uint32_t line)
-{
+{ 
   /* User can add his own implementation to report the file name and line number,
      ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
 
@@ -183,10 +166,10 @@ void assert_failed(char *file, uint32_t line)
 
 /**
   * @}
-  */
+  */ 
 
 /**
   * @}
-  */
+  */ 
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
