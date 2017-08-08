@@ -108,7 +108,7 @@ int main(void)
 	d_out_state = 0;			// Set out state to 0 for safety.
 
 	/* Variables for Analog Slaves */
-	uint8_t a_in_msg[1];		// This array holds the message for analog input slave (now it has only one element the address)
+	uint8_t a_in_msg[2];		// This array holds the message for analog input slave (now it has only one element the address)
 	uint16_t a_out_msg[7];		// First element of this array is the address, 2nd - 7th are the states we want to see on analog output.
 	uint16_t a_in_state[6];		// Pinstates of analog input will be stored in this variable.
 	uint16_t a_out_state[6];	// Pinstates of analog output will be stored in this variable.
@@ -124,18 +124,26 @@ int main(void)
 	}
 
 	while (1) {
-
-		/* ask for inputs */
-		LCD_UsrLog("Input: ");
-		modbus_send_command(d_in_msg, 2);			// Send the address to the digital input slave
+/*
+		LCD_UsrLog("DIG Input: ");
+		modbus_send_command(d_in_msg, 2);				// Send the address to the digital input slave
 		d_out_msg[1] = modbus_receive_data(1)[0];		// Receive pin states from digital input slave
-
+*/
+		LCD_UsrLog("AN Input: ");
+		modbus_send_command(a_in_msg, 2);				// Send the address to the analog input slave
+		modbus_receive_u16_data(6);			// Receive adc datas from analog input slave
+/*
+		for (uint8_t i = 0; i < 6; i++) {
+			LCD_UsrLog("%d ADC: %u\n", i, a_in_state[i]);
+		}
+*/
 		HAL_Delay(500);
-
-		LCD_UsrLog("Output: ");
+/*
+		LCD_UsrLog("DIG Output: ");
 		modbus_send_command(d_out_msg, 2);			// Send message to digital output
 		modbus_receive_data(1);						// Receive data from digital output
 		HAL_Delay(500);
+*/
 	}
 }
 

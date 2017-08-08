@@ -89,6 +89,62 @@ void modbus_DIN_listen()
 	}
 }
 
+void modbus_ain_listen()
+{
+	uint8_t receive;
+	uint8_t transmit;
+
+	for (uint8_t i = 0; i < 6; i++) {
+		analoge_pins_state[i] = 111 * i;
+	}
+
+	while (1) {
+
+		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 2);
+		if (receive != HAL_OK) {
+			;
+		} else {
+			if (aRxBuffer[0] == slave_address) {
+
+				// Read ADC data from A0 to A6
+
+				transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)analoge_pins_state, 12, 4);
+
+				if (transmit != HAL_OK) {
+					modbus_error_handler(transmit);
+				}
+			}
+		}
+	}
+}
+
+void modbus_aout_listen()
+{
+	uint8_t receive;
+	uint8_t transmit;
+	aTxBuffer[0] = 0;
+	aRxBuffer[1] = 0;
+
+	while (1) {
+
+		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 2);
+		if (receive != HAL_OK) {
+			;
+		} else {
+			if (aRxBuffer[0] == slave_address) {
+
+				// Read pins from 8 to 15
+				aTxBuffer[0] = gpio_read_8_pin(8, 15);
+
+				transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE, 2);
+
+				if (transmit != HAL_OK) {
+					modbus_error_handler(transmit);
+				}
+			}
+		}
+	}
+}
 
 void modbus_error_handler(uint8_t error)
 {

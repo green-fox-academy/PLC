@@ -14,6 +14,7 @@ UART_HandleTypeDef UartHandle;
 /* Buffers for Send, and Receive messages */
 
  uint8_t data[10];
+ uint16_t data16[6];
 
 /* Private function prototypes -----------------------------------------------*/
  void rx_tx_GPIO_init();
@@ -73,6 +74,7 @@ void modbus_receive_measure_test()
 
 }
 
+
 /*	Function name: 							modbus_send_command
  * 	Function purpose:						Send command to a target slave
  * 	Function input - uint8_t *command:		Array of uint8_t, command[0] is the address of the slave,
@@ -111,6 +113,7 @@ uint8_t* modbus_receive_data(uint8_t data_len)
 		LCD_UsrLog("Receive, ");
 		modbus_error_handler(receive);
 		return NULL;
+
 	} else {
 		// This has to be removed
 		for (uint8_t i = 0; i < data_len; i++) {
@@ -118,7 +121,30 @@ uint8_t* modbus_receive_data(uint8_t data_len)
 		}
 		LCD_UsrLog("\n");
 	}
+
 	return data;
+}
+
+uint16_t* modbus_receive_u16_data(uint8_t data_len)
+{
+	uint8_t receive = 0;
+
+	receive = HAL_UART_Receive(&UartHandle, (uint8_t*)data16, (sizeof(data16[0]) * data_len) , 3);
+
+	if (receive != HAL_OK) {
+		LCD_UsrLog("Receive, ");
+		modbus_error_handler(receive);
+		return NULL;
+
+	} else {
+		// This has to be removed
+		for (uint8_t i = 0; i < data_len; i++) {
+			LCD_UsrLog("ADC[%d]: %u; ", i, data16[i]);
+		}
+		LCD_UsrLog("\n");
+	}
+
+	return &data16;
 }
 
 void modbus_listen()

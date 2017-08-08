@@ -39,6 +39,7 @@ void modbus_sender_measure_test();
 void modbus_receive_measure_test();
 
 uint8_t* modbus_receive_data(uint8_t data_len);
+uint16_t* modbus_receive_u16_data(uint8_t data_len);
 uint8_t modbus_send_command(uint8_t *command, uint8_t command_len);
 #endif /* __SOCKET__MODBUS_H */
 
