@@ -41,8 +41,7 @@ static void SystemClock_Config(void);
   * @param  None
   * @retval None
   */
-
-void led_on()
+void led_init()
 {
 	// LED on Digital 2 output!
 	// PIN: D2 - PA10 --> GPIOA, PIN10
@@ -53,35 +52,63 @@ void led_on()
 	led_init.Pull 	= GPIO_NOPULL;
 	led_init.Speed 	= GPIO_SPEED_FAST;
 	HAL_GPIO_Init(GPIOA, &led_init);
+}
+
+void led_on()
+{
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
 }
+
+void led_off()
+{
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
+}
+
 
 void adc_init()
 {
 	// ADC init test, only for A1 analog pin
-	// PIN: A1 - ADC12_IN6 --> GPIOA, PIN1, Channel 6, ADC1, 12 bit
+	// nem. PIN: A1 - ADC12_IN6 --> GPIOA, PIN1, Channel 6, ADC1, 12 bit
+	// PIN A2 -> PA4 -> ADC12_IN9, pin: 4, GPIOA, Channel 9
 	__HAL_RCC_ADC_CLK_ENABLE();
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 
 	GPIO_InitTypeDef adc_init_struct;
-	adc_init_struct.Mode 	= GPIO_MODE_ANALOG;
-	adc_init_struct.Pin 	= GPIO_PIN_1;
+	adc_init_struct.Mode 	= GPIO_MODE_ANALOG_ADC_CONTROL;
+	adc_init_struct.Pin 	= GPIO_PIN_4;
 	adc_init_struct.Pull 	= GPIO_NOPULL;
 	adc_init_struct.Speed 	= GPIO_SPEED_FAST;
 	HAL_GPIO_Init(GPIOA, &adc_init_struct);
 
 
+//	adc_handle.State				= HAL_ADC_STATE_RESET;
+
 	adc_handle.Instance 			= ADC1;
 	adc_handle.Init.ClockPrescaler 	= ADC_CLOCK_SYNC_PCLK_DIV2;
 	adc_handle.Init.Resolution 		= ADC_RESOLUTION_12B;
 	adc_handle.Init.DataAlign 		= ADC_DATAALIGN_RIGHT;
+
+
+//	adc_handle.Init.ScanConvMode          = ADC_SCAN_DISABLE;              /* Sequencer disabled (ADC conversion on only 1 channel: channel set on rank 1) */
+//	adc_handle.Init.EOCSelection          = ADC_EOC_SEQ_CONV;
+//	adc_handle.Init.LowPowerAutoWait      = DISABLE;
+//	adc_handle.Init.ContinuousConvMode    = DISABLE;                       /* Continuous mode disabled to have only 1 conversion at each conversion trig */
+//	adc_handle.Init.NbrOfConversion       = 1;                             /* Parameter discarded because sequencer is disabled */
+//	adc_handle.Init.DiscontinuousConvMode = DISABLE;                       /* Parameter discarded because sequencer is disabled */
+//	adc_handle.Init.NbrOfDiscConversion   = DISABLE;                             /* Parameter discarded because sequencer is disabled */
+	//adc_handle.Init.ExternalTrigConv      = ADC_SOFTWARE_START;            /* Software start to trig the 1st conversion manually, without external event */
+//	adc_handle.Init.DMAContinuousRequests = DISABLE;                       /* ADC with DMA transfer: continuous requests to DMA disabled (default state) since DMA is not used in this example. */
+	//adc_handle.Init.Overrun               = ADC_OVR_DATA_OVERWRITTEN;
 	HAL_ADC_Init(&adc_handle);
 
 	ADC_ChannelConfTypeDef adc_channel;
-	adc_channel.Channel 		= ADC_CHANNEL_6;
+	adc_channel.Channel 		= ADC_CHANNEL_9;
+	adc_channel.Rank 			= ADC_REGULAR_RANK_1;
+	adc_channel.SamplingTime 	= ADC_SAMPLETIME_24CYCLES_5;
+//	adc_channel.SingleDiff   	= ADC_SINGLE_ENDED;
+//	adc_channel.OffsetNumber 	= ADC_OFFSET_1; //LL_ADC_OFFSET_1 ??  ADC_OFFSET_NONE
 	adc_channel.Offset 			= 0;
-	adc_channel.Rank 			= 1;
-	adc_channel.SamplingTime 	= ADC_SAMPLETIME_640CYCLES_5;
+
 	HAL_ADC_ConfigChannel(&adc_handle, &adc_channel);
 
 /*	if (HAL_ADC_Init(&adc_handle) != HAL_OK)
@@ -94,11 +121,13 @@ void adc_init()
 
 uint32_t adc_measure()
 {
-	uint32_t measurement = 0;
+	//uint32_t measurement = 0;
 	HAL_ADC_Start(&adc_handle);
 	HAL_ADC_PollForConversion(&adc_handle, HAL_MAX_DELAY);
-	measurement = HAL_ADC_GetValue(&adc_handle);
-	return measurement;
+	//measurement = HAL_ADC_GetValue(&adc_handle);
+	//return measurement;
+	//HAL_ADC_Stop(&adc_handle);
+	return HAL_ADC_GetValue(&adc_handle);
 }
 
 int main(void)
@@ -123,14 +152,19 @@ int main(void)
 
   /* Add your application code here */
   adc_init();
-  BSP_PB_Init(BUTTON_USER, BUTTON_MODE_GPIO);
+ //BSP_PB_Init(BUTTON_USER, BUTTON_MODE_GPIO);
+  led_init();
 
   while (1) {
-  	BSP_LED_On(LED2);
-  	HAL_Delay(adc_measure());
-  	//led_on();
-  	BSP_LED_Off(LED2);
-  	HAL_Delay(adc_measure());
+  	//BSP_LED_Toggle(LED2);
+  	//HAL_Delay(500);
+  	if (adc_measure() < 4095/2 ) {
+  		BSP_LED_On(LED2);
+  		led_on();
+  	} else {
+  		BSP_LED_Off(LED2);
+  		led_off();
+  	}
   }
 }
 

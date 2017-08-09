@@ -46,13 +46,17 @@
 #include "stm32l4xx_hal_rcc.h"
 
 #include "stm32l4xx_hal_adc.h"
+#include "stm32l4xx_hal_def.h"
+#include "stm32l476xx.h"
+
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
-
+void led_init();
 void led_on();
+void led_off();
 void adc_init();
 uint32_t adc_measure();
 

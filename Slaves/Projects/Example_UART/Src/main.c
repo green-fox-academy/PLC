@@ -59,7 +59,7 @@
 UART_HandleTypeDef UartHandle;
 
 /* Buffer used for transmission */
-uint8_t aTxStartMessage[] = "asdasdasd";//\n\r ****TEST MODE    UART-Hyperterminal TXRX communication (TX based on HAL polling API, RX based on IT LL API) ****\n\r Enter characters using keyboard ...\n\r";
+uint8_t aTxStartMessage[] = "asdasdasd\n\r";//\n\r ****TEST MODE    UART-Hyperterminal TXRX communication (TX based on HAL polling API, RX based on IT LL API) ****\n\r Enter characters using keyboard ...\n\r";
 uint8_t ubSizeToSend = sizeof(aTxStartMessage);
 
 /* Buffer used for reception */
@@ -153,7 +153,7 @@ int main(void)
       /* Transfer error in transmission process */
       Error_Handler();
     }
-
+   HAL_Delay(250);
     /* Checks if Buffer full indication has been set */
     if (uwBufferReadyIndication != 0)
     {
