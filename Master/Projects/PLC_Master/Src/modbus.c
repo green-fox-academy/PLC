@@ -129,7 +129,7 @@ uint16_t* modbus_receive_u16_data(uint8_t data_len)
 {
 	uint8_t receive = 0;
 
-	receive = HAL_UART_Receive(&UartHandle, (uint8_t*)data16, (sizeof(data16[0]) * data_len) , 3);
+	receive = HAL_UART_Receive(&UartHandle, (uint8_t*)data16, (sizeof(data16[0]) * data_len) , 4);
 
 	if (receive != HAL_OK) {
 		LCD_UsrLog("Receive, ");

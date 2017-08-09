@@ -80,6 +80,8 @@ static void CPU_CACHE_Enable(void);
 void copy_array(uint16_t *target_array, uint16_t *source_array, uint8_t array_len);
 void make_8b_msg(uint8_t *msg, uint8_t slave_address, uint16_t *data, uint8_t data_len);
 
+void make_8b_from_16_b(uint8_t *b8_data, uint8_t adr, uint16_t *b16_data, uint8_t b16_len);
+
 /**
   * @brief  Main program
   * @param  None
@@ -126,13 +128,26 @@ int main(void)
 		a_out_msg[2*i + 2] = 0;
 	}
 
+    // Load table for test
+	for (uint8_t i = 0; i < 6; i++) {
+    	a_out_state[i] = (i + 1) * 100;
+        LCD_UsrLog("data16_b[%u]: %u\n", i, a_out_state[i]);
+    }
+
+	make_8b_from_16_b(a_out_msg, 13, a_out_state, 6);
+
+	for (uint8_t i = 0; i < 13; i++) {
+		LCD_UsrLog("d8lh: %u \n", a_out_msg[i]);
+	}
+
+
 	while (1) {
 /*
 		// Command to digital input
 		LCD_UsrLog("DIG Input: ");
 		modbus_send_command(d_in_msg, 2);				// Send the address to the digital input slave
 		d_out_msg[1] = modbus_receive_data(1)[0];		// Receive pin states from digital input slave
-*/
+
 		// Command to analog input
 		LCD_UsrLog("A_IN: ");
 		modbus_send_command(a_in_msg, 2);						// Send the address to the analog input slave
@@ -140,21 +155,22 @@ int main(void)
 
 		// Logic
 		copy_array(a_out_state, a_in_state, 6);					// Copy in to out table An = Bn logic
+
 		make_8b_msg(a_out_msg, 13, a_out_state, 6);				// Make 8bit message from 16bit data
 
+		HAL_Delay(2000);
 
 		// Command to analog output
 		LCD_UsrLog("A_OUT: ");
 		modbus_send_command(a_out_msg, 13);				// Send the address to the analog output slave
 		modbus_receive_u16_data(6);						// Receive datas from analog input slave
 
-/*
 		LCD_UsrLog("DIG Output: ");
 		modbus_send_command(d_out_msg, 2);			// Send message to digital output
 		modbus_receive_data(1);						// Receive data from digital output
 */
 
-		HAL_Delay(500);
+		HAL_Delay(2000);
 	}
 }
 
@@ -262,6 +278,16 @@ void make_8b_msg(uint8_t *msg, uint8_t slave_address, uint16_t *data, uint8_t da
 		msg[i + 1] = data[0];
 		msg[i + 2] = data[0] >> 8;
 	}
+}
+
+void make_8b_from_16_b(uint8_t *b8_data, uint8_t adr, uint16_t *b16_data, uint8_t b16_len)
+{
+    b8_data[0] = adr;
+
+    for (int i = 1; i <= b16_len; i++) {
+        b8_data[2 * i - 1] = b16_data[i - 1];
+        b8_data[2 * i] = b16_data[i -1] >> 8;
+    }
 }
 
 /**

@@ -18,6 +18,7 @@ UART_HandleTypeDef UartHandle;
  void rx_tx_GPIO_init();
 
 /* Private functions ---------------------------------------------------------*/
+ void set_analog_pin_state(uint8_t *data_8b);
 
 uint8_t modbus_send_message(uint8_t *msg, uint8_t msg_len)
 {
@@ -125,20 +126,21 @@ void modbus_aout_listen()
 {
 	uint8_t receive;
 	uint8_t transmit;
-	aTxBuffer[0] = 0;
-	aRxBuffer[1] = 0;
+
+	uint8_t msg_16b_in[13];
 
 	while (1) {
 
-		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 2);
+		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)msg_16b_in, 13, 2);
 		if (receive != HAL_OK) {
 			;
 		} else {
-			if (aRxBuffer[0] == slave_address) {
+			if (msg_16b_in[0] == slave_address) {
+
+				set_analog_pin_state(msg_16b_in);
 
 				// Send back the data as a message
-				aTxBuffer[0] = aRxBuffer[1];
-				transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE, 2);
+				transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)analoge_pins_state, 12, 2);
 
 				if (transmit != HAL_OK) {
 					modbus_error_handler(transmit);
@@ -150,6 +152,16 @@ void modbus_aout_listen()
 		}
 	}
 }
+
+void set_analog_pin_state(uint8_t *data_8b)
+{
+	// This loads the pinstate
+	for (uint8_t i = 0; i < 6; i++) {
+		analoge_pins_state[i] = data_8b[(2 * i) + 1] + (data_8b[(2 * i) + 2] << 8);
+	}
+
+}
+
 
 void modbus_error_handler(uint8_t error)
 {

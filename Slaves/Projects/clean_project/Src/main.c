@@ -37,15 +37,15 @@ int main(void)
 
 	system_init();
 
-	slave_address = 9;
+	slave_address = 13;
 
 //	modbus_DIN_listen();
 
 //	modbus_DOUT_listen();
 
-	modbus_ain_listen();
+//	modbus_ain_listen();
 
-//	modbus_aout_listen();
+	modbus_aout_listen();
 
 }
 
