@@ -139,7 +139,7 @@ uint16_t* modbus_receive_u16_data(uint8_t data_len)
 	} else {
 		// This has to be removed
 		for (uint8_t i = 0; i < data_len; i++) {
-			LCD_UsrLog("ADC[%d]: %u; ", i, data16[i]);
+			LCD_UsrLog("[%d]:%u; ", i, data16[i]);
 		}
 		LCD_UsrLog("\n");
 	}

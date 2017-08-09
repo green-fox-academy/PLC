@@ -134,7 +134,7 @@ int main(void)
 		LCD_UsrLog("AN Input: ");
 		modbus_send_command(a_in_msg, 2);						// Send the address to the analog input slave
 		copy_array(a_in_state, modbus_receive_u16_data(6), 6); // Receive adc datas from analog input slave
-		copy_array(a_out_state, a_in_state, 6);					// Copy in to out table
+		copy_array(a_out_state, a_in_state, 6);					// Copy in to out table An = Bn logic
 
 /*
 		for (uint8_t i = 0; i < 6; i++) {

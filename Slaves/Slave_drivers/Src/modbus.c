@@ -94,6 +94,7 @@ void modbus_ain_listen()
 	uint8_t receive;
 	uint8_t transmit;
 
+	// This is for test till adc is finished
 	for (uint8_t i = 0; i < 6; i++) {
 		analoge_pins_state[i] = 10 * (i+1);
 	}
@@ -107,7 +108,9 @@ void modbus_ain_listen()
 			if (aRxBuffer[0] == slave_address) {
 
 				// Read ADC data from A0 to A6
+				// adc_read_pins(0,5);
 
+				//  Send back the data as a message
 				transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)analoge_pins_state, 12, 4);
 
 				if (transmit != HAL_OK) {
@@ -133,14 +136,16 @@ void modbus_aout_listen()
 		} else {
 			if (aRxBuffer[0] == slave_address) {
 
-				// Read pins from 8 to 15
-				aTxBuffer[0] = gpio_read_8_pin(8, 15);
-
+				// Send back the data as a message
+				aTxBuffer[0] = aRxBuffer[1];
 				transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)aTxBuffer, TXBUFFERSIZE, 2);
 
 				if (transmit != HAL_OK) {
 					modbus_error_handler(transmit);
 				}
+
+				// Set analog output
+				// dac_set_pins(0, 5, analoge_pins_state);
 			}
 		}
 	}
