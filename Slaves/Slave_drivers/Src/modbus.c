@@ -102,7 +102,7 @@ void modbus_ain_listen()
 
 	while (1) {
 
-		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 2);
+		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, RXBUFFERSIZE, 4);
 		if (receive != HAL_OK) {
 			;
 		} else {
@@ -131,7 +131,7 @@ void modbus_aout_listen()
 
 	while (1) {
 
-		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)msg_16b_in, 13, 2);
+		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)msg_16b_in, 13, 4);
 		if (receive != HAL_OK) {
 			;
 		} else {
@@ -140,7 +140,7 @@ void modbus_aout_listen()
 				set_analog_pin_state(msg_16b_in);
 
 				// Send back the data as a message
-				transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)analoge_pins_state, 12, 2);
+				transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)analoge_pins_state, 12, 4);
 
 				if (transmit != HAL_OK) {
 					modbus_error_handler(transmit);
@@ -184,7 +184,7 @@ void modbus_error_handler(uint8_t error)
 void uart_init()
 {
 	UartHandle.Instance 	   	= USARTx;
-	UartHandle.Init.BaudRate   	= 115200;
+	UartHandle.Init.BaudRate   	= 230400;
 	UartHandle.Init.WordLength	= UART_WORDLENGTH_8B;
 	UartHandle.Init.StopBits  	= UART_STOPBITS_1;
 	UartHandle.Init.Parity     	= UART_PARITY_NONE;

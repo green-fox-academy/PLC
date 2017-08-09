@@ -37,7 +37,7 @@ int main(void)
 
 	system_init();
 
-	slave_address = 13;
+	slave_address = 13;  // DIN:1 / DOUT:5 / AIN: 9 / AOUT : 13
 
 //	modbus_DIN_listen();
 
