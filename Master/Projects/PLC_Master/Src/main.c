@@ -78,7 +78,7 @@ static void CPU_CACHE_Enable(void);
 
 /* Private functions ---------------------------------------------------------*/
 void copy_array(uint16_t *target_array, uint16_t *source_array, uint8_t array_len);
-
+void make_8b_msg(uint8_t *msg, uint8_t slave_address, uint16_t *data, uint8_t data_len);
 
 /**
   * @brief  Main program
@@ -111,7 +111,7 @@ int main(void)
 
 	/* Variables for Analog Slaves */
 	uint8_t a_in_msg[2];		// This array holds the message for analog input slave (now it has only one element the address)
-	uint16_t a_out_msg[7];		// First element of this array is the address, 2nd - 7th are the states we want to see on analog output.
+	uint8_t a_out_msg[13];		// First element of this array is the address, 2nd - 7th are the states we want to see on analog output.
 	uint16_t a_in_state[6];		// Pinstates of analog input will be stored in this variable.
 	uint16_t a_out_state[6];	// Pinstates of analog output will be stored in this variable.
 
@@ -122,39 +122,39 @@ int main(void)
 	for (uint8_t i = 0; i < 6; i++) {
 		a_in_state[i] = 0;
 		a_out_state[i] = 0;
-		a_out_msg[i + 1] = 0;
+		a_out_msg[2*i + 1] = 0;
+		a_out_msg[2*i + 2] = 0;
 	}
 
 	while (1) {
 /*
+		// Command to digital input
 		LCD_UsrLog("DIG Input: ");
 		modbus_send_command(d_in_msg, 2);				// Send the address to the digital input slave
 		d_out_msg[1] = modbus_receive_data(1)[0];		// Receive pin states from digital input slave
 */
-		LCD_UsrLog("AN Input: ");
+		// Command to analog input
+		LCD_UsrLog("A_IN: ");
 		modbus_send_command(a_in_msg, 2);						// Send the address to the analog input slave
 		copy_array(a_in_state, modbus_receive_u16_data(6), 6); // Receive adc datas from analog input slave
-		copy_array(a_out_state, a_in_state, 6);					// Copy in to out table An = Bn logic
 
-/*
-		for (uint8_t i = 0; i < 6; i++) {
-			LCD_UsrLog("%d ADC: %u\n", i, a_in_state[i]);
-		}
-*/
+		// Logic
+		copy_array(a_out_state, a_in_state, 6);					// Copy in to out table An = Bn logic
+		make_8b_msg(a_out_msg, 13, a_out_state, 6);				// Make 8bit message from 16bit data
+
+
 		// Command to analog output
-		LCD_UsrLog("AN Input: ");
-		modbus_send_command(a_in_msg, 2);				// Send the address to the analog output slave
+		LCD_UsrLog("A_OUT: ");
+		modbus_send_command(a_out_msg, 13);				// Send the address to the analog output slave
 		modbus_receive_u16_data(6);						// Receive datas from analog input slave
 
-		HAL_Delay(500);
 /*
 		LCD_UsrLog("DIG Output: ");
 		modbus_send_command(d_out_msg, 2);			// Send message to digital output
 		modbus_receive_data(1);						// Receive data from digital output
-
+*/
 
 		HAL_Delay(500);
-*/
 	}
 }
 
@@ -244,6 +244,7 @@ static void StartThread(void const * argument)
 	}
 }
 
+
 void copy_array(uint16_t *target_array, uint16_t *source_array, uint8_t array_len)
 {
 	for (uint8_t i = 0; i < array_len; i++) {
@@ -251,8 +252,17 @@ void copy_array(uint16_t *target_array, uint16_t *source_array, uint8_t array_le
 	}
 }
 
+//
+void make_8b_msg(uint8_t *msg, uint8_t slave_address, uint16_t *data, uint8_t data_len)
+{
+	msg[0] = slave_address;
 
-
+	// load data
+	for (uint8_t i = 0; i < data_len; i+=2) {
+		msg[i + 1] = data[0];
+		msg[i + 2] = data[0] >> 8;
+	}
+}
 
 /**
   * @brief  Initializes the lwIP stack

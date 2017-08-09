@@ -172,6 +172,7 @@ void modbus_listen()
 	}
 }
 
+
 void modbus_error_handler(uint8_t error)
 {
 	switch (error) {
