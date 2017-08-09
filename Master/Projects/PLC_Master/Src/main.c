@@ -65,6 +65,9 @@
 
 // Defines for logic process // Demo
 
+#define AND 	&&
+#define OR		||
+
 #define DIN8 	(din_state & 0b00000001)
 #define DIN9 	(din_state & 0b00000010)
 #define DIN10 	(din_state & 0b00000100)
@@ -171,19 +174,25 @@ int main(void)
 	}
 */
 
+	char buf[3];
+
 	while (1) {
 
 		while (!BSP_PB_GetState(BUTTON_KEY)) {
 
 		// Command to digital input
-		LCD_UsrLog("DIG Input: ");
-		modbus_send_command(d_in_msg, 2);					// Send the address to the digital input slave
-		d_in_state = modbus_receive_data(1)[0];			// Receive pin states from digital input slave
+	//	LCD_UsrLog("DIG Input: ");
+		modbus_send_command(d_in_msg, 2);						// Send the address to the digital input slave
+		d_in_state = modbus_receive_data(1)[0];					// Receive pin states from digital input slave
+
+		sprintf(buf, "%u", d_in_state);
+		BSP_LCD_DisplayStringAtLine(7, buf);
+
 /*
 		// Command to analog input
 		LCD_UsrLog("A_IN:  ");
 		modbus_send_command(a_in_msg, 2);						// Send the address to the analog input slave
-		copy_array(a_in_state, modbus_receive_u16_data(6), 6); // Receive adc datas from analog input slave
+		copy_array(a_in_state, modbus_receive_u16_data(6), 6); 	// Receive adc datas from analog input slave
 */
 		/*	 Logic 	*/
 		//Digital Logic
@@ -201,7 +210,10 @@ int main(void)
 		logic_process(&d_in_state, &d_out_state);
 		d_out_msg[1] = d_out_state;
 
-		LCD_UsrLog("DIG Output: ");
+		sprintf(buf, "%u", d_out_state);
+		BSP_LCD_DisplayStringAtLine(8,buf);
+
+		//LCD_UsrLog("DIG Output: ");
 		modbus_send_command(d_out_msg, 2);					// Send message to digital output
 		modbus_receive_data(1);								// Receive data from digital output
 
@@ -321,15 +333,20 @@ void logic_process(uint8_t *d_in_state, uint8_t *d_out_state) // , uint16_t *ain
 	uint8_t din_state = *d_in_state;
 	uint8_t dout_state = *d_out_state;
 
-	if (DIN8 && DIN9)
+	if (DIN8 AND DIN9)
 		DOU8_ON;
 	else
 		DOU8_OFF;
 
-	if (DIN10 || DIN11)
+	if (DIN10 OR DIN11)
 		DOU10_ON;
 	else
 		DOU10_OFF;
+
+	if (!DIN15)
+		DOU9_ON;
+	else
+		DOU9_OFF;
 
 	// Update output table
 	*d_out_state = dout_state;
