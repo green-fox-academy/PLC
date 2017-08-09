@@ -65,14 +65,31 @@
 
 // Defines for logic process // Demo
 
-#define DIN8 	(*din_state && 0b00000001)
-#define DIN9 	(*din_state && 0b00000010)
-#define DIN10 	(*din_state && 0b00000100)
-#define DIN11 	(*din_state && 0b00001000)
-#define DIN12 	(*din_state && 0b00010000)
-#define DIN13 	(*din_state && 0b00100000)
-#define DIN14 	(*din_state && 0b01000000)
-#define DIN15	(*din_state && 0b10000000)
+#define DIN8 	(din_state & 0b00000001)
+#define DIN9 	(din_state & 0b00000010)
+#define DIN10 	(din_state & 0b00000100)
+#define DIN11 	(din_state & 0b00001000)
+#define DIN12 	(din_state & 0b00010000)
+#define DIN13 	(din_state & 0b00100000)
+#define DIN14 	(din_state & 0b01000000)
+#define DIN15	(din_state & 0b10000000)
+
+#define DOU8_ON		(dout_state |= 0b00000001)
+#define DOU8_OFF	(dout_state &= 0b11111110)
+#define DOU9_ON		(dout_state |= 0b00000010)
+#define DOU9_OFF	(dout_state &= 0b11111101)
+#define DOU10_ON	(dout_state |= 0b00000100)
+#define DOU10_OFF	(dout_state &= 0b11111011)
+#define DOU11_ON	(dout_state |= 0b00001000)
+#define DOU11_OFF	(dout_state &= 0b11110111)
+#define DOU12_ON	(dout_state |= 0b00010000)
+#define DOU12_OFF	(dout_state &= 0b11101111)
+#define DOU13_ON	(dout_state |= 0b00100000)
+#define DOU13_OFF	(dout_state &= 0b11011111)
+#define DOU14_ON	(dout_state |= 0b01000000)
+#define DOU14_OFF	(dout_state &= 0b10111111)
+#define DOU15_ON	(dout_state |= 0b10000000)
+#define DOU15_OFF	(dout_state &= 0b01111111)
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -91,7 +108,7 @@ static void CPU_CACHE_Enable(void);
 /* Private functions ---------------------------------------------------------*/
 void copy_array(uint16_t *target_array, uint16_t *source_array, uint8_t array_len);
 void make_8b_msg(uint8_t *b8_data, uint8_t adr, uint16_t *b16_data, uint8_t b16_len);
-
+void logic_process(uint8_t *d_in_state, uint8_t *d_out_state);
 
 
 /**
@@ -162,28 +179,31 @@ int main(void)
 		LCD_UsrLog("DIG Input: ");
 		modbus_send_command(d_in_msg, 2);					// Send the address to the digital input slave
 		d_in_state = modbus_receive_data(1)[0];			// Receive pin states from digital input slave
-
+/*
 		// Command to analog input
 		LCD_UsrLog("A_IN:  ");
 		modbus_send_command(a_in_msg, 2);						// Send the address to the analog input slave
 		copy_array(a_in_state, modbus_receive_u16_data(6), 6); // Receive adc datas from analog input slave
-
+*/
 		/*	 Logic 	*/
 		//Digital Logic
 
 		//Analog Logic
-		copy_array(a_out_state, a_in_state, 6);					// Copy in to out table An = Bn logic
-
+//		copy_array(a_out_state, a_in_state, 6);					// Copy in to out table An = Bn logic
+/*
 		// Command to analog output
 		LCD_UsrLog("A_OUT: ");
 		make_8b_msg(a_out_msg, 13, a_out_state, 6);			// Make 8bit message from 16bit data
 		modbus_send_command(a_out_msg, 13);					// Send the address to the analog output slave
 		modbus_receive_u16_data(6);							// Receive datas from analog input slave
-/*
+*/
+
+		logic_process(&d_in_state, &d_out_state);
+		d_out_msg[1] = d_out_state;
+
 		LCD_UsrLog("DIG Output: ");
 		modbus_send_command(d_out_msg, 2);					// Send message to digital output
 		modbus_receive_data(1);								// Receive data from digital output
-*/
 
 		HAL_Delay(10);
 		}
@@ -296,12 +316,23 @@ void make_8b_msg(uint8_t *b8_data, uint8_t adr, uint16_t *b16_data, uint8_t b16_
     }
 }
 
-void logic_process(uint8_t *din_state, uint8_t *dout_state, uint16_t *ain_state, uint16_t *aout_state, uint8_t a_len)
+void logic_process(uint8_t *d_in_state, uint8_t *d_out_state) // , uint16_t *ain_state, uint16_t *aout_state, uint8_t a_len
 {
-	if (DIN8 & DIN9) {
+	uint8_t din_state = *d_in_state;
+	uint8_t dout_state = *d_out_state;
 
-	}
+	if (DIN8 && DIN9)
+		DOU8_ON;
+	else
+		DOU8_OFF;
 
+	if (DIN10 || DIN11)
+		DOU10_ON;
+	else
+		DOU10_OFF;
+
+	// Update output table
+	*d_out_state = dout_state;
 }
 
 /**
