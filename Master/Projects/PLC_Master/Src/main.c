@@ -62,6 +62,18 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
+
+// Defines for logic process // Demo
+
+#define DIN8 	(*din_state && 0b00000001)
+#define DIN9 	(*din_state && 0b00000010)
+#define DIN10 	(*din_state && 0b00000100)
+#define DIN11 	(*din_state && 0b00001000)
+#define DIN12 	(*din_state && 0b00010000)
+#define DIN13 	(*din_state && 0b00100000)
+#define DIN14 	(*din_state && 0b01000000)
+#define DIN15	(*din_state && 0b10000000)
+
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 struct netif gnetif; /* network interface structure */
@@ -105,7 +117,7 @@ int main(void)
 	uint8_t d_out_state;		// Pinstates of digital output will be stored in this variable.
 
 	d_in_msg[0] = 1;			// Digital input address.
-	d_in_msg[1] = 0;
+	d_in_msg[1] = 0;			// Data
 	d_out_msg[0] = 5;			// DIgital output address.
 	d_out_msg[1] = 0;			// Set msg[2] to 0 for safety.
 	d_in_state = 0;				// Set in state to 0 for safety.
@@ -145,18 +157,21 @@ int main(void)
 	while (1) {
 
 		while (!BSP_PB_GetState(BUTTON_KEY)) {
-/*
+
 		// Command to digital input
 		LCD_UsrLog("DIG Input: ");
 		modbus_send_command(d_in_msg, 2);					// Send the address to the digital input slave
-		d_out_msg[1] = modbus_receive_data(1)[0];			// Receive pin states from digital input slave
-*/
+		d_in_state = modbus_receive_data(1)[0];			// Receive pin states from digital input slave
+
 		// Command to analog input
 		LCD_UsrLog("A_IN:  ");
 		modbus_send_command(a_in_msg, 2);						// Send the address to the analog input slave
 		copy_array(a_in_state, modbus_receive_u16_data(6), 6); // Receive adc datas from analog input slave
 
-		// Logic
+		/*	 Logic 	*/
+		//Digital Logic
+
+		//Analog Logic
 		copy_array(a_out_state, a_in_state, 6);					// Copy in to out table An = Bn logic
 
 		// Command to analog output
@@ -264,15 +279,12 @@ static void StartThread(void const * argument)
 	}
 }
 
-
 void copy_array(uint16_t *target_array, uint16_t *source_array, uint8_t array_len)
 {
 	for (uint8_t i = 0; i < array_len; i++) {
 		target_array[i] = source_array[i];
 	}
 }
-
-
 
 void make_8b_msg(uint8_t *b8_data, uint8_t adr, uint16_t *b16_data, uint8_t b16_len)
 {
@@ -282,6 +294,14 @@ void make_8b_msg(uint8_t *b8_data, uint8_t adr, uint16_t *b16_data, uint8_t b16_
         b8_data[2 * i - 1] = b16_data[i - 1];
         b8_data[2 * i] = b16_data[i -1] >> 8;
     }
+}
+
+void logic_process(uint8_t *din_state, uint8_t *dout_state, uint16_t *ain_state, uint16_t *aout_state, uint8_t a_len)
+{
+	if (DIN8 & DIN9) {
+
+	}
+
 }
 
 /**
