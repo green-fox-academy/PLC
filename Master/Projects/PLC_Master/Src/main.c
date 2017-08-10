@@ -65,35 +65,54 @@
 
 // Defines for logic process // Demo
 
+/* Logical operators*/
 #define AND 	&&
 #define OR		||
 #define NOT		!
 
-#define DIN8 	(din_state & 0b00000001)
-#define DIN9 	(din_state & 0b00000010)
-#define DIN10 	(din_state & 0b00000100)
-#define DIN11 	(din_state & 0b00001000)
-#define DIN12 	(din_state & 0b00010000)
-#define DIN13 	(din_state & 0b00100000)
-#define DIN14 	(din_state & 0b01000000)
-#define DIN15	(din_state & 0b10000000)
+/* Digital input pins value */
+#define DIN1 	(din_state & 0b00000001)  //D8 on input board
+#define DIN2 	(din_state & 0b00000010)  //D9 on input board
+#define DIN3 	(din_state & 0b00000100)  //D10 on input board
+#define DIN4 	(din_state & 0b00001000)  //D11 on input board
+#define DIN5 	(din_state & 0b00010000)  //D12 on input board
+#define DIN6 	(din_state & 0b00100000)  //D13 on input board
+#define DIN7 	(din_state & 0b01000000)  //D14 on input board
+#define DIN8	(din_state & 0b10000000)  //D15 on input board
 
-#define DOU8_ON		(dout_state |= 0b00000001)
-#define DOU8_OFF	(dout_state &= 0b11111110)
-#define DOU9_ON		(dout_state |= 0b00000010)
-#define DOU9_OFF	(dout_state &= 0b11111101)
-#define DOU10_ON	(dout_state |= 0b00000100)
-#define DOU10_OFF	(dout_state &= 0b11111011)
-#define DOU11_ON	(dout_state |= 0b00001000)
-#define DOU11_OFF	(dout_state &= 0b11110111)
-#define DOU12_ON	(dout_state |= 0b00010000)
-#define DOU12_OFF	(dout_state &= 0b11101111)
-#define DOU13_ON	(dout_state |= 0b00100000)
-#define DOU13_OFF	(dout_state &= 0b11011111)
-#define DOU14_ON	(dout_state |= 0b01000000)
-#define DOU14_OFF	(dout_state &= 0b10111111)
-#define DOU15_ON	(dout_state |= 0b10000000)
-#define DOU15_OFF	(dout_state &= 0b01111111)
+/* Write digital output pins */
+#define DOU1_ON		(dout_state |= 0b00000001)  //D8 on output board
+#define DOU1_OFF	(dout_state &= 0b11111110)	//D8 on output board
+#define DOU2_ON		(dout_state |= 0b00000010)	//D9 on output board
+#define DOU2_OFF	(dout_state &= 0b11111101)	//D9 on output board
+#define DOU3_ON		(dout_state |= 0b00000100)	//D10 on output board
+#define DOU3_OFF	(dout_state &= 0b11111011)	//D10 on output board
+#define DOU4_ON		(dout_state |= 0b00001000)	//D11 on output board
+#define DOU4_OFF	(dout_state &= 0b11110111)	//D11 on output board
+#define DOU5_ON		(dout_state |= 0b00010000)	//D12 on output board
+#define DOU5_OFF	(dout_state &= 0b11101111)	//D12 on output board
+#define DOU6_ON		(dout_state |= 0b00100000)	//D13 on output board
+#define DOU6_OFF	(dout_state &= 0b11011111)	//D13 on output board
+#define DOU7_ON		(dout_state |= 0b01000000)	//D14 on output board
+#define DOU7_OFF	(dout_state &= 0b10111111)	//D14 on output board
+#define DOU8_ON		(dout_state |= 0b10000000)	//D15 on output board
+#define DOU8_OFF	(dout_state &= 0b01111111)	//D15 on output board
+
+/* Analog input value of pins */
+#define AIN1		ain_state[0]
+#define AIN2		ain_state[1]
+#define AIN3		ain_state[2]
+#define AIN4		ain_state[3]
+#define AIN5		ain_state[4]
+#define AIN6		ain_state[5]
+
+/* Write analoge output pins */
+#define AOU1=		aout_state[0]=
+#define AOU2=		aout_state[1]=
+#define AOU3=		aout_state[2]=
+#define AOU4=		aout_state[3]=
+#define AOU5=		aout_state[4]=
+#define AOU6=		aout_state[5]=
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -112,8 +131,7 @@ static void CPU_CACHE_Enable(void);
 /* Private functions ---------------------------------------------------------*/
 void copy_array(uint16_t *target_array, uint16_t *source_array, uint8_t array_len);
 void make_8b_msg(uint8_t *b8_data, uint8_t adr, uint16_t *b16_data, uint8_t b16_len);
-void logic_process(uint8_t *d_in_state, uint8_t *d_out_state);
-
+void logic_process(uint8_t *d_in_state, uint8_t *d_out_state , uint16_t *a_in_state, uint16_t *a_out_state, uint8_t a_len);
 
 /**
   * @brief  Main program
@@ -208,7 +226,7 @@ int main(void)
 		modbus_receive_u16_data(6);							// Receive datas from analog input slave
 */
 
-		logic_process(&d_in_state, &d_out_state);
+		logic_process(&d_in_state, &d_out_state, a_in_state, a_out_state, 6);
 		d_out_msg[1] = d_out_state;
 
 		sprintf(buf, "%u", d_out_state);
@@ -329,28 +347,36 @@ void make_8b_msg(uint8_t *b8_data, uint8_t adr, uint16_t *b16_data, uint8_t b16_
     }
 }
 
-void logic_process(uint8_t *d_in_state, uint8_t *d_out_state) // , uint16_t *ain_state, uint16_t *aout_state, uint8_t a_len
+void logic_process(uint8_t *d_in_state, uint8_t *d_out_state , uint16_t *a_in_state, uint16_t *a_out_state, uint8_t a_len)
 {
+	/* Variables made from tables */
 	uint8_t din_state = *d_in_state;
 	uint8_t dout_state = *d_out_state;
 
-	if (DIN8 AND DIN9)
-		DOU8_ON;
-	else
-		DOU8_OFF;
+	uint16_t ain_state[a_len];
+	copy_array(ain_state, a_in_state, a_len);
 
-	if (DIN10 OR DIN11)
-		DOU10_ON;
-	else
-		DOU10_OFF;
+	uint16_t aout_state[a_len];
+	copy_array(aout_state, a_out_state, a_len);
 
-	if (NOT DIN15)
-		DOU9_ON;
+	if (DIN1 AND DIN2)
+		DOU1_ON;
 	else
-		DOU9_OFF;
+		DOU1_OFF;
+
+	if (DIN3 OR DIN3)
+		DOU2_ON;
+	else
+		DOU2_OFF;
+
+	if (NOT DIN8)
+		DOU3_ON;
+	else
+		DOU3_OFF;
 
 	// Update output table
 	*d_out_state = dout_state;
+	a_out_state = aout_state;
 }
 
 /**
