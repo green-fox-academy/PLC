@@ -73,13 +73,13 @@ uint8_t gpio_read_8_pin(uint8_t from_pin_index, uint8_t to_pin_index);
 void gpio_set_8_pin(uint8_t from, uint8_t to, uint8_t data);
 
 
-/* ########## Functions for Analoge pins ########## */
+/* ########## Functions for Analog pins ########## */
 
-/* Function name: gpio_init_analoge_pin
- * Function purpose: Init analoge input
+/* Function name: gpio_init_analog_pin
+ * Function purpose: Init analog input
  * function input: uint8_t pin_index - Index of the pin 0 is A0 ... 5 is A5
  */
-void gpio_init_analoge_pin(uint8_t pin_index);
+void gpio_init_analog_pin(uint8_t pin_index);
 
 #endif /* __GPIO_H */
 

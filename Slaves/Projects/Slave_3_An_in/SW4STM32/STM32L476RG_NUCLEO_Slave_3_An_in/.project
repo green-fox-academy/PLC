@@ -26,9 +26,24 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>Slave_drivers</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>Doc/readme.txt</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/readme.txt</locationURI>
+		</link>
+		<link>
+			<name>Slave_drivers/Inc</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>Slave_drivers/Src</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
 			<name>Drivers/CMSIS/system_stm32l4xx.c</name>
@@ -336,6 +351,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/startup_stm32l476xx.s</locationURI>
 		</link>
 		<link>
+			<name>Slave_3_An_in/User/adc_A2_pin.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/adc_A2_pin.c</locationURI>
+		</link>
+		<link>
 			<name>Slave_3_An_in/User/main.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Src/main.c</locationURI>
@@ -344,6 +364,26 @@
 			<name>Slave_3_An_in/User/stm32l4xx_it.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Src/stm32l4xx_it.c</locationURI>
+		</link>
+		<link>
+			<name>Slave_drivers/Inc/GPIO.h</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/Slave_drivers/Inc/GPIO.h</locationURI>
+		</link>
+		<link>
+			<name>Slave_drivers/Inc/UART.h</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/Slave_drivers/Inc/UART.h</locationURI>
+		</link>
+		<link>
+			<name>Slave_drivers/Inc/modbus.h</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/Slave_drivers/Inc/modbus.h</locationURI>
+		</link>
+		<link>
+			<name>Slave_drivers/Src/GPIO.c</name>
+			<type>1</type>
+			<locationURI>PARENT-4-PROJECT_LOC/Slave_drivers/Src/GPIO.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/STM32L476RG_NUCLEO/stm32l4xx_nucleo.c</name>

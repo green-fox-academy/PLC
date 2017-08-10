@@ -1,6 +1,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "GPIO.h"
 
+/* Private function prototypes -----------------------------------------------*/
+
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private typedef -----------------------------------------------------------*/
@@ -151,21 +153,21 @@ void gpio_set_8_pin(uint8_t from, uint8_t to, uint8_t data)
 		   example: we want this numbers 3th bit 01001101 << (7-2) -> 10100000, and now 10100000 >> 7 -> 00000001 = 1 */
 
 		pin_index = data & (1 << (i - from));
-		gpio_write_digital_pin(i, (pin_index >> i - from));
+		gpio_write_digital_pin(i, (pin_index >> (i - from)));
 	}
 }
 
 /* ########## Functions for Analoge pins ########## */
 
-void gpio_init_analoge_pin(uint8_t pin_index)
+void gpio_init_analog_pin(uint8_t pin_index)
 {
 	GPIO_InitTypeDef gpio_init_structure;
 
 	// Set the clock
-	GPIO_clk_enable(stm32l476rg_analog_pins[pin_index].port);
+	gpio_clk_enable(stm32l476rg_analog_pins[pin_index].port);
 
 	gpio_init_structure.Pin = stm32l476rg_analog_pins[pin_index].pin;
-	gpio_init_structure.Mode = GPIO_MODE_ANALOG;
+	gpio_init_structure.Mode = GPIO_MODE_ANALOG_ADC_CONTROL;
 	gpio_init_structure.Pull = GPIO_NOPULL;
 	gpio_init_structure.Speed = GPIO_SPEED_FREQ_MEDIUM;
 

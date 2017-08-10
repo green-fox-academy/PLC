@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
-  * @file    Templates/Inc/main.h 
-  * @author  MCD Application Team
-  * @version V1.8.0
-  * @date    21-April-2017
-  * @brief   Header for main.c module
+  * @file    PLC\Slaves\Slave_drivers\Inc\adc.h 
+  * @author  Gyula Rasztovich
+  * @version V1.0
+  * @date    10-08-2017
+  * @brief   Header for adc.c module. Base: L4 Cube main.h template
   ******************************************************************************
   * @attention
   *
@@ -36,21 +36,19 @@
   */
   
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
+#ifndef __ADC_H
+#define __ADC_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_hal.h"
-#include "stm32l4xx_nucleo.h"
-#include "stm32l476xx.h"
-#include "GPIO.h"
-#include "adc.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
+void adc_init();
+uint32_t adc_measure();
 
-#endif /* __MAIN_H */
+#endif /* __ADC_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

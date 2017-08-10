@@ -39,36 +39,17 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-/** @addtogroup STM32L4xx_HAL_Examples
-  * @{
-  */
-
-/** @addtogroup Templates
-  * @{
-  */
-
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-ADC_HandleTypeDef adc_handle;
-
 /* Private function prototypes -----------------------------------------------*/
-void led_init(void);
-void led_on(void);
-void led_off(void);
-void adc_init(void);
-uint32_t adc_measure();
-
-
 static void SystemClock_Config(void);
+//void gpio_init_digital_pin(uint8_t pin_index, uint32_t mode, uint32_t pull);
+//void gpio_set_digital_pin(uint8_t pin_index);
+//void gpio_reset_digital_pin(uint8_t pin_index);
 
-/* Private functions ---------------------------------------------------------*/
-/**
-  * @brief  Main program
-  * @param  None
-  * @retval None
-  */
+
 int main(void)
 {
 	/* STM32L4xx HAL library initialization:
@@ -89,14 +70,14 @@ int main(void)
 	BSP_LED_Init(LED2);
 
 	/* Add your application code here */
+	// Init GPIO digital pin for LED
+	gpio_init_digital_pin(2, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
+
+	// Init GPIO analog pin for ADC
+	gpio_init_analog_pin(2);
+
 	// Init ADC
 	adc_init();
-
-	// Init led
-	led_init();
-
-	// Init user button - mid-term plan
-	// BSP_PB_Init(BUTTON_USER, BUTTON_MODE_GPIO);
 
 	/* Forever loop: changing the potentiometer's if adc measurement is less than the half of the possible
 	 * maximal value, the board's LED2 and the attached red led turns on.
@@ -105,114 +86,12 @@ int main(void)
 	while (1) {
 		if (adc_measure() < 4095/2 ) {
 			BSP_LED_On(LED2);
-			led_on();
+			gpio_set_digital_pin(2);
 		} else {
 			BSP_LED_Off(LED2);
-			led_off();
+			gpio_reset_digital_pin(2);
 		}
 	}
-}
-
-void led_init(void)
-{
-	// LED on Digital 2 output!
-	// PIN: D2 - PA10 --> GPIOA, PIN10
-	__HAL_RCC_GPIOA_CLK_ENABLE();
-	GPIO_InitTypeDef led_init;
-	led_init.Mode 	= GPIO_MODE_OUTPUT_PP;
-	led_init.Pin 	= GPIO_PIN_10;
-	led_init.Pull 	= GPIO_NOPULL;
-	led_init.Speed 	= GPIO_SPEED_FAST;
-	HAL_GPIO_Init(GPIOA, &led_init);
-}
-
-void led_on(void)
-{
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
-}
-
-void led_off(void)
-{
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
-}
-
-/**
-  * @brief  ADC1 initialization and configuration for A2 pin, 12 bit resolution
-  * 		PIN A2 -> PA4 -> ADC12_IN9, GPIO_PIN: 4, GPIOA, Channel 9
-  * @param  None
-  * @retval None
-  */
-void adc_init(void)
-{
-	// Enable ADC and GPIOA clock
-	__HAL_RCC_ADC_CLK_ENABLE();
-	__HAL_RCC_GPIOA_CLK_ENABLE();
-
-	// Enable A2 analog pin
-	GPIO_InitTypeDef adc_init_struct;
-	adc_init_struct.Mode 	= GPIO_MODE_ANALOG_ADC_CONTROL;
-	adc_init_struct.Pin 	= GPIO_PIN_4;
-	adc_init_struct.Pull 	= GPIO_NOPULL;
-	adc_init_struct.Speed 	= GPIO_SPEED_FAST;
-	HAL_GPIO_Init(GPIOA, &adc_init_struct);
-
-	// Set up ADC1
-	adc_handle.Instance 			= ADC1;							// Register base address
-	adc_handle.Init.ClockPrescaler	= ADC_CLOCK_SYNC_PCLK_DIV2;		// Select ADC clock source
-	adc_handle.Init.Resolution 		= ADC_RESOLUTION_12B;			// Resolution: measurement values will between 0...4095 ((2^12)-1)
-	adc_handle.Init.DataAlign 		= ADC_DATAALIGN_RIGHT;			// Specify ADC data alignment in conversion data register (right or left).
-	/* Other optional settings
-		adc_handle.State= HAL_ADC_STATE_RESET;					// ADC communication state (bit-map of ADC states)
-		adc_handle.Init.ScanConvMode= ADC_SCAN_DISABLE;			// Sequencer disabled (ADC conversion on only 1 channel: channel set on rank 1)
-		adc_handle.Init.EOCSelection= ADC_EOC_SEQ_CONV;			// Specify which EOC (End Of Conversion) flag is used for conversion by polling and interruption
-		adc_handle.Init.LowPowerAutoWait= DISABLE;				// Select the dynamic low power Auto Delay
-		adc_handle.Init.ContinuousConvMode= DISABLE;			// Continuous mode disabled to have only 1 conversion at each conversion trig
-		adc_handle.Init.NbrOfConversion= 1;						// Parameter discarded because sequencer is disabled
-		adc_handle.Init.DiscontinuousConvMode= DISABLE;			// Parameter discarded because sequencer is disabled
-		adc_handle.Init.NbrOfDiscConversion= DISABLE;			// Parameter discarded because sequencer is disabled
-		adc_handle.Init.ExternalTrigConv= ADC_SOFTWARE_START;	// Software start to trig the 1st conversion manually, without external event
-		adc_handle.Init.DMAContinuousRequests= DISABLE;			// ADC with DMA transfer: continuous requests to DMA disabled (default state) since DMA is not used in this example.
-		adc_handle.Init.Overrun= ADC_OVR_DATA_OVERWRITTEN;		// Select the behavior in case of overrun: data overwritten or preserved
-	*/
-
-	// Init ADC
-	HAL_ADC_Init(&adc_handle);
-
-	// Set up ADC channel
-	ADC_ChannelConfTypeDef adc_channel;
-	adc_channel.Channel 		= ADC_CHANNEL_9;				// Specify the channel to configure into ADC regular group, according to User manual's Table 23. Arduino connectors on NUCLEO-L476RG
-	adc_channel.Rank 			= ADC_REGULAR_RANK_1;			// Specify the rank in the regular group sequencer.
-	adc_channel.SamplingTime 	= ADC_SAMPLETIME_24CYCLES_5;	// Sampling time value to be set for the selected channel.
-	adc_channel.Offset 			= 0;							// Define the offset to be subtracted from the raw converted data.
-	/* Other optional channel settings
-		adc_channel.SingleDiff   	= ADC_SINGLE_ENDED;			// Select single-ended or differential input.
-		adc_channel.OffsetNumber 	= ADC_OFFSET_1;				// Select the offset number
-	 */
-	HAL_ADC_ConfigChannel(&adc_handle, &adc_channel);
-
-	/* Error handling - middle-range plan, does not work at the moment
-	if (HAL_ADC_Init(&adc_handle) != HAL_OK)
-	{
-		ADC initialization error
-		Error_Handler();
-	}
-	*/
-}
-
-/**
-  * @brief  ADC measurement program.
-  * @param  None
-  * @retval measurement value between 0...4095 (note: adc is initialized for 12 bit resolution)
-  */
-uint32_t adc_measure()
-{
-	//uint32_t measurement = 0;
-	HAL_ADC_Start(&adc_handle);
-	HAL_ADC_PollForConversion(&adc_handle, HAL_MAX_DELAY);
-	//measurement = HAL_ADC_GetValue(&adc_handle);
-	//return measurement;
-	//HAL_ADC_Stop(&adc_handle);
-	return HAL_ADC_GetValue(&adc_handle);
 }
 
 /**
@@ -271,45 +150,6 @@ static void SystemClock_Config(void)
   }
 }
 
-/** personal notes - for mid-term developing
-csak set_duty-t meghív.
-pwm-hez: uint32_t adc_measurement_value = adc_measure();
-
-
-//void pwm_init();
-
-
-void pwm_set_duty(adc_measurement_value)
-{
-	uint32_t pulse = pwm_handle.Init.Period * (adc_measurement_value / 4095);
-	pwm_oc_init.Pulse = pulse;
-	HAL_TIM_PWM_ConfigChannel(&pwm_handle, &pwm_oc_init, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start(&pwm_handle, TIM_CHANNEL_1);
-}
-
- pwm outoutra kell kötni a ledet. note: pin beállítás: hal_msp.c-ben!
-*/
-
-
-/**
-  * @brief  This function is executed in case of error occurrence.
-  * @param  None
-  * @retval None
-  */
-
-/* static void Error_Handler(void)
-{
-  // User may add here some code to deal with a potential error
-
-  // In case of error, LED2 is toggling at a frequency of 1Hz
-  while(1)
-  {
-    // Toggle LED2
-    BSP_LED_Toggle(LED2);
-    HAL_Delay(500);
-  }
-}
-*/
 
 #ifdef  USE_FULL_ASSERT
 
@@ -332,12 +172,5 @@ void assert_failed(char *file, uint32_t line)
 }
 #endif
 
-/**
-  * @}
-  */ 
-
-/**
-  * @}
-  */ 
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
