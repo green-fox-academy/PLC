@@ -64,7 +64,7 @@ void system_init()
 	BSP_LED_Init(LED2);
 	BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
 
-	/* Init Uart and modbus protocol DPIN0 : RX and DPIN1 : TX */
+	/* Init Uart and modbus protocol C11 : RX and C10 : TX */
 	modbus_init();
 
 	/* Init PINs from DPIN2 to DPIN15 as a digital inputs

@@ -37,15 +37,9 @@ int main(void)
 
 	system_init();
 
-	slave_address = 1;  // DIN:1 / DOUT:5 / AIN: 9 / AOUT : 13
+	slave_address = 5;
 
-	modbus_DIN_listen();
-
-//	modbus_DOUT_listen();
-
-//	modbus_ain_listen();
-
-//	modbus_aout_listen();
+	modbus_DOUT_listen();
 
 }
 
@@ -70,21 +64,13 @@ void system_init()
 	BSP_LED_Init(LED2);
 	BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
 
-	/* Init Uart and modbus protocol DPIN0 : RX and DPIN1 : TX */
+	/* Init Uart and modbus protocol C11 : RX and C10 : TX */
 	modbus_init();
 
 	/* Init PINs from DPIN8 to DPIN15 as a digital outputs */
-/*
 	for (int i = 8; i < 16; i++) {
 		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
 	}
-*/
-	/* Init PINs from DPIN8 to DPIN15 as a digital inputs */
-
-	for (int i = 8; i < 16; i++) {
-		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
-	}
-
 
 	/* Init Pins from DPIN2 to DPIN6 as an Digital inputs for Slave_address */
 	for (int i = 2; i < 7; i++) {
