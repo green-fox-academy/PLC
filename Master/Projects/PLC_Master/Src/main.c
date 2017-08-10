@@ -283,6 +283,21 @@ void logic_process(uint8_t *d_in_state, uint8_t *d_out_state )
 	else
 		DOU8_OFF;
 
+	if (DIN8 AND DIN7) {
+		DOU1_OFF;
+	}
+
+	if (DIN6)
+		DOU6_ON;
+	else
+		DOU6_OFF;
+
+	if(DIN5 OR DIN4)
+		DOU7_ON;
+
+	if(DIN1)
+		DOU7_OFF;
+
 
 	// Update output table
 	*d_out_state = dout_state;
