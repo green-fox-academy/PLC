@@ -2,7 +2,6 @@
 #include "GPIO.h"
 
 /* Private function prototypes -----------------------------------------------*/
-void gpio_clk_enable(GPIO_TypeDef *port);
 
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -165,7 +164,7 @@ void gpio_init_analoge_pin(uint8_t pin_index)
 	GPIO_InitTypeDef gpio_init_structure;
 
 	// Set the clock
-	GPIO_clk_enable(stm32l476rg_analog_pins[pin_index].port);
+	gpio_clk_enable(stm32l476rg_analog_pins[pin_index].port);
 
 	gpio_init_structure.Pin = stm32l476rg_analog_pins[pin_index].pin;
 	gpio_init_structure.Mode = GPIO_MODE_ANALOG;
