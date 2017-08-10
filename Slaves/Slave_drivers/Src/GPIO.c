@@ -1,6 +1,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "GPIO.h"
 
+/* Private function prototypes -----------------------------------------------*/
+void gpio_clk_enable(GPIO_TypeDef *port);
+
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private typedef -----------------------------------------------------------*/
@@ -151,7 +154,7 @@ void gpio_set_8_pin(uint8_t from, uint8_t to, uint8_t data)
 		   example: we want this numbers 3th bit 01001101 << (7-2) -> 10100000, and now 10100000 >> 7 -> 00000001 = 1 */
 
 		pin_index = data & (1 << (i - from));
-		gpio_write_digital_pin(i, (pin_index >> i - from));
+		gpio_write_digital_pin(i, (pin_index >> (i - from)));
 	}
 }
 

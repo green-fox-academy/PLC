@@ -31,6 +31,56 @@
 			<locationURI>PARENT-2-PROJECT_LOC/readme.txt</locationURI>
 		</link>
 		<link>
+			<name>Application/Master_Control_Logic/GPIO.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/GPIO.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Master_Control_Logic/app_ethernet.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/app_ethernet.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Master_Control_Logic/ethernetif.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/ethernetif.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Master_Control_Logic/main.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/main.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Master_Control_Logic/master_loop_control.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/master_loop_control.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Master_Control_Logic/modbus.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/modbus.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Master_Control_Logic/socket_client.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/socket_client.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Master_Control_Logic/socket_server.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/socket_server.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Master_Control_Logic/stm32f7xx_hal_timebase_tim.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/stm32f7xx_hal_timebase_tim.c</locationURI>
+		</link>
+		<link>
+			<name>Application/Master_Control_Logic/stm32f7xx_it.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/stm32f7xx_it.c</locationURI>
+		</link>
+		<link>
 			<name>Application/SW4STM32/startup_stm32f746xx.s</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/startup_stm32f746xx.s</locationURI>
@@ -39,56 +89,6 @@
 			<name>Application/SW4STM32/syscalls.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/syscalls.c</locationURI>
-		</link>
-		<link>
-			<name>Application/User/GPIO.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Src/GPIO.c</locationURI>
-		</link>
-		<link>
-			<name>Application/User/app_ethernet.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Src/app_ethernet.c</locationURI>
-		</link>
-		<link>
-			<name>Application/User/ethernetif.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Src/ethernetif.c</locationURI>
-		</link>
-		<link>
-			<name>Application/User/main.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Src/main.c</locationURI>
-		</link>
-		<link>
-			<name>Application/User/master_loop_control.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Src/master_loop_control.c</locationURI>
-		</link>
-		<link>
-			<name>Application/User/modbus.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Src/modbus.c</locationURI>
-		</link>
-		<link>
-			<name>Application/User/socket_client.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Src/socket_client.c</locationURI>
-		</link>
-		<link>
-			<name>Application/User/socket_server.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Src/socket_server.c</locationURI>
-		</link>
-		<link>
-			<name>Application/User/stm32f7xx_hal_timebase_tim.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Src/stm32f7xx_hal_timebase_tim.c</locationURI>
-		</link>
-		<link>
-			<name>Application/User/stm32f7xx_it.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Src/stm32f7xx_it.c</locationURI>
 		</link>
 		<link>
 			<name>Application/Utilities/lcd_log.c</name>

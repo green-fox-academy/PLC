@@ -18,6 +18,7 @@ UART_HandleTypeDef UartHandle;
 
 /* Private function prototypes -----------------------------------------------*/
  void rx_tx_GPIO_init();
+ void uart_init();
 /* Private functions ---------------------------------------------------------*/
 
  /*	Function name:
@@ -114,15 +115,7 @@ uint8_t* modbus_receive_data(uint8_t data_len)
 		modbus_error_handler(receive);
 		return NULL;
 	}
-/*
-	} else {
 
-		for (uint8_t i = 0; i < data_len; i++) {
-			LCD_UsrLog("data[%d]: %d ", i, data[i]);
-		}
-		LCD_UsrLog("\n");
-	}
-*/
 	return data;
 }
 
@@ -137,17 +130,7 @@ uint16_t* modbus_receive_u16_data(uint8_t data_len)
 		modbus_error_handler(receive);
 		return NULL;
 	}
-/*
-	} else {
-		// This has to be removed
 
-		for (uint8_t i = 0; i < data_len; i++) {
-			LCD_UsrLog("[%d]:%u; ", i, data16[i]);
-		}
-		LCD_UsrLog("\n");
-
-	}
-*/
 	return &data16;
 }
 

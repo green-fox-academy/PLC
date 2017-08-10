@@ -67,6 +67,7 @@
 
 #define AND 	&&
 #define OR		||
+#define NOT		!
 
 #define DIN8 	(din_state & 0b00000001)
 #define DIN9 	(din_state & 0b00000010)
@@ -343,7 +344,7 @@ void logic_process(uint8_t *d_in_state, uint8_t *d_out_state) // , uint16_t *ain
 	else
 		DOU10_OFF;
 
-	if (!DIN15)
+	if (NOT DIN15)
 		DOU9_ON;
 	else
 		DOU9_OFF;
