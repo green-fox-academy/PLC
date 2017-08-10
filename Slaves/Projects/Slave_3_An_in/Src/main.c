@@ -45,10 +45,6 @@
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
-//void gpio_init_digital_pin(uint8_t pin_index, uint32_t mode, uint32_t pull);
-//void gpio_set_digital_pin(uint8_t pin_index);
-//void gpio_reset_digital_pin(uint8_t pin_index);
-
 
 int main(void)
 {
@@ -73,7 +69,7 @@ int main(void)
 	// Init GPIO digital pin for LED
 	gpio_init_digital_pin(2, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
 
-	// Init GPIO analog pin for ADC
+	// Init GPIO analog pin for ADC (argument: A(x) pin)
 	gpio_init_analog_pin(2);
 
 	// Init ADC
@@ -84,7 +80,7 @@ int main(void)
 	 * For higher value leds are turning off.
 	 */
 	while (1) {
-		if (adc_measure() < 4095/2 ) {
+		if (adc_measure(2) < 4095/2 ) {
 			BSP_LED_On(LED2);
 			gpio_set_digital_pin(2);
 		} else {

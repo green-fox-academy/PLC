@@ -47,7 +47,7 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 void adc_init();
-uint32_t adc_measure();
+uint16_t adc_measure(uint8_t adc_index);
 
 #endif /* __ADC_H */
 

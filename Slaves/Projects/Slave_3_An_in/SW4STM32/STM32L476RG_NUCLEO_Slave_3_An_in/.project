@@ -351,9 +351,9 @@
 			<locationURI>PARENT-1-PROJECT_LOC/startup_stm32l476xx.s</locationURI>
 		</link>
 		<link>
-			<name>Slave_3_An_in/User/adc_A2_pin.c</name>
+			<name>Slave_3_An_in/User/adc.c</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Src/adc_A2_pin.c</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/adc.c</locationURI>
 		</link>
 		<link>
 			<name>Slave_3_An_in/User/main.c</name>
