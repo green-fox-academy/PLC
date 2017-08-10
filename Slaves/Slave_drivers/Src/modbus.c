@@ -92,13 +92,48 @@ void modbus_DIN_listen()
 
 void modbus_ain_listen()
 {
+	/*
 	uint8_t receive;
 	uint8_t transmit;
 
 	// This is for test till adc is finished
+
 	for (uint8_t i = 0; i < 6; i++) {
 		analoge_pins_state[i] = 10 * (i+1);
 	}
+
+
+	while (1) {
+
+		receive = HAL_UART_Receive(&UartHandle, (uint8_t *)aRxBuffer, 2, 4);
+		if (receive != HAL_OK) {
+			;
+		} else {
+			if (aRxBuffer[0] == slave_address) {
+
+				// Read ADC data from A0 to A6
+				// adc_read_pins(0,5);
+
+				uint16_t one_adc_value = adc_measure();
+
+				for (uint8_t i = 0; i < 6; i++) {
+					analoge_pins_state[i] = one_adc_value;
+				}
+
+				//  Send back the data as a message
+				transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)analoge_pins_state, 12, 4);
+
+				if (transmit != HAL_OK) {
+					modbus_error_handler(transmit);
+				}
+			}
+		}
+	}
+	*/
+
+	uint8_t receive;
+	uint8_t transmit;
+	uint16_t adc_value;
 
 	while (1) {
 
@@ -109,7 +144,15 @@ void modbus_ain_listen()
 			if (aRxBuffer[0] == slave_address) {
 
 				// Read ADC data from A0 to A6
-				// adc_read_pins(0,5);
+				adc_value = adc_measure();
+
+				if (adc_value > 2200 && adc_value < 2600) {
+						adc_value = 2200;
+				}
+
+				for (uint8_t i = 0; i < 6; i++) {
+					analoge_pins_state[i] = adc_value;
+				}
 
 				//  Send back the data as a message
 				transmit = HAL_UART_Transmit (&UartHandle, (uint8_t*)analoge_pins_state, 12, 4);
@@ -184,7 +227,7 @@ void modbus_error_handler(uint8_t error)
 void uart_init()
 {
 	UartHandle.Instance 	   	= USARTx;
-	UartHandle.Init.BaudRate   	= 230400;
+	UartHandle.Init.BaudRate   	= 460800;
 	UartHandle.Init.WordLength	= UART_WORDLENGTH_8B;
 	UartHandle.Init.StopBits  	= UART_STOPBITS_1;
 	UartHandle.Init.Parity     	= UART_PARITY_NONE;

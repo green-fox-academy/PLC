@@ -18,12 +18,16 @@
 
 /* UART handler declaration */
 UART_HandleTypeDef UartHandle;
+ADC_HandleTypeDef adc_handle;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void Error_Handler(void);
 void system_init();
 uint8_t slave_address_set();
+
+void adc_init(void);
+
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -34,7 +38,6 @@ uint8_t slave_address_set();
   */
 int main(void)
 {
-
 	system_init();
 
 	slave_address = 9;
@@ -69,11 +72,9 @@ void system_init()
 
 
 	/* Init Analog pins from A0 to A6 */
-	/*
 	for (int i = 0; i < 6; i++) {
 		gpio_init_analoge_pin(i);
 	}
-	*/
 
 	/* Init Pins from DPIN2 to DPIN6 as an Digital inputs for Slave_address */
 	for (int i = 2; i < 7; i++) {
@@ -81,6 +82,8 @@ void system_init()
 	}
 
 	//slave_address = slave_address_set();
+
+	adc_init();
 
 }
 
@@ -98,6 +101,58 @@ uint8_t slave_address_set()
 	}
 
 	return slave_adr;
+}
+
+/**
+  * @brief  ADC1 initialization and configuration for A2 pin, 12 bit resolution
+  * 		PIN A2 -> PA4 -> ADC12_IN9, GPIO_PIN: 4, GPIOA, Channel 9
+  * @param  None
+  * @retval None
+  */
+
+void adc_init(void)
+{
+	// Enable ADC and GPIOA clock
+	__HAL_RCC_ADC_CLK_ENABLE();
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+
+	// Enable A2 analog pin
+	GPIO_InitTypeDef adc_init_struct;
+	adc_init_struct.Mode 	= GPIO_MODE_ANALOG_ADC_CONTROL;
+	adc_init_struct.Pin 	= GPIO_PIN_4;
+	adc_init_struct.Pull 	= GPIO_NOPULL;
+	adc_init_struct.Speed 	= GPIO_SPEED_FAST;
+	HAL_GPIO_Init(GPIOA, &adc_init_struct);
+
+	// Set up ADC1
+	adc_handle.Instance 			= ADC1;							// Register base address
+	adc_handle.Init.ClockPrescaler	= ADC_CLOCK_SYNC_PCLK_DIV2;		// Select ADC clock source
+	adc_handle.Init.Resolution 		= ADC_RESOLUTION_12B;			// Resolution: measurement values will between 0...4095 ((2^12)-1)
+	adc_handle.Init.DataAlign 		= ADC_DATAALIGN_RIGHT;			// Specify ADC data alignment in conversion data register (right or left).
+
+	// Init ADC
+	HAL_ADC_Init(&adc_handle);
+
+	// Set up ADC channel
+	ADC_ChannelConfTypeDef adc_channel;
+	adc_channel.Channel 		= ADC_CHANNEL_9;				// Specify the channel to configure into ADC regular group, according to User manual's Table 23. Arduino connectors on NUCLEO-L476RG
+	adc_channel.Rank 			= ADC_REGULAR_RANK_1;			// Specify the rank in the regular group sequencer.
+	adc_channel.SamplingTime 	= ADC_SAMPLETIME_24CYCLES_5;	// Sampling time value to be set for the selected channel.
+	adc_channel.Offset 			= 0;							// Define the offset to be subtracted from the raw converted data.
+
+	HAL_ADC_ConfigChannel(&adc_handle, &adc_channel);
+}
+
+/**
+  * @brief  ADC measurement program.
+  * @param  None
+  * @retval measurement value between 0...4095 (note: adc is initialized for 12 bit resolution)
+  */
+uint16_t adc_measure()
+{
+	HAL_ADC_Start(&adc_handle);
+	HAL_ADC_PollForConversion(&adc_handle, HAL_MAX_DELAY);
+	return (uint16_t)HAL_ADC_GetValue(&adc_handle);
 }
 
 /**

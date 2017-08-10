@@ -62,58 +62,6 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-
-// Defines for logic process // Demo
-
-/* Logical operators*/
-#define AND 	&&
-#define OR		||
-#define NOT		!
-
-/* Digital input pins value */
-#define DIN1 	(din_state & 0b00000001)  //D8 on input board
-#define DIN2 	(din_state & 0b00000010)  //D9 on input board
-#define DIN3 	(din_state & 0b00000100)  //D10 on input board
-#define DIN4 	(din_state & 0b00001000)  //D11 on input board
-#define DIN5 	(din_state & 0b00010000)  //D12 on input board
-#define DIN6 	(din_state & 0b00100000)  //D13 on input board
-#define DIN7 	(din_state & 0b01000000)  //D14 on input board
-#define DIN8	(din_state & 0b10000000)  //D15 on input board
-
-/* Write digital output pins */
-#define DOU1_ON		(dout_state |= 0b00000001)  //D8 on output board
-#define DOU1_OFF	(dout_state &= 0b11111110)	//D8 on output board
-#define DOU2_ON		(dout_state |= 0b00000010)	//D9 on output board
-#define DOU2_OFF	(dout_state &= 0b11111101)	//D9 on output board
-#define DOU3_ON		(dout_state |= 0b00000100)	//D10 on output board
-#define DOU3_OFF	(dout_state &= 0b11111011)	//D10 on output board
-#define DOU4_ON		(dout_state |= 0b00001000)	//D11 on output board
-#define DOU4_OFF	(dout_state &= 0b11110111)	//D11 on output board
-#define DOU5_ON		(dout_state |= 0b00010000)	//D12 on output board
-#define DOU5_OFF	(dout_state &= 0b11101111)	//D12 on output board
-#define DOU6_ON		(dout_state |= 0b00100000)	//D13 on output board
-#define DOU6_OFF	(dout_state &= 0b11011111)	//D13 on output board
-#define DOU7_ON		(dout_state |= 0b01000000)	//D14 on output board
-#define DOU7_OFF	(dout_state &= 0b10111111)	//D14 on output board
-#define DOU8_ON		(dout_state |= 0b10000000)	//D15 on output board
-#define DOU8_OFF	(dout_state &= 0b01111111)	//D15 on output board
-
-/* Analog input value of pins */
-#define AIN1		ain_state[0]
-#define AIN2		ain_state[1]
-#define AIN3		ain_state[2]
-#define AIN4		ain_state[3]
-#define AIN5		ain_state[4]
-#define AIN6		ain_state[5]
-
-/* Write analoge output pins */
-#define AOU1=		aout_state[0]=
-#define AOU2=		aout_state[1]=
-#define AOU3=		aout_state[2]=
-#define AOU4=		aout_state[3]=
-#define AOU5=		aout_state[4]=
-#define AOU6=		aout_state[5]=
-
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 struct netif gnetif; /* network interface structure */
@@ -131,7 +79,7 @@ static void CPU_CACHE_Enable(void);
 /* Private functions ---------------------------------------------------------*/
 void copy_array(uint16_t *target_array, uint16_t *source_array, uint8_t array_len);
 void make_8b_msg(uint8_t *b8_data, uint8_t adr, uint16_t *b16_data, uint8_t b16_len);
-void logic_process(uint8_t *d_in_state, uint8_t *d_out_state , uint16_t *a_in_state, uint16_t *a_out_state, uint8_t a_len);
+void logic_process(uint8_t *d_in_state, uint8_t *d_out_state );
 
 /**
   * @brief  Main program
@@ -179,64 +127,31 @@ int main(void)
 		a_out_msg[2*i + 2] = 0;
 	}
 
-	/*
-    // Load table for test
-	for (uint8_t i = 0; i < 6; i++) {
-    	a_out_state[i] = (i + 1) * 100;
-        LCD_UsrLog("data16_b[%u]: %u\n", i, a_out_state[i]);
-    }
-
-	make_8b_from_16_b(a_out_msg, 13, a_out_state, 6);
-
-	for (uint8_t i = 0; i < 13; i++) {
-		LCD_UsrLog("d8lh: %u \n", a_out_msg[i]);
-	}
-*/
-
 	char buf[3];
 
 	while (1) {
 
 		while (!BSP_PB_GetState(BUTTON_KEY)) {
 
-		// Command to digital input
-	//	LCD_UsrLog("DIG Input: ");
+		// Digital input
 		modbus_send_command(d_in_msg, 2);						// Send the address to the digital input slave
 		d_in_state = modbus_receive_data(1)[0];					// Receive pin states from digital input slave
 
+		// Logic process
+		logic_process(&d_in_state, &d_out_state);
+
+		d_out_msg[1] = d_out_state;							// Set messages data to d_out
+
 		sprintf(buf, "%u", d_in_state);
 		BSP_LCD_DisplayStringAtLine(7, buf);
-
-/*
-		// Command to analog input
-		LCD_UsrLog("A_IN:  ");
-		modbus_send_command(a_in_msg, 2);						// Send the address to the analog input slave
-		copy_array(a_in_state, modbus_receive_u16_data(6), 6); 	// Receive adc datas from analog input slave
-*/
-		/*	 Logic 	*/
-		//Digital Logic
-
-		//Analog Logic
-//		copy_array(a_out_state, a_in_state, 6);					// Copy in to out table An = Bn logic
-/*
-		// Command to analog output
-		LCD_UsrLog("A_OUT: ");
-		make_8b_msg(a_out_msg, 13, a_out_state, 6);			// Make 8bit message from 16bit data
-		modbus_send_command(a_out_msg, 13);					// Send the address to the analog output slave
-		modbus_receive_u16_data(6);							// Receive datas from analog input slave
-*/
-
-		logic_process(&d_in_state, &d_out_state, a_in_state, a_out_state, 6);
-		d_out_msg[1] = d_out_state;
-
 		sprintf(buf, "%u", d_out_state);
 		BSP_LCD_DisplayStringAtLine(8,buf);
 
-		//LCD_UsrLog("DIG Output: ");
+		// Digital Output
 		modbus_send_command(d_out_msg, 2);					// Send message to digital output
 		modbus_receive_data(1);								// Receive data from digital output
 
-		HAL_Delay(10);
+		HAL_Delay(100);
 		}
 
 		HAL_Delay(10000);
@@ -347,36 +262,31 @@ void make_8b_msg(uint8_t *b8_data, uint8_t adr, uint16_t *b16_data, uint8_t b16_
     }
 }
 
-void logic_process(uint8_t *d_in_state, uint8_t *d_out_state , uint16_t *a_in_state, uint16_t *a_out_state, uint8_t a_len)
+void logic_process(uint8_t *d_in_state, uint8_t *d_out_state )
 {
 	/* Variables made from tables */
 	uint8_t din_state = *d_in_state;
 	uint8_t dout_state = *d_out_state;
 
-	uint16_t ain_state[a_len];
-	copy_array(ain_state, a_in_state, a_len);
-
-	uint16_t aout_state[a_len];
-	copy_array(aout_state, a_out_state, a_len);
-
 	if (DIN1 AND DIN2)
-		DOU1_ON;
-	else
-		DOU1_OFF;
-
-	if (DIN3 OR DIN3)
-		DOU2_ON;
-	else
-		DOU2_OFF;
-
-	if (NOT DIN8)
 		DOU3_ON;
 	else
 		DOU3_OFF;
 
+	if (DOU3 OR !DIN8)
+		DOU1_ON;
+	else
+		DOU1_OFF;
+
+	if (DIN8)
+		DOU8_ON;
+	else
+		DOU8_OFF;
+
+
 	// Update output table
 	*d_out_state = dout_state;
-	a_out_state = aout_state;
+	//a_out_state = aout_state;
 }
 
 /**

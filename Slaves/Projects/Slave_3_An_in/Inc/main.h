@@ -47,9 +47,8 @@
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
-/* User can use this section to tailor USARTx/UARTx instance used and associated
-   resources */
-/* Definition for USARTx clock resources */
+
+uint16_t adc_measure();
 
 uint8_t slave_address;
 

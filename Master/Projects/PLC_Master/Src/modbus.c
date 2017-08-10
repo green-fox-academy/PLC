@@ -129,9 +129,28 @@ uint16_t* modbus_receive_u16_data(uint8_t data_len)
 		LCD_UsrLog("Receive, ");
 		modbus_error_handler(receive);
 		return NULL;
+
+	} else {
+		// This has to be removed
+		for (uint8_t i = 0; i < data_len; i++) {
+			LCD_UsrLog("%u; ", data16[i]);
+		}
+		LCD_UsrLog("\n");
 	}
 
 	return &data16;
+	/*
+	uint8_t receive = 0;
+
+	receive = HAL_UART_Receive(&UartHandle, (uint8_t*)data16, (sizeof(data16[0]) * data_len) , 5);
+
+	if (receive != HAL_OK) {
+		modbus_error_handler(receive);
+		return NULL;
+	}
+
+	return &data16;
+	*/
 }
 
 void modbus_listen()
@@ -188,7 +207,7 @@ void modbus_init()
 void uart_init()
 {
 	UartHandle.Instance 	   	= USARTx;
-	UartHandle.Init.BaudRate   	= 230400;
+	UartHandle.Init.BaudRate   	= 460800;
 	UartHandle.Init.WordLength	= UART_WORDLENGTH_8B;
 	UartHandle.Init.StopBits  	= UART_STOPBITS_1;
 	UartHandle.Init.Parity     	= UART_PARITY_NONE;
