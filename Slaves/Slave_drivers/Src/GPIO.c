@@ -157,7 +157,7 @@ void gpio_set_8_pin(uint8_t from, uint8_t to, uint8_t data)
 	}
 }
 
-/* ########## Functions for Analoge pins ########## */
+/* ########## Functions for Analog pins ########## */
 
 void gpio_init_analog_pin(uint8_t pin_index)
 {
