@@ -52,7 +52,7 @@ ADC_ChannelConfTypeDef adc_channel[6];
 
 adc_init_t nucleo_adc_conf[] = {
 		{ADC1, ADC_CHANNEL_5},  //PIN: A0 - ADC12_IN5 // ez egyikre se megy!
-		{ADC2, ADC_CHANNEL_6},  //PIN: A1 - ADC12_IN6 // ez egyikre se mûködik!
+		{ADC1, ADC_CHANNEL_6},  //PIN: A1 - ADC12_IN6 // ez egyikre se mûködik!
 		{ADC1, ADC_CHANNEL_9},  //PIN: A2 - ADC12_IN9 // ez csak ADC1-re mûködik!
 		{ADC2, ADC_CHANNEL_15}, //PIN: A3 - ADC12_IN15 //ez mukodik ADC1-re, ADC2-re is, ADC3-ra nem
 		{ADC2, ADC_CHANNEL_2},  //PIN: A4 - ADC123_IN2 //mûködik ADC1, ADC2-re is, ADC3-ra nem // GPIOB GPIO_PIN_9 - I2C1_SDA

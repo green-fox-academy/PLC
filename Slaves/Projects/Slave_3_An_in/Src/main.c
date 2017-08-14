@@ -43,6 +43,9 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+int analog_pin = 5; //user input for which analog input pin is used; 0..5 equals A0..A5
+int digital_pin = 2; //user input for which digital input pin is used; 0..15 equals D0..D15
+
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
 
@@ -67,10 +70,10 @@ int main(void)
 
 	/* Add your application code here */
 	// Init GPIO digital pin for LED
-	gpio_init_digital_pin(2, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
+	gpio_init_digital_pin(digital_pin, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
 
 	// Init GPIO analog pin for ADC (argument: A(x) pin)
-	gpio_init_analog_pin(2);
+	gpio_init_analog_pin(analog_pin);
 
 	// Init ADC
 	adc_init();
@@ -80,7 +83,7 @@ int main(void)
 	 * For higher value leds are turning off.
 	 */
 	while (1) {
-		if (adc_measure(2) < 4095/2 ) {
+		if (adc_measure(analog_pin) < 4095/2 ) {
 			BSP_LED_On(LED2);
 			gpio_set_digital_pin(2);
 		} else {
