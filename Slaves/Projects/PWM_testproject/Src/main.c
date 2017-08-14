@@ -62,10 +62,11 @@ static void SystemClock_Config(void);
 /* Private inits ---------------------------------------------------------*/
 void pwm_init()
 {
-	// TIM3 init as PWM
+	// TIM3_CH2 init as PWM
+	// D9 - PC7
 	pwm_handle.Instance = TIM3;
 	pwm_handle.State = HAL_TIM_STATE_RESET;
-	pwm_handle.Channel = HAL_TIM_ACTIVE_CHANNEL_1;
+	pwm_handle.Channel = HAL_TIM_ACTIVE_CHANNEL_2;
 	pwm_handle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
 	pwm_handle.Init.CounterMode = TIM_COUNTERMODE_UP;
 	pwm_handle.Init.Period = 0xFFFF;
