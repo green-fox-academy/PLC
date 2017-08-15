@@ -4,7 +4,7 @@ void pwm_init()
 {
 	// TIM3_CH2 init as PWM
 	// D9  -> PC7
-	__TIM3_CLK_ENABLE();        //clock enable
+	__HAL_RCC_TIM3_CLK_ENABLE();		//clock enable
 
 	pwm_handle.Instance = TIM3;
 	pwm_handle.State = HAL_TIM_STATE_RESET;

@@ -336,6 +336,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/startup_stm32l476xx.s</locationURI>
 		</link>
 		<link>
+			<name>Slave_2_Dig_out/User/PWM.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/PWM.c</locationURI>
+		</link>
+		<link>
 			<name>Slave_2_Dig_out/User/main.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Src/main.c</locationURI>
