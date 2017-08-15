@@ -37,6 +37,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "stm32l4xx_hal.h"
 
 /** @addtogroup STM32L4xx_HAL_Examples
   * @{
@@ -53,6 +54,10 @@
 
 TIM_HandleTypeDef pwm_handle;
 TIM_OC_InitTypeDef pwm_oc_init;
+TIM_MasterConfigTypeDef sMasterConfig;
+TIM_Base_InitTypeDef teszt;
+
+
 
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
@@ -60,25 +65,55 @@ static void SystemClock_Config(void);
 /* Private functions ---------------------------------------------------------*/
 
 /* Private inits ---------------------------------------------------------*/
+
+
+void PWM_pin_init()
+{
+	__HAL_RCC_GPIOC_CLK_ENABLE();
+	__TIM3_CLK_ENABLE();
+
+	GPIO_InitTypeDef gpio_c;
+	gpio_c.Pin = GPIO_PIN_7;
+	gpio_c.Mode = GPIO_MODE_AF_PP;
+	//gpio_c.Mode = GPIO_MODE_OUTPUT_PP;
+	gpio_c.Pull = GPIO_NOPULL;
+	gpio_c.Speed = GPIO_SPEED_FREQ_HIGH;
+	gpio_c.Alternate = GPIO_AF2_TIM3;
+	HAL_GPIO_Init(GPIOC, &gpio_c);
+}
+
+/*void teszt_init()
+{
+	teszt.Prescaler = 0;
+	teszt.CounterMode = TIM_COUNTERMODE_UP;
+	teszt.Period = 1300;
+}
+*/
 void pwm_init()
 {
 	// TIM3_CH2 init as PWM
 	// D9 - PC7
 	pwm_handle.Instance = TIM3;
-	pwm_handle.State = HAL_TIM_STATE_RESET;
-	pwm_handle.Channel = HAL_TIM_ACTIVE_CHANNEL_2;
+	//pwm_handle.State = HAL_TIM_STATE_RESET;
+	//pwm_handle.Channel = HAL_TIM_ACTIVE_CHANNEL_2;
 	pwm_handle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
 	pwm_handle.Init.CounterMode = TIM_COUNTERMODE_UP;
 	pwm_handle.Init.Period = 0xFFFF;
 	pwm_handle.Init.Prescaler = 0;
 	HAL_TIM_PWM_Init(&pwm_handle);
 
-	pwm_oc_init.OCFastMode = TIM_OCFAST_DISABLE;
-	pwm_oc_init.OCIdleState = TIM_OCIDLESTATE_RESET;
+	//sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+	//sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+	//HAL_TIMEx_MasterConfigSynchronization(&pwm_handle, &sMasterConfig);
+
+	pwm_oc_init.OCFastMode = TIM_OCFAST_ENABLE;
+	pwm_oc_init.OCIdleState = TIM_OCIDLESTATE_SET;
 	pwm_oc_init.OCMode = TIM_OCMODE_PWM1;
 	pwm_oc_init.OCPolarity = TIM_OCPOLARITY_HIGH;
-	pwm_oc_init.Pulse = 0x7FFF;
-	HAL_TIM_PWM_ConfigChannel(&pwm_handle, &pwm_oc_init, TIM_CHANNEL_1);
+	pwm_oc_init.Pulse = 0xFFFF;
+	HAL_TIM_PWM_ConfigChannel(&pwm_handle, &pwm_oc_init, TIM_CHANNEL_2);
+
+	//HAL_TIM_PWM_Start(&pwm_handle, TIM_CHANNEL_2);
 }
 
 /**
@@ -91,8 +126,8 @@ void pwm_set_duty(float duty)
 {
 	uint32_t pulse = pwm_handle.Init.Period * (duty / 100.0);
 	pwm_oc_init.Pulse = pulse;
-	HAL_TIM_PWM_ConfigChannel(&pwm_handle, &pwm_oc_init, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start(&pwm_handle, TIM_CHANNEL_1);
+	HAL_TIM_PWM_ConfigChannel(&pwm_handle, &pwm_oc_init, TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(&pwm_handle, TIM_CHANNEL_2);
 }
 
 int main(void)
@@ -113,13 +148,26 @@ int main(void)
   SystemClock_Config();
 
 
+
   /* Add your application code here
      */
+  //teszt_init();
   pwm_init();
+  PWM_pin_init();
 
   /* Infinite loop */
   while (1)
   {
+	  for (int i = 0; i <=100; i++) {
+		  pwm_set_duty(i);
+		  HAL_Delay(30);
+	  }
+	  for (int i = 100; i >= 0; i--) {
+		  pwm_set_duty(i);
+		  HAL_Delay(30);
+	  	  }
+
+	 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
   }
 }
 
