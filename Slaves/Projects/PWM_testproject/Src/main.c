@@ -106,8 +106,8 @@ void pwm_init()
 	//sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
 	//HAL_TIMEx_MasterConfigSynchronization(&pwm_handle, &sMasterConfig);
 
-	pwm_oc_init.OCFastMode = TIM_OCFAST_ENABLE;
-	pwm_oc_init.OCIdleState = TIM_OCIDLESTATE_SET;
+	pwm_oc_init.OCFastMode = TIM_OCFAST_DISABLE;
+	pwm_oc_init.OCIdleState = TIM_OCIDLESTATE_RESET;
 	pwm_oc_init.OCMode = TIM_OCMODE_PWM1;
 	pwm_oc_init.OCPolarity = TIM_OCPOLARITY_HIGH;
 	pwm_oc_init.Pulse = 0xFFFF;
