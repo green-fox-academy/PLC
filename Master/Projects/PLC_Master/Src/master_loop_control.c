@@ -30,7 +30,7 @@ void control_slaves_thread(void const * argument)
 		// slaves_check();
 		scan_inputs();
 		execute_program();
-		upadte_outputs();
+		upadte_outputs ();
 
 		osDelay(1);
 
@@ -39,25 +39,51 @@ void control_slaves_thread(void const * argument)
 
 void scan_slaves()
 {
-	scan_din_slaves();
-	scan_dout_slaves();
+	scan_digital_slaves();
 	scan_ain_slaves();
 	scan_aout_slaves();
 }
 
-scan_din_slaves()
+/*	Function name:	  scan_din_slaves
+ * 	Function purpose: Scan all the digital slaves in the system.
+ * 					  If there is one it will register it to table
+ */
+void scan_digital_slaves()
 {
 	digital_rx_tx_t rec_msg;
 
+	/* Digital input slave */
 	for (uint8_t i = 0; i < 4; i++) {
 		dig_rx_tx.address = digital_input_slaves_address[i];
 		dig_rx_tx.command = SCAN_SLAVE;
 		dig_rx_tx.data = SCAN_SLAVE;
-		dig_rx_tx.crc = 10000;
+		dig_rx_tx.crc = generate_crc();
 
 		modbus_transmit(&dig_rx_tx, DIGITAL_RX_TX);
 		HAL_UART_Receive(&UartHandle, &rec_msg, DIGITAL_RX_TX , 3);
 
+		if (rec_msg.address == dig_rx_tx.address &&
+			rec_msg.command == dig_rx_tx.command &&
+			rec_msg.data == dig_rx_tx.data &&
+			rec_msg.crc == dig_rx_tx.crc) {
+				digital_input_slaves[i].slave_address = dig_rx_tx.address;
+				digital_input_slaves[i].digital_pins_state = 0; // Set 0 for safety
+		}
+
+		/* Digital output slave */
+		dig_rx_tx.address = digital_output_slaves_address[i];
+		dig_rx_tx.crc = generate_crc();
+
+		modbus_transmit(&dig_rx_tx, DIGITAL_RX_TX);
+		HAL_UART_Receive(&UartHandle, &rec_msg, DIGITAL_RX_TX , 3);
+
+		if (rec_msg.address == dig_rx_tx.address &&
+			rec_msg.command == dig_rx_tx.command &&
+			rec_msg.data == dig_rx_tx.data &&
+			rec_msg.crc == dig_rx_tx.crc) {
+				digital_output_slaves[i].slave_address = dig_rx_tx.address;
+				digital_output_slaves[i].digital_pins_state = 0; // Set 0 for safety
+		}
 
 	}
 }
@@ -101,6 +127,11 @@ void execute_program()
 
 	digital_output_slaves[0].digital_pins_state = dout_state;
 	//a_out_state = aout_state;
+}
+
+uint16_t generate_crc()
+{
+	return 10000;
 }
 
 void master_loop_control_init()
