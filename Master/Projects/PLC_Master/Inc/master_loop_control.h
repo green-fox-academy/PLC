@@ -26,42 +26,33 @@ typedef struct {
 	uint16_t analoge_pins_state[6];
 }slave_analog_t;
 
-/* Struct for frame format */
+/* ## Protocol message frames ## */
+
+/* Master -> <- digital in / out */
 typedef struct {
 	uint8_t address;
 	uint8_t command;
-	uint8_t* data;
-	uint8_t data_length;
+	uint8_t data;
 	uint16_t crc;
-}frame_t;
+}digital_rx_tx_t;
 
-typedef struct {
-	uint8_t address;
-	uint8_t command;
-	uint8_t data[2];
-	uint16_t crc;
-}frame_out_digital_in_t;
-
-typedef struct {
-	uint8_t address;
-	uint8_t command;
-	uint8_t data[2];
-	uint16_t crc;
-}frame_out_digital_out_t;
-
+/* Master -> analog out slave
+ * analog in slave -> master
+ * analog out slave -> master
+ */
 typedef struct {
 	uint8_t address;
 	uint8_t command;
 	uint16_t data[6];
 	uint16_t crc;
-}frame_analog_out_t;
+}analog_rx_tx_t;
 
+/* Master -> analog in msg type */
 typedef struct {
 	uint8_t address;
 	uint8_t command;
-	uint8_t range[2];
 	uint16_t crc;
-}frame_analog_in_t;
+}tx_analog_in_t;
 
 /* Exported variables ------------------------------------------------------- */
 
