@@ -44,6 +44,7 @@
 #include "stm32l4xx_nucleo.h"
 #include "modbus.h"
 #include "GPIO.h"
+#include "PWM.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
