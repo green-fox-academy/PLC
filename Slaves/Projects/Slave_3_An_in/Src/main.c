@@ -43,7 +43,7 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-int analog_pin = 5; //user input for which analog input pin is used; 0..5 equals A0..A5
+int analog_pin = 0; //user input for which analog input pin is used; 0..5 equals A0..A5
 int digital_pin = 2; //user input for which digital input pin is used; 0..15 equals D0..D15
 
 /* Private function prototypes -----------------------------------------------*/

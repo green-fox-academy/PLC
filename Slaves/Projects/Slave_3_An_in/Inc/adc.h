@@ -46,7 +46,7 @@
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
-void adc_init();
+void adc_init(void);
 uint16_t adc_measure(uint8_t adc_index);
 
 #endif /* __ADC_H */
