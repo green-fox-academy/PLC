@@ -40,17 +40,18 @@ int main(void)
 
 	slave_address = 5;
 
-	modbus_DOUT_listen();
-
+	//modbus_DOUT_listen();
+while(1) {
 	for (int i = 0; i <=100; i++) {
-			  pwm_set_duty(i);
-			  HAL_Delay(30);
+		  pwm_set_duty(i);
+		  HAL_Delay(30);
 		  }
-		  for (int i = 100; i >= 0; i--) {
-			  pwm_set_duty(i);
-			  HAL_Delay(30);
-		  	  }
+	for (int i = 100; i >= 0; i--) {
+		  pwm_set_duty(i);
+		  HAL_Delay(30);
+		  }
 
+}
 }
 
 void system_init()
