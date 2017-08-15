@@ -39,33 +39,20 @@
 #include "adc.h"
 
 /* Private typedef -----------------------------------------------------------*/
-
-/*typedef struct {
-	ADC_TypeDef *instance;
-	uint32_t channel;
-}adc_init_t;
-*/
-
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef adc_handle;
 ADC_ChannelConfTypeDef adc_channel[6];
 
-/*
-adc_init_t nucleo_adc_conf[] = {
-		{ADC1, ADC_CHANNEL_5},  //PIN: A0 - PA0 - ADC12_IN5 // ez egyikre se megy!
-		{ADC1, ADC_CHANNEL_6},  //PIN: A1 - PA1 - ADC12_IN6 // ez egyikre se mûködik!
-		{ADC1, ADC_CHANNEL_9},  //PIN: A2 - PA4 - ADC12_IN9 // ez csak ADC1-re mûködik!
-		{ADC2, ADC_CHANNEL_15}, //PIN: A3 - PB0 - ADC12_IN15 //ez mukodik ADC1-re, ADC2-re is, ADC3-ra nem
-		{ADC2, ADC_CHANNEL_2},  //PIN: A4 - PC1 - ADC123_IN2 //mûködik ADC1, ADC2-re is, ADC3-ra nem // GPIOB GPIO_PIN_9 - I2C1_SDA
-		{ADC3, ADC_CHANNEL_1},	//PIN: A5 - PC0 - ADC123_IN1 //mûködik ADC1, ADC2-re, ADC3-ra is // GPIOB GPIO_PIN_8 - I2C1_SCL
-};
-*/
-
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
-// Configure ADC
+
+/**
+  * @brief  ADC1 initialization and configuration
+  * @param  None
+  * @retval None
+  */
 void adc_init(void)
 {
 	// Enable ADC clock
@@ -105,54 +92,17 @@ void adc_init(void)
 		adc_channel[i].Offset 		= 0;						// Offset to be subtracted from the raw converted data.
 	}
 	/* Other optional channel settings
-		adc_channel.SingleDiff   = ADC_SINGLE_ENDED;			// Select single-ended or differential input.
-		adc_channel.OffsetNumber = ADC_OFFSET_1;				// Select the offset number
-	*/
-	//HAL_ADC_ConfigChannel(&adc_handle, adc_channel[6]);
-
-
-
-}
-
-/*
-// Set up ADC channel
-void adc_init_channel(void)
-{
-	for (uint8_t i = 0; i < 6; i++) {
-		// Config ADC
-		adc_channel[i].Channel 			= nucleo_adc_conf[i].channel;	// Specify the channel to configure into ADC regular group, according to User manual's Table 23. Arduino connectors on NUCLEO-L476RG
-		adc_channel[i].Rank 			= ADC_REGULAR_RANK_1;			// Specify the rank in the regular group sequencer.
-		adc_channel[i].SamplingTime 	= ADC_SAMPLETIME_24CYCLES_5;	// Sampling time value to be set for the selected channel.
-		adc_channel[i].Offset 			= 0;
-		 Other optional channel settings
-		adc_channel.SingleDiff   	= ADC_SINGLE_ENDED;			// Select single-ended or differential input.
-		adc_channel.OffsetNumber 	= ADC_OFFSET_1;				// Select the offset number
+		adc_channel[i].SingleDiff   = ADC_SINGLE_ENDED;			// Select single-ended or differential input.
+		adc_channel[i].OffsetNumber = ADC_OFFSET_1;				// Select the offset number
 	}
+	*/
 }
-*/
 
 /**
-  * @brief  ADC1 initialization and configuration
+  * @brief  deinit ADC1
   * @param  None
   * @retval None
   */
-/*
-void adc_init(void)
-{
-	// Enable ADC clock
-	__HAL_RCC_ADC_CLK_ENABLE();
-
-	// Init ADC
-	adc_init_typedef();
-	adc_init_channel();
-
-	for (uint8_t i = 0; i < 6; i++) {
-		HAL_ADC_Init(&adc_handle[i]);
-		HAL_ADC_ConfigChannel(&adc_handle[i], &adc_channel[i]);
-	}
-}
-*/
-
 void adc_deinit(void)
 {
 	HAL_ADC_Stop(&adc_handle);
@@ -161,15 +111,16 @@ void adc_deinit(void)
 
 /**
   * @brief  ADC measurement program.
-  * @param  arduino pin number for which potentiometer's measurement is nedded
+  * @param  pin number of potmeter's connection to board between 0..5 (refers to A0..A5 pins)
   * @retval measurement value between 0...4095 (note: adc is initialized for 12 bit resolution)
   */
-uint16_t adc_measure(uint8_t adc_index)
+uint16_t adc_measure(uint8_t analog_pin)
 {
-	HAL_ADC_ConfigChannel(&adc_handle, &adc_channel[adc_index]);
+	HAL_ADC_ConfigChannel(&adc_handle, &adc_channel[analog_pin]);
 	HAL_ADC_Start(&adc_handle);
 	HAL_ADC_PollForConversion(&adc_handle, HAL_MAX_DELAY);
-	return HAL_ADC_GetValue(&adc_handle);
+	uint32_t adc_measured_value = HAL_ADC_GetValue(&adc_handle);
+	//return HAL_ADC_GetValue(&adc_handle);
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -43,8 +43,8 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-int analog_pin = 0; //user input for which analog input pin is used; 0..5 equals A0..A5
-int digital_pin = 2; //user input for which digital input pin is used; 0..15 equals D0..D15
+uint8_t analog_pin = 0; //user input for which analog input pin is used; 0..5 equals A0..A5
+uint8_t digital_pin = 2; //user input for which digital input pin is used; 0..15 equals D0..D15
 
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
@@ -73,7 +73,9 @@ int main(void)
 	gpio_init_digital_pin(digital_pin, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
 
 	// Init GPIO analog pin for ADC (argument: A(x) pin)
-	gpio_init_analog_pin(analog_pin);
+	for (uint8_t i = 0; i < 6; i++) {
+		gpio_init_analog_pin(i);
+	}
 
 	// Init ADC
 	adc_init();
@@ -85,10 +87,10 @@ int main(void)
 	while (1) {
 		if (adc_measure(analog_pin) < 4095/2 ) {
 			BSP_LED_On(LED2);
-			gpio_set_digital_pin(2);
+			gpio_set_digital_pin(digital_pin);
 		} else {
 			BSP_LED_Off(LED2);
-			gpio_reset_digital_pin(2);
+			gpio_reset_digital_pin(digital_pin);
 		}
 	}
 }
