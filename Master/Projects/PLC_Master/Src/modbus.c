@@ -11,10 +11,13 @@
 /* UART handler declaration */
 UART_HandleTypeDef UartHandle;
 
+uint8_t receive = 0;
+uint8_t transmit = 0;
+
 /* Buffers for Send, and Receive messages */
 
- uint8_t data[10];
- uint16_t data16[6];
+/* Maximum size of data is 16 bit */
+uint8_t data[16];
 
 /* Private function prototypes -----------------------------------------------*/
  void rx_tx_GPIO_init();
@@ -28,6 +31,7 @@ UART_HandleTypeDef UartHandle;
   * 	Function Output - :
   */
 
+/*
 void modbus_sender_measure_test()
 {
 	uint8_t transmit = 0;
@@ -74,7 +78,7 @@ void modbus_receive_measure_test()
 	}
 
 }
-
+*/
 
 /*	Function name: 							modbus_send_command
  * 	Function purpose:						Send command to a target slave
@@ -84,6 +88,8 @@ void modbus_receive_measure_test()
  * 	Function Output - uint8_t:				1 if something went wrong, 0 if it was ok.
  */
 
+
+ /*
 uint8_t modbus_send_command(uint8_t *command, uint8_t command_len)
 {
 	uint8_t transmit = 0;
@@ -98,12 +104,14 @@ uint8_t modbus_send_command(uint8_t *command, uint8_t command_len)
 
 	return 0;
 }
-
+*/
 /*	Function name:						modbus_receive_data
  * 	Function purpose:					Receive uint8_t data array from slave.
  * 	Function input - uint8_t data_len:	Data length to be received.
  * 	Function Output - uint8_t*:			NULL if something went wrong, data if it was ok.
  */
+
+ /*
 uint8_t* modbus_receive_data(uint8_t data_len)
 {
 	uint8_t receive = 0;
@@ -139,18 +147,7 @@ uint16_t* modbus_receive_u16_data(uint8_t data_len)
 	}
 
 	return &data16;
-	/*
-	uint8_t receive = 0;
 
-	receive = HAL_UART_Receive(&UartHandle, (uint8_t*)data16, (sizeof(data16[0]) * data_len) , 5);
-
-	if (receive != HAL_OK) {
-		modbus_error_handler(receive);
-		return NULL;
-	}
-
-	return &data16;
-	*/
 }
 
 void modbus_listen()
@@ -177,7 +174,29 @@ void modbus_listen()
 		}
 	}
 }
+*/
 
+uint8_t modbus_transmit(uint8_t *msg, uint8_t msg_len)
+{
+	transmit = HAL_UART_Transmit (&UartHandle, msg, msg_len, 2);
+	modbus_error_handler(transmit);
+	return transmit;
+}
+
+uint8_t* modbus_receive(uint8_t data_len)
+{
+	uint8_t receive = 0;
+
+	receive = HAL_UART_Receive(&UartHandle, data, (sizeof(data[0]) * data_len) , 3);
+
+	if (receive != HAL_OK) {
+		LCD_UsrLog("Receive, ");
+		modbus_error_handler(receive);
+		return NULL;
+	}
+
+	return data;
+}
 
 void modbus_error_handler(uint8_t error)
 {
