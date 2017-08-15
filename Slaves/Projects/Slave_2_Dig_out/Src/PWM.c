@@ -1,8 +1,5 @@
 #include "PWM.h"
 
-TIM_HandleTypeDef pwm_handle;
-TIM_OC_InitTypeDef pwm_oc_init;
-
 void pwm_init()
 {
 	// TIM3_CH2 init as PWM
