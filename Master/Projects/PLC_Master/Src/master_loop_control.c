@@ -88,6 +88,12 @@ void scan_digital_slaves()
 	}
 }
 
+void scan_analog_slaves()
+{
+	analog_rx_tx_t
+	tx_analog_in_t
+}
+
 void scan_inputs()
 {
 	scan_digital_input();
