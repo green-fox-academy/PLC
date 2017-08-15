@@ -23,6 +23,7 @@ UART_HandleTypeDef UartHandle;
 void SystemClock_Config(void);
 static void Error_Handler(void);
 void system_init();
+void PWM_pin_init();
 uint8_t slave_address_set();
 
 /* Private functions ---------------------------------------------------------*/
@@ -40,6 +41,15 @@ int main(void)
 	slave_address = 5;
 
 	modbus_DOUT_listen();
+
+	for (int i = 0; i <=100; i++) {
+			  pwm_set_duty(i);
+			  HAL_Delay(30);
+		  }
+		  for (int i = 100; i >= 0; i--) {
+			  pwm_set_duty(i);
+			  HAL_Delay(30);
+		  	  }
 
 }
 
@@ -66,11 +76,13 @@ void system_init()
 
 	/* Init Uart and modbus protocol C11 : RX and C10 : TX */
 	modbus_init();
+	pwm_init();
+	PWM_pin_init();
 
 	/* Init PINs from DPIN8 to DPIN15 as a digital outputs */
-	for (int i = 8; i < 16; i++) {
+	/*for (int i = 8; i < 16; i++) {
 		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
-	}
+	}*/
 
 	/* Init Pins from DPIN2 to DPIN6 as an Digital inputs for Slave_address */
 	for (int i = 2; i < 7; i++) {
@@ -79,6 +91,22 @@ void system_init()
 
 	//slave_address = slave_address_set();
 
+}
+
+
+
+void PWM_pin_init()
+{
+	__HAL_RCC_GPIOC_CLK_ENABLE();
+
+	GPIO_InitTypeDef gpio_c;
+	gpio_c.Pin = GPIO_PIN_7;
+	gpio_c.Mode = GPIO_MODE_AF_PP;
+	//gpio_c.Mode = GPIO_MODE_OUTPUT_PP;
+	gpio_c.Pull = GPIO_NOPULL;
+	gpio_c.Speed = GPIO_SPEED_FREQ_HIGH;
+	gpio_c.Alternate = GPIO_AF2_TIM3;
+	HAL_GPIO_Init(GPIOC, &gpio_c);
 }
 
 
