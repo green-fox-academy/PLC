@@ -65,6 +65,7 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 struct netif gnetif; /* network interface structure */
+uint8_t mode = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 void system_init(void);
@@ -133,6 +134,25 @@ int main(void)
 
 		while (!BSP_PB_GetState(BUTTON_KEY)) {
 
+		if (gpio_read_digital_pin(3)) {
+			mode = 1; // normal mode
+			gpio_set_digital_pin(10);
+			gpio_reset_digital_pin(8);
+			gpio_reset_digital_pin(9);
+
+		} else if(gpio_read_digital_pin(4)) {
+			mode = 2;
+			gpio_set_digital_pin(8);
+			gpio_reset_digital_pin(9);
+			gpio_reset_digital_pin(10);
+
+
+		} else {
+			mode = 0; // simple on / off direct mode
+			gpio_set_digital_pin(9);
+			gpio_reset_digital_pin(8);
+			gpio_reset_digital_pin(10);
+		}
 		// Digital input
 		modbus_send_command(d_in_msg, 2);						// Send the address to the digital input slave
 		d_in_state = modbus_receive_data(1)[0];					// Receive pin states from digital input slave
@@ -268,42 +288,102 @@ void logic_process(uint8_t *d_in_state, uint8_t *d_out_state )
 	uint8_t din_state = *d_in_state;
 	uint8_t dout_state = *d_out_state;
 
-	if (DIN1 AND DIN2)
-		DOU3_ON;
-	else
-		DOU3_OFF;
+	if (mode == 2) {
+		if (DIN1 AND DIN2)
+			DOU3_ON;
+		else
+			DOU3_OFF;
 
-	if (DOU3 OR !DIN8)
-		DOU1_ON;
-	else
-		DOU1_OFF;
+		if (DOU3 OR !DIN8)
+			DOU1_ON;
+		else
+			DOU1_OFF;
 
-	if (DIN8)
-		DOU8_ON;
-	else
-		DOU8_OFF;
+		if (DIN8)
+			DOU8_ON;
+		else
+			DOU8_OFF;
 
-	if (DIN8 AND DIN7) {
-		DOU1_OFF;
-	}
+		if (DIN8 AND DIN7) {
+			DOU1_OFF;
+		}
 
-	if (DIN6)
-		DOU6_ON;
-	else
-		DOU6_OFF;
+		if (DIN6)
+			DOU6_ON;
+		else
+			DOU6_OFF;
 
-	if(DIN5 OR DIN4)
-		DOU7_ON;
+		if(DIN5 OR DIN4)
+			DOU7_ON;
 
-	if(DIN1)
-		DOU7_OFF;
+		if(DIN1)
+			DOU7_OFF;
 
-	if(DIN1 AND DIN2 AND DIN3 AND DIN4){
-		DOU1_ON; DOU2_ON; DOU3_ON; DOU4_ON; DOU5_ON; DOU6_ON;DOU7_ON; DOU8_ON;
-	}
+		if(DIN1 AND DIN2 AND DIN3 AND DIN4){
+			DOU1_ON; DOU2_ON; DOU3_ON; DOU4_ON; DOU5_ON; DOU6_ON;DOU7_ON; DOU8_ON;
+		}
 
-	if(DIN5 AND DIN6 AND DIN7 AND DIN8){
-		DOU1_OFF; DOU2_OFF; DOU3_OFF; DOU4_OFF; DOU5_OFF; DOU6_OFF;DOU7_OFF; DOU8_OFF;
+		if(DIN5 AND DIN6 AND DIN7 AND DIN8){
+			DOU1_OFF; DOU2_OFF; DOU3_OFF; DOU4_OFF; DOU5_OFF; DOU6_OFF;DOU7_OFF; DOU8_OFF;
+		}
+	}else if (mode == 1) {
+
+		if (DIN1 AND DIN2)
+			DOU1_ON;
+		else
+			DOU1_OFF;
+
+		if (DIN3 OR DIN4)
+			DOU2_ON;
+		else
+			DOU2_OFF;
+
+		if (NOT DIN5)
+			DOU8_ON;
+		else
+			DOU8_OFF;
+
+	} else {
+
+		if(DIN1)
+			DOU1_ON;
+		else
+			DOU1_OFF;
+
+		if(DIN2)
+			DOU2_ON;
+		else
+			DOU2_OFF;
+
+		if(DIN3)
+			DOU3_ON;
+		else
+			DOU3_OFF;
+
+		if(DIN4)
+			DOU4_ON;
+		else
+			DOU4_OFF;
+
+		if(DIN5)
+			DOU5_ON;
+		else
+			DOU5_OFF;
+
+		if(DIN6)
+			DOU6_ON;
+		else
+			DOU6_OFF;
+
+		if(DIN7)
+			DOU7_ON;
+		else
+			DOU7_OFF;
+
+		if(DIN8)
+			DOU8_ON;
+		else
+			DOU8_OFF;
 	}
 
 	// Update output table
