@@ -37,6 +37,48 @@ void control_slaves_thread(void const * argument)
 	}
 }
 
+
+void scan_inputs()
+{
+	scan_digital_input();
+	scan_analog_input();
+}
+
+void scan_digital_input(digital_rx_tx_t digital_frame, uint8_t slave_index)
+{
+	modbus_transmit((uint8_t*)digital_frame, DIGITAL_RX_TX);
+	dig_rx_tx = (digital_rx_tx_t)modbus_receive(DIGITAL_RX_TX);
+
+	if (digital_frame.address == dig_rx_tx.address &&
+		digital_frame.command == dig_rx_tx.command &&
+		digital_frame.crc == dig_rx_tx.crc) {
+
+	}
+
+	digital_input_slaves[slave_index].digital_pins_state = dig_rx_tx.data;
+}
+
+void execute_program()
+{
+	/* Variables made from tables */
+	uint8_t din_state = digital_input_slaves[0].digital_pins_state;
+	uint8_t dout_state = digital_output_slaves[0].digital_pins_state;
+
+	if (DIN1) DOU1_ON; else DOU1_OFF;
+	if (DIN2) DOU2_ON; else DOU2_OFF;
+	if (DIN3) DOU3_ON; else DOU3_OFF;
+	if (DIN4) DOU4_ON; else DOU4_OFF;
+	if (DIN5) DOU5_ON; else DOU5_OFF;
+	if (DIN6) DOU6_ON; else DOU6_OFF;
+	if (DIN7) DOU7_ON; else DOU7_OFF;
+	if (DIN8) DOU8_ON; else DOU8_OFF;
+
+	// Update output table
+
+	digital_output_slaves[0].digital_pins_state = dout_state;
+	//a_out_state = aout_state;
+}
+
 void master_loop_control_init()
 {
 	for (int i = 0; i < 4; i++) {
@@ -56,14 +98,5 @@ void master_loop_control_init()
 			analog_output_slaves[i].analoge_pins_state[j];
 		}
 	}
-
 }
-
-void tx_rx_digital_slave(digital_rx_tx_t message)
-{
-
-}
-
-
-
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
