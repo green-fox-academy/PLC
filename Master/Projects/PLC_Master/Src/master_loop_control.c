@@ -37,6 +37,30 @@ void control_slaves_thread(void const * argument)
 	}
 }
 
+void scan_slaves()
+{
+	scan_din_slaves();
+	scan_dout_slaves();
+	scan_ain_slaves();
+	scan_aout_slaves();
+}
+
+scan_din_slaves()
+{
+	digital_rx_tx_t rec_msg;
+
+	for (uint8_t i = 0; i < 4; i++) {
+		dig_rx_tx.address = digital_input_slaves_address[i];
+		dig_rx_tx.command = SCAN_SLAVE;
+		dig_rx_tx.data = SCAN_SLAVE;
+		dig_rx_tx.crc = 10000;
+
+		modbus_transmit(&dig_rx_tx, DIGITAL_RX_TX);
+		HAL_UART_Receive(&UartHandle, &rec_msg, DIGITAL_RX_TX , 3);
+
+
+	}
+}
 
 void scan_inputs()
 {
@@ -44,9 +68,9 @@ void scan_inputs()
 	scan_analog_input();
 }
 
-void scan_digital_input(digital_rx_tx_t digital_frame, uint8_t slave_index)
+void scan_digital_input(digital_rx_tx_t* digital_frame, uint8_t slave_index)
 {
-	modbus_transmit((uint8_t*)digital_frame, DIGITAL_RX_TX);
+	modbus_transmit(digital_frame, DIGITAL_RX_TX);
 	dig_rx_tx = (digital_rx_tx_t)modbus_receive(DIGITAL_RX_TX);
 
 	if (digital_frame.address == dig_rx_tx.address &&

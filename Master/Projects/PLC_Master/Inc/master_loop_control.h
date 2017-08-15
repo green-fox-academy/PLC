@@ -84,12 +84,14 @@
 typedef struct {
 	uint8_t slave_address;
 	uint8_t digital_pins_state;
+	uint8_t aviable;
 }slave_digital_t;
 
 /* Struct for store analoge slave pin state*/
 typedef struct {
 	uint8_t slave_address;
 	uint16_t analoge_pins_state[6];
+	uint8_t avaible;
 }slave_analog_t;
 
 /* ## Protocol message frames ## */
@@ -128,15 +130,19 @@ tx_analog_in_t an_tx;
 
 /* This array stores data from digital input slaves */
 slave_digital_t digital_input_slaves[4];
+uint8_t num_of_dig_in;
 
 /* This array stores data for digital otput slaves */
 slave_digital_t digital_output_slaves[4];
+uint8_t num_of_dig_out;
 
 /* This array stores data from analog input slaves */
 slave_analog_t analog_input_slaves[4];
+uint8_t num_of_an_in;
 
 /* This array stores data for analog otput slaves */
 slave_analog_t analog_output_slaves[4];
+uint8_t num_of_an_out;
 
 /* Theese arrays contains the addresses of the slaves */
 const uint8_t digital_input_slaves_address[]  = {1,2,3,4};

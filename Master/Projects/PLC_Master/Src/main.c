@@ -233,48 +233,6 @@ void make_8b_msg(uint8_t *b8_data, uint8_t adr, uint16_t *b16_data, uint8_t b16_
     }
 }
 
-void logic_process(uint8_t *d_in_state, uint8_t *d_out_state )
-{
-	/* Variables made from tables */
-	uint8_t din_state = *d_in_state;
-	uint8_t dout_state = *d_out_state;
-
-	if (DIN1 AND DIN2)
-		DOU3_ON;
-	else
-		DOU3_OFF;
-
-	if (DOU3 OR !DIN8)
-		DOU1_ON;
-	else
-		DOU1_OFF;
-
-	if (DIN8)
-		DOU8_ON;
-	else
-		DOU8_OFF;
-
-	if (DIN8 AND DIN7) {
-		DOU1_OFF;
-	}
-
-	if (DIN6)
-		DOU6_ON;
-	else
-		DOU6_OFF;
-
-	if(DIN5 OR DIN4)
-		DOU7_ON;
-
-	if(DIN1)
-		DOU7_OFF;
-
-
-	// Update output table
-	*d_out_state = dout_state;
-	//a_out_state = aout_state;
-}
-
 /**
   * @brief  Initializes the lwIP stack
   * @param  None

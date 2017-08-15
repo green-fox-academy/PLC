@@ -4,11 +4,13 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
-
+#include "lcd_log.h"
+#include "stm32f7xx_hal_uart.h"
 
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
+UART_HandleTypeDef UartHandle;
 
 // Defines for UART Init
 

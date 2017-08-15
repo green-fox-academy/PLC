@@ -1,7 +1,5 @@
 /* Includes ------------------------------------------------------------------*/
 #include "modbus.h"
-#include "lcd_log.h"
-#include "stm32f7xx_hal_uart.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -9,7 +7,6 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* UART handler declaration */
-UART_HandleTypeDef UartHandle;
 
 uint8_t receive = 0;
 uint8_t transmit = 0;
