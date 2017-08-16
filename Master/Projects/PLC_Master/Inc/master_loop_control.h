@@ -84,14 +84,12 @@
 typedef struct {
 	uint8_t slave_address;
 	uint8_t digital_pins_state;
-	uint8_t aviable;
 }slave_digital_t;
 
 /* Struct for store analoge slave pin state*/
 typedef struct {
 	uint8_t slave_address;
 	uint16_t analoge_pins_state[6];
-	uint8_t avaible;
 }slave_analog_t;
 
 /* ## Protocol message frames ## */

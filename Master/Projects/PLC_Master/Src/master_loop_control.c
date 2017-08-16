@@ -48,6 +48,8 @@ void scan_slaves()
 scan_din_slaves()
 {
 	digital_rx_tx_t rec_msg;
+	uint8_t j = 0;
+	num_of_dig_in = 0;
 
 	for (uint8_t i = 0; i < 4; i++) {
 		dig_rx_tx.address = digital_input_slaves_address[i];
@@ -58,7 +60,14 @@ scan_din_slaves()
 		modbus_transmit(&dig_rx_tx, DIGITAL_RX_TX);
 		HAL_UART_Receive(&UartHandle, &rec_msg, DIGITAL_RX_TX , 3);
 
+		if (rec_msg.address == dig_rx_tx.address && rec_msg.command == dig_rx_tx.command
+			&& rec_msg.crc == dig_rx_tx.crc && rec_msg.data == dig_rx_tx.data) {
 
+			digital_input_slaves[j].slave_address = dig_rx_tx.address;
+			digital_input_slaves[j].digital_pins_state = 0;
+			j++;
+			num_of_dig_in++;
+		}
 	}
 }
 
