@@ -85,6 +85,7 @@ void system_init()
 		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
 	}
 
+	/* Init PINs from DPIN9 to DPIN11 as a PWM */
 	/*for (int i = 9; i < 12; i++) {
 		gpio_init_digital_pin_pwm(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
 	}*/
