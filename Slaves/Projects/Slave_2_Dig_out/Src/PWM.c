@@ -104,7 +104,7 @@ void gpio_init_digital_pin_pwm(uint8_t pin_index, uint32_t mode, uint32_t pull)
 	gpio_init_structure_pwm.Mode = mode;
 	gpio_init_structure_pwm.Pull = pull;
 	gpio_init_structure_pwm.Speed = GPIO_SPEED_FREQ_HIGH;
-	//gpio_init_structure_pwm.Alternate =;
+	gpio_init_structure_pwm.Alternate = stm32l476rg_digital_pins_pwm[pin_index].Alternate;
 
 	// Init the pin
 	HAL_GPIO_Init(stm32l476rg_digital_pins_pwm[pin_index].port, &gpio_init_structure_pwm);
