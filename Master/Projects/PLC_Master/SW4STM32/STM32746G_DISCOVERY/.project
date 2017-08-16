@@ -56,11 +56,6 @@
 			<locationURI>PARENT-2-PROJECT_LOC/Src/master_loop_control.c</locationURI>
 		</link>
 		<link>
-			<name>Application/Master_Control_Logic/modbus.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/Src/modbus.c</locationURI>
-		</link>
-		<link>
 			<name>Application/Master_Control_Logic/socket_client.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Src/socket_client.c</locationURI>

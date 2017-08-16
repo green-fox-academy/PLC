@@ -130,9 +130,10 @@ typedef struct {
 
 /* Exported variables ------------------------------------------------------- */
 
-digital_rx_tx_t dig_rx_tx;
-analog_rx_tx_t an_rx_tx;
-tx_analog_in_t an_tx;
+// Message frames
+command_slave_t msg_command;
+data_1b_t msg_1b;
+data_12b_t msg_16b;
 
 /* This array stores data from digital input slaves */
 slave_digital_t digital_input_slaves[4];
@@ -159,8 +160,7 @@ const uint8_t analog_output_slaves_address[]  = {13,14,15,16};
 
 /* Exported functions ------------------------------------------------------- */
 
-void control_slaves_thread(void const * argument);
-void master_logic_thread(void const * argument);
+void test_uart_communication();
 
 #endif /* __MASTER_LOOP_CONTROL_H */
 

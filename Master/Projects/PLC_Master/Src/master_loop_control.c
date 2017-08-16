@@ -1,6 +1,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "master_loop_control.h"
-#include "modbus.h"
+#include "uart.h"
 #include "cmsis_os.h"
 #include "main.h"
 /* Private define ------------------------------------------------------------*/
@@ -20,6 +20,8 @@
 
 void control_slaves_thread(void const * argument)
 {
+
+	master_loop_control_init();
 
 	scan_slaves();
 
@@ -48,20 +50,25 @@ void scan_slaves()
  * 	Function purpose: Scan all the digital slaves in the system.
  * 					  If there is one it will register it to table
  */
+
 void scan_digital_slaves()
 {
-	digital_rx_tx_t rec_msg;
 	uint8_t j = 0;
 	num_of_dig_in = 0;
 
-	/* Digital input slave */
-	for (uint8_t i = 0; i < 4; i++) {
-		dig_rx_tx.address = digital_input_slaves_address[i];
-		dig_rx_tx.command = SCAN_SLAVE;
-		dig_rx_tx.data = SCAN_SLAVE;
-		dig_rx_tx.crc = generate_crc();
+	msg_command.command = SCAN_SLAVE;
+	msg_command.crc = generate_crc();
 
-		modbus_transmit(&dig_rx_tx, DIGITAL_RX_TX);
+	// Set the zeros to 0
+	for (uint8_t i = 0; i < 12; i++) {
+	msg_command.zeros[i] = 0;
+	}
+
+	// Digital input slave
+	for (uint8_t i = 0; i < 4; i++) {
+		msg_command.address = digital_input_slaves_address[i];
+
+		UART_send(msg_command);
 		HAL_UART_Receive(&UartHandle, &rec_msg, DIGITAL_RX_TX , 3);
 
 		if (rec_msg.address == dig_rx_tx.address &&
@@ -72,7 +79,7 @@ void scan_digital_slaves()
 				digital_input_slaves[i].digital_pins_state = 0; // Set 0 for safety
 		}
 
-		/* Digital output slave */
+		// Digital output slave
 		dig_rx_tx.address = digital_output_slaves_address[i];
 		dig_rx_tx.crc = generate_crc();
 
@@ -95,10 +102,9 @@ void scan_digital_slaves()
 	}
 }
 
+
 void scan_analog_slaves()
 {
-	analog_rx_tx_t
-	tx_analog_in_t
 }
 
 void scan_inputs()
@@ -109,6 +115,7 @@ void scan_inputs()
 
 void scan_digital_input(digital_rx_tx_t* digital_frame, uint8_t slave_index)
 {
+	/*
 	modbus_transmit(digital_frame, DIGITAL_RX_TX);
 	dig_rx_tx = (digital_rx_tx_t)modbus_receive(DIGITAL_RX_TX);
 
@@ -119,6 +126,7 @@ void scan_digital_input(digital_rx_tx_t* digital_frame, uint8_t slave_index)
 	}
 
 	digital_input_slaves[slave_index].digital_pins_state = dig_rx_tx.data;
+	*/
 }
 
 void execute_program()
@@ -144,7 +152,9 @@ void execute_program()
 
 uint16_t generate_crc()
 {
-	return 10000;
+	uint16_t crc;
+	crc = 10000;
+	return crc;
 }
 
 void master_loop_control_init()
