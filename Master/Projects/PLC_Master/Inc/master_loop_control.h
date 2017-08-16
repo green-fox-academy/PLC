@@ -11,10 +11,16 @@
 #define ANALOG_RX_TX	16	// address:1, command:1, data:12, CRC:2
 #define ANALOG_TX		4	// address:1, command:1, CRC:2
 
-/* Command list */
-#define SCAN_SLAVE	3
-#define READ_DATA	14
-#define WRITE_DATA	48
+/* Command list with lexicode 3distance*/
+#define SCAN_SLAVE		0b00001111
+#define READ_DIGITAL	0b00110011
+#define WRITE_DIGITAL	0b01010101
+#define READ_ANALOG		0b01101010
+#define WRITE_ANALOG	0b10010110
+#define HOLD_INPUTS		0b10101011
+#define HOLD_OUTPUTS	0b11011011
+#define STOP_SLAVE		0b11101101
+#define START_SLAVE		0b11110111
 
 // Defines for logic process
 
@@ -94,13 +100,22 @@ typedef struct {
 
 /* ## Protocol message frames ## */
 
-/* Master -> <- digital in / out */
+typedef struct{
+	uint8_t address;
+	uint8_t command;
+	uint16_t crc;
+	uint8_t zeros[12];
+}command_slave_t;
+
+
+// Master -> Slave one byte data transfare
 typedef struct {
 	uint8_t address;
 	uint8_t command;
 	uint8_t data;
 	uint16_t crc;
-}digital_rx_tx_t;
+	uint8_t zeros[11];
+}data_1b_t;
 
 /* Master -> analog out slave
  * analog in slave -> master
@@ -111,14 +126,7 @@ typedef struct {
 	uint8_t command;
 	uint16_t data[6];
 	uint16_t crc;
-}analog_rx_tx_t;
-
-/* Master -> analog in msg type */
-typedef struct {
-	uint8_t address;
-	uint8_t command;
-	uint16_t crc;
-}tx_analog_in_t;
+}data_12b_t;
 
 /* Exported variables ------------------------------------------------------- */
 

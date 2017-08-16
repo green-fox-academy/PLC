@@ -47,12 +47,20 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 extern ETH_HandleTypeDef EthHandle;
+extern UART_HandleTypeDef uart_handle;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
 /******************************************************************************/
 /*            Cortex-M7 Processor Exceptions Handlers                         */
 /******************************************************************************/
+
+
+
+void USART6_IRQHandler(void)
+{
+  HAL_UART_IRQHandler(&uart_handle);
+}
 
 /**
   * @brief  This function handles NMI exception.
@@ -114,6 +122,9 @@ void UsageFault_Handler(void)
   {
   }
 }
+
+
+void USA
 
 /**
   * @brief  This function handles Debug Monitor exception.
