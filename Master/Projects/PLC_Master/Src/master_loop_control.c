@@ -3,12 +3,13 @@
 #include "uart.h"
 #include "cmsis_os.h"
 #include "main.h"
+#include "lcd_log.h"
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private typedef -----------------------------------------------------------*/
 
 /* Private variables ------------------------------------------------------- */
-
+uint16_t generate_crc();
 /*
  * Loop  cycle:
  * 	1 - CPU check
@@ -46,13 +47,49 @@ void scan_slaves()
 	scan_aout_slaves();
 }
 
+void test_uart_sender()
+{
+	msg_command.address = 10;
+	msg_command.command = SCAN_SLAVE;
+	msg_command.crc = 3333;
+
+	// Set the zeros to 0
+	for (uint8_t i = 0; i < 12; i++) {
+	msg_command.zeros[i] = 0;
+	}
+
+	while (1) {
+
+		UART_send(&msg_command);
+		HAL_Delay(500);
+
+	}
+
+}
+
+void test_uart_receiver()
+{
+	while (interrupt_flag){
+		for(uint8_t i = 0; i < 16; i++) {
+			LCD_UsrLog("%d, ", RX_buffer[i]);
+		}
+		LCD_UsrLog("\n");
+	}
+
+	HAL_Delay(200);
+}
+
+
+
+
+
 /*	Function name:	  scan_din_slaves
  * 	Function purpose: Scan all the digital slaves in the system.
  * 					  If there is one it will register it to table
  */
-
 void scan_digital_slaves()
 {
+
 	uint8_t j = 0;
 	num_of_dig_in = 0;
 
@@ -68,8 +105,9 @@ void scan_digital_slaves()
 	for (uint8_t i = 0; i < 4; i++) {
 		msg_command.address = digital_input_slaves_address[i];
 
-		UART_send(msg_command);
-		HAL_UART_Receive(&UartHandle, &rec_msg, DIGITAL_RX_TX , 3);
+		UART_send(&msg_command);
+		while(!interrupt_flag); // This is not the best
+		interrupt_flag = 0;
 
 		if (rec_msg.address == dig_rx_tx.address &&
 			rec_msg.command == dig_rx_tx.command &&
@@ -100,6 +138,7 @@ void scan_digital_slaves()
 			num_of_dig_in++;
 		}
 	}
+
 }
 
 
@@ -113,9 +152,10 @@ void scan_inputs()
 	scan_analog_input();
 }
 
+
 void scan_digital_input(digital_rx_tx_t* digital_frame, uint8_t slave_index)
 {
-	/*
+
 	modbus_transmit(digital_frame, DIGITAL_RX_TX);
 	dig_rx_tx = (digital_rx_tx_t)modbus_receive(DIGITAL_RX_TX);
 
@@ -126,12 +166,13 @@ void scan_digital_input(digital_rx_tx_t* digital_frame, uint8_t slave_index)
 	}
 
 	digital_input_slaves[slave_index].digital_pins_state = dig_rx_tx.data;
-	*/
+
 }
+
 
 void execute_program()
 {
-	/* Variables made from tables */
+	// Variables made from tables
 	uint8_t din_state = digital_input_slaves[0].digital_pins_state;
 	uint8_t dout_state = digital_output_slaves[0].digital_pins_state;
 
@@ -177,4 +218,5 @@ void master_loop_control_init()
 		}
 	}
 }
+
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

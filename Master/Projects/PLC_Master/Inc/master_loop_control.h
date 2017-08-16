@@ -160,7 +160,8 @@ const uint8_t analog_output_slaves_address[]  = {13,14,15,16};
 
 /* Exported functions ------------------------------------------------------- */
 
-void test_uart_communication();
+void test_uart_sender();
+void test_uart_receiver();
 
 #endif /* __MASTER_LOOP_CONTROL_H */
 

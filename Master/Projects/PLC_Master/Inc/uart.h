@@ -34,5 +34,7 @@ uint8_t RX_buffer[RXBUFFERSIZE];
 uint8_t address;
 uint8_t interrupt_flag;
 
+void modbus_interupt_init();
+void UART_send(char* buffer);
 
 #endif /* __UART_H_ */

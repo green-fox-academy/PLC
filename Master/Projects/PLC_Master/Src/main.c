@@ -57,8 +57,9 @@
 #include "lcd_log.h"
 #include "socket_server.h"
 #include "socket_client.h"
-#include "modbus.h"
 #include "GPIO.h"
+#include "master_loop_control.h"
+#include "uart.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -97,37 +98,10 @@ int main(void)
 	/* Start scheduler */
 	//  osKernelStart();
 
+	test_uart_receiver();
 
-	char buf[3];
+//	test_uart_sender();
 
-	while (1) {
-
-		while (!BSP_PB_GetState(BUTTON_KEY)) {
-
-		// Digital input
-		modbus_send_command(d_in_msg, 2);						// Send the address to the digital input slave
-		d_in_state = modbus_receive_data(1)[0];					// Receive pin states from digital input slave
-
-		// Logic process
-		logic_process(&d_in_state, &d_out_state);
-
-		d_out_msg[1] = d_out_state;							// Set messages data to d_out
-
-		sprintf(buf, "%u", d_in_state);
-		BSP_LCD_DisplayStringAtLine(7, buf);
-		sprintf(buf, "%u", d_out_state);
-		BSP_LCD_DisplayStringAtLine(8,buf);
-
-		// Digital Output
-		modbus_send_command(d_out_msg, 2);					// Send message to digital output
-		modbus_receive_data(1);								// Receive data from digital output
-
-		HAL_Delay(100);
-		}
-
-		HAL_Delay(10000);
-
-	}
 }
 
 void system_init(void)
@@ -168,7 +142,7 @@ void system_init(void)
 	}
 
 	/* Initialize Modbus */
-	modbus_init();
+
 }
 
 /**

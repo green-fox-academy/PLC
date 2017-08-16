@@ -124,8 +124,6 @@ void UsageFault_Handler(void)
 }
 
 
-void USA
-
 /**
   * @brief  This function handles Debug Monitor exception.
   * @param  None

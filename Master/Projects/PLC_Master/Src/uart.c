@@ -25,7 +25,7 @@ void UART_send(char* buffer)
 }
 
 
-void modbus_init()
+void modbus_interupt_init()
 {
 	buffer_init();
 	rx_tx_GPIO_init();
