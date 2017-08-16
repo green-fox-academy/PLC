@@ -30,7 +30,7 @@ void control_slaves_thread(void const * argument)
 		// slaves_check();
 		scan_inputs();
 		execute_program();
-		upadte_outputs ();
+		upadte_outputs();
 
 		osDelay(1);
 
@@ -87,11 +87,6 @@ void scan_digital_slaves()
 				digital_output_slaves[i].digital_pins_state = 0; // Set 0 for safety
 		}
 
-			digital_input_slaves[j].slave_address = dig_rx_tx.address;
-			digital_input_slaves[j].digital_pins_state = 0;
-			j++;
-			num_of_dig_in++;
-		}
 	}
 }
 
