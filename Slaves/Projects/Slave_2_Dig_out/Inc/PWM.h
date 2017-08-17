@@ -6,6 +6,11 @@
 TIM_HandleTypeDef pwm_handle;
 TIM_OC_InitTypeDef pwm_oc_init;
 
+
+void pwm_init();
+void pwm_set_duty(float duty);
+
+
 /* ########## Functions for Digital pins ########## */
 
 /* Function name: GPIO_Set_PIN
@@ -21,15 +26,10 @@ TIM_OC_InitTypeDef pwm_oc_init;
  * 		GPIO_PULLDOWN
  * 		GPIO_PULLUP
  * 		GPIO_NOPULL
- * Function input - Alternate can be:
- *
  *
  */
 
 void gpio_init_digital_pin_pwm(uint8_t pin_index, uint32_t mode, uint32_t pull);
-
-void pwm_init();
-void pwm_set_duty(float duty);
 
 
 #endif // PWM_H_INCLUDED
