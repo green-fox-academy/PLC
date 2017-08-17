@@ -1,8 +1,8 @@
 /* Includes ------------------------------------------------------------------*/
-#include "master_loop_control.h"
 #include "modbus.h"
 #include "cmsis_os.h"
-#include "main.h"
+#include "master_loop_control.h"
+
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private typedef -----------------------------------------------------------*/

@@ -7,9 +7,9 @@
 
 /* Exported constants --------------------------------------------------------*/
 
-#define DIGITAL_RX_TX	5 	// address:1, command:1, data:1, CRC:2
-#define ANALOG_RX_TX	16	// address:1, command:1, data:12, CRC:2
-#define ANALOG_TX		4	// address:1, command:1, CRC:2
+#define DIGITAL_RX_TX_SIZE	5 	// address:1, command:1, data:1, CRC:2
+#define ANALOG_RX_TX_SIZE	16	// address:1, command:1, data:12, CRC:2
+#define ANALOG_TX_SIZE		4	// address:1, command:1, CRC:2
 
 /* Command list */
 #define SCAN_SLAVE	3

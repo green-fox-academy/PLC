@@ -144,7 +144,7 @@ void modbus_ain_listen()
 			if (aRxBuffer[0] == slave_address) {
 
 				// Read ADC data from A0 to A6
-				adc_value = adc_measure();
+	//			adc_value = adc_measure();
 
 				if (adc_value > 2200 && adc_value < 2600) {
 						adc_value = 2200;
