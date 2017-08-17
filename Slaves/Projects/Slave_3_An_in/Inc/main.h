@@ -45,6 +45,7 @@
 #include "stm32l476xx.h"
 #include "GPIO.h"
 #include "adc.h"
+#include "uart.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/

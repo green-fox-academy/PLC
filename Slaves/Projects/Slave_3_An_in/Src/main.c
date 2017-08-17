@@ -46,6 +46,7 @@
 uint8_t analog_pin = 0; //user input for which analog input pin is used; 0..5 equals A0..A5
 uint8_t digital_pin = 2; //user input for which digital input pin is used; 0..15 equals D0..D15
 
+
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
 
@@ -80,11 +81,17 @@ int main(void)
 	// Init ADC
 	adc_init();
 
+	// Init UART
+	uart_init();
+
 	/* Forever loop: changing the potentiometer's if adc measurement is less than the half of the possible
 	 * maximal value, the board's LED2 and the attached red led turns on.
 	 * For higher value leds are turning off.
 	 */
-	while (1) {
+	uart_send("UART initialized\n\r");
+
+	uint8_t i = 1;
+	while (i < 11) {
 		if (adc_measure(analog_pin) < 4095/2 ) {
 			BSP_LED_On(LED2);
 			gpio_set_digital_pin(digital_pin);
@@ -92,7 +99,21 @@ int main(void)
 			BSP_LED_Off(LED2);
 			gpio_reset_digital_pin(digital_pin);
 		}
+		uint16_t adc_measured_value = adc_measure(analog_pin);
+		char str[6];
+		char ctr[2];
+		sprintf(str, "%d", adc_measured_value);
+		sprintf(ctr, "%d", i);
+		uart_send(ctr);
+		uart_send(". ADC measured value: ");
+		uart_send(str);
+		uart_send("\n\r");
+		HAL_Delay(250);
+		uart_receive();
+		i++;
 	}
+	adc_deinit();
+	uart_send("ADC measurement finished.\n\r");
 }
 
 /**

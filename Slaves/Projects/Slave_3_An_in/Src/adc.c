@@ -119,8 +119,7 @@ uint16_t adc_measure(uint8_t analog_pin)
 	HAL_ADC_ConfigChannel(&adc_handle, &adc_channel[analog_pin]);
 	HAL_ADC_Start(&adc_handle);
 	HAL_ADC_PollForConversion(&adc_handle, HAL_MAX_DELAY);
-	uint32_t adc_measured_value = HAL_ADC_GetValue(&adc_handle);
-	//return HAL_ADC_GetValue(&adc_handle);
+	return HAL_ADC_GetValue(&adc_handle);
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
