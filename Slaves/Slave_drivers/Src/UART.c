@@ -75,7 +75,7 @@ void uart_send(char* buffer)
 
 	// Send buffer content
 	HAL_UART_Transmit(&uart_handle, (uint8_t*) buffer, bufflength, timeout);
-	HAL_Delay(250);
+	HAL_Delay(50);
 
 	// Send new line
 	//HAL_UART_Transmit(&uart_handle, (uint8_t*) "\r\n", 2, timeout);

@@ -43,8 +43,8 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-uint8_t analog_pin = 0; //user input for which analog input pin is used; 0..5 equals A0..A5
-uint8_t digital_pin = 2; //user input for which digital input pin is used; 0..15 equals D0..D15
+// uint8_t analog_pin = 0; //user input for which analog input pin is used; 0..5 equals A0..A5
+// uint8_t digital_pin = 2; //user input for which digital input pin is used; 0..15 equals D0..D15
 
 
 /* Private function prototypes -----------------------------------------------*/
@@ -69,9 +69,16 @@ int main(void)
 	/* Initialize LED on board */
 	BSP_LED_Init(LED2);
 
+	// Init UART
+	uart_init();
+	uart_send("UART initialized\n\r");
+
 	/* Add your application code here */
 	// Init GPIO digital pin for LED
-	gpio_init_digital_pin(digital_pin, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
+	for (uint8_t i = 2; i < 8; i++) {
+		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
+	}
+	uart_send("LEDs initialized\n\r");
 
 	// Init GPIO analog pin for ADC (argument: A(x) pin)
 	for (uint8_t i = 0; i < 6; i++) {
@@ -80,35 +87,30 @@ int main(void)
 
 	// Init ADC
 	adc_init();
+	uart_send("ADC initialized\n\r");
 
-	// Init UART
-	uart_init();
-
-	/* Forever loop: changing the potentiometer's if adc measurement is less than the half of the possible
-	 * maximal value, the board's LED2 and the attached red led turns on.
-	 * For higher value leds are turning off.
-	 */
-	uart_send("UART initialized\n\r");
 
 	uint8_t i = 1;
 	while (i < 11) {
-		if (adc_measure(analog_pin) < 4095/2 ) {
-			BSP_LED_On(LED2);
-			gpio_set_digital_pin(digital_pin);
-		} else {
-			BSP_LED_Off(LED2);
-			gpio_reset_digital_pin(digital_pin);
-		}
+
 		uint16_t adc_measured_value[6];
 
 		for (uint8_t j = 0; j < 6; j++) {
+			if (adc_measure(j) < 4095/2 ) {
+				//BSP_LED_On(LED2);
+				gpio_set_digital_pin(j+2);
+			} else {
+				//BSP_LED_Off(LED2);
+				gpio_reset_digital_pin(j+2);
+			}
+
 			char value_in_string[6];
 			char counter[2];
 			char pot_counter[2];
 			adc_measured_value[j] = adc_measure(j);
 			sprintf(value_in_string, "%d", adc_measured_value[j]);
 			sprintf(counter, "%d", i);
-			sprintf(pot_counter, "%d", j);
+			sprintf(pot_counter, "%d", j+1);
 			uart_send(counter);
 			uart_send(". Measurement value on ");
 			uart_send(pot_counter);
@@ -116,8 +118,9 @@ int main(void)
 			uart_send(value_in_string);
 			uart_send("\n\r");
 		}
-		HAL_Delay(250);
 		uart_receive();
+		uart_send("\n\r");
+		HAL_Delay(500);
 		i++;
 	}
 	adc_deinit();
