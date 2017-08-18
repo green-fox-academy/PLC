@@ -7,8 +7,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define TXBUFFERSIZE        16			// transmit
-#define RXBUFFERSIZE        16			// receive
+#define TXBUFFERSIZE        32			// transmit
+#define RXBUFFERSIZE        32			// receive
 
 #define USARTx                           USART3
 #define USARTx_CLK_ENABLE()              __HAL_RCC_USART3_CLK_ENABLE()
@@ -32,8 +32,9 @@ UART_HandleTypeDef uart_handle;
 
 uint8_t TX_buffer[TXBUFFERSIZE];
 uint8_t RX_buffer[RXBUFFERSIZE];
-uint8_t address;
 volatile uint8_t interrupt_flag;
+
+uint8_t slave_address;
 
 void modbus_init();
 void UART_send(uint8_t *buffer);

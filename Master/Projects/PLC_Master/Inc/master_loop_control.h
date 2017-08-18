@@ -8,15 +8,15 @@
 /* Exported constants --------------------------------------------------------*/
 
 /* Command list with lexicode 3distance*/
-#define SCAN_SLAVE		0b00001111
-#define READ_DIGITAL	0b00110011
-#define WRITE_DIGITAL	0b01010101
-#define READ_ANALOG		0b01101010
-#define WRITE_ANALOG	0b10010110
-#define HOLD_INPUTS		0b10101011
-#define HOLD_OUTPUTS	0b11011011
-#define STOP_SLAVE		0b11101101
-#define START_SLAVE		0b11110111
+#define SCAN_SLAVE		0b00001111  // 15
+#define READ_DIGITAL	0b00110011	// 33
+#define WRITE_DIGITAL	0b01010101	// 55
+#define READ_ANALOG		0b01101010	// 106
+#define WRITE_ANALOG	0b10010110	// 150
+#define HOLD_INPUTS		0b10101011	// 171
+#define HOLD_OUTPUTS	0b11011011	// 219
+#define STOP_SLAVE		0b11101101	// 237
+#define START_SLAVE		0b11110111	// 247
 
 // Defines for logic process
 
@@ -160,12 +160,6 @@ uint8_t num_of_an_in;
 /* This array stores data for analog otput slaves */
 analog_tale_t analog_output_slaves[4];
 uint8_t num_of_an_out;
-
-/* Theese arrays contains the addresses of the slaves */
-const uint8_t digital_input_slaves_address[]  = {1,2,3,4};
-const uint8_t digital_output_slaves_address[] = {5,6,7,8};
-const uint8_t analog_input_slaves_address[]   = {9,10,11,12};
-const uint8_t analog_output_slaves_address[]  = {13,14,15,16};
 
 
 /* Exported functions ------------------------------------------------------- */

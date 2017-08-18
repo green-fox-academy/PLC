@@ -89,6 +89,8 @@ int main(void)
 {
 	system_init();
 
+	test_uart_sender();
+
 	/* Init thread
 	//	osThreadDef(Start, StartThread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 5);
 	//	osThreadCreate (osThread(Start), NULL);

@@ -61,11 +61,10 @@ void uart_init()
 	HAL_NVIC_EnableIRQ(USART6_IRQn);
 
 	// Start UART receiver in interrupt mode
-	HAL_UART_Receive_IT(&uart_handle, RX_buffer, 16);
+	HAL_UART_Receive_IT(&uart_handle, RX_buffer, 32);
 
 	LCD_UsrLog("UART - Initialized.\n");
 
-	address = 10;
 	interrupt_flag = 0;
 }
 

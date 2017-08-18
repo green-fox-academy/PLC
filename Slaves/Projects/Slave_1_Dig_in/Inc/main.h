@@ -42,7 +42,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx_nucleo.h"
-#include "modbus.h"
+#include "uart.h"
 #include "GPIO.h"
 
 /* Exported types ------------------------------------------------------------*/
@@ -50,8 +50,6 @@
 /* User can use this section to tailor USARTx/UARTx instance used and associated
    resources */
 /* Definition for USARTx clock resources */
-
-uint8_t slave_address;
 
 #endif /* __MAIN_H */
 

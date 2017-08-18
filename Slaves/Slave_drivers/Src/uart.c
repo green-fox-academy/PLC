@@ -18,7 +18,7 @@ void modbus_error_handler(uint8_t error);
 void UART_send(uint8_t *buffer)
 {
 	// Send buffer content
-	HAL_UART_Transmit(&uart_handle, (uint8_t*) buffer, 16, 4);
+	HAL_UART_Transmit(&uart_handle, (uint8_t*) buffer, 32, 4);
 
 }
 
@@ -60,9 +60,8 @@ void uart_init()
 	HAL_NVIC_EnableIRQ(USART3_IRQn);
 
 	// Start UART receiver in interrupt mode
-	HAL_UART_Receive_IT(&uart_handle, RX_buffer, 16);
+	HAL_UART_Receive_IT(&uart_handle, RX_buffer, 32);
 
-	address = 10;
 	interrupt_flag = 0;
 }
 
@@ -103,7 +102,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
 	interrupt_flag = 1;
 	// Re-enable the interrupt
-	HAL_UART_Receive_IT(huart, RX_buffer, 16);
+	HAL_UART_Receive_IT(huart, RX_buffer, 32);
 }
 
 void modbus_error_handler(uint8_t error)

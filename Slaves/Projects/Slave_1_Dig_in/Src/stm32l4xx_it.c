@@ -60,6 +60,10 @@
 /******************************************************************************/
 /*            Cortex-M4 Processor Exceptions Handlers                         */
 /******************************************************************************/
+void USART3_IRQHandler(void)
+{
+  HAL_UART_IRQHandler(&uart_handle);
+}
 
 /**
   * @brief   This function handles NMI exception.

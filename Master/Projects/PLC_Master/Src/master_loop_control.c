@@ -10,6 +10,14 @@
 /* Private typedef -----------------------------------------------------------*/
 
 /* Private variables ------------------------------------------------------- */
+
+/* Theese arrays contains the addresses of the slaves */
+uint8_t digital_input_slaves_address[]  = {1,2,3,4};
+uint8_t digital_output_slaves_address[] = {5,6,7,8};
+uint8_t analog_input_slaves_address[]   = {9,10,11,12};
+uint8_t analog_output_slaves_address[]  = {13,14,15,16};
+
+/* Private functions ------------------------------------------------------- */
 uint16_t generate_crc();
 void wait_function();
 /*
@@ -47,21 +55,11 @@ void test_uart_sender()
 	msg_command.command = SCAN_SLAVE;
 	msg_command.crc = 3333;
 
-	// Set the zeros to 0
-	for (uint8_t i = 0; i < 28; i++) {
-	msg_command.zeros[i] = 0;
-	}
-
-
 	uint8_t msg[32];
 	msg[0] = msg_command.address;
 	msg[1] = msg_command.command;
 	msg[2] = msg_command.crc;
 	msg[3] = msg_command.crc >> 8;
-
-	for (uint8_t i = 4; i < 32; i++) {
-		msg[i] = msg_command.zeros[i - 4];
-	}
 
 
 	while (1) {
@@ -74,7 +72,7 @@ void test_uart_sender()
 		}
 		LCD_UsrLog("\n");
 
-		HAL_Delay(250);
+		HAL_Delay(1000);
 
 	}
 
@@ -84,7 +82,7 @@ void test_uart_receiver()
 {
 	while (interrupt_flag){
 		for(uint8_t i = 0; i < 16; i++) {
-			LCD_UsrLog("%d, ", RX_buffer[i]);
+			LCD_UsrLog("%d , ", RX_buffer[i]);
 		}
 		LCD_UsrLog("\n");
 	}
@@ -156,8 +154,12 @@ void wait_function()
 		HAL_Delay(10);
 	}
 
-	if(ok)
+	if(ok) {
 		LCD_UsrLog("Time out\n");
+		for (uint8_t i = 0; i < RXBUFFERSIZE; i++) {
+			RX_buffer[i] = 0;
+		}
+	}
 
 	interrupt_flag = 0;
 }

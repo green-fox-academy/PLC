@@ -1,6 +1,7 @@
 #ifndef __UART_H_
 #define __UART_H_
 
+/* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
 #include "cmsis_os.h"
 #include <string.h>

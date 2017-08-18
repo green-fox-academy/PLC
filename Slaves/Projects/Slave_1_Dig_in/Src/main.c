@@ -37,9 +37,9 @@ int main(void)
 
 	system_init();
 
-	slave_address = 1;
+	slave_address = 10;
 
-	modbus_DIN_listen();
+	din_slave_loop_thread();
 
 }
 
