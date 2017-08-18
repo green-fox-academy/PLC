@@ -11,6 +11,7 @@
 
 /* Private variables ------------------------------------------------------- */
 uint16_t generate_crc();
+void wait_function();
 /*
  * Loop  cycle:
  * 	1 - CPU check
@@ -25,14 +26,13 @@ void control_slaves_thread(void const * argument)
 
 	master_loop_control_init();
 
-	scan_slaves();
+	scan_system_slaves();
 
 	while (1) {
 
-		/* */
 		// system_check();
 		// slaves_check();
-		scan_inputs();
+		load_input_tables();
 		execute_program();
 		upadte_outputs ();
 
@@ -48,14 +48,33 @@ void test_uart_sender()
 	msg_command.crc = 3333;
 
 	// Set the zeros to 0
-	for (uint8_t i = 0; i < 12; i++) {
+	for (uint8_t i = 0; i < 28; i++) {
 	msg_command.zeros[i] = 0;
 	}
 
+
+	uint8_t msg[32];
+	msg[0] = msg_command.address;
+	msg[1] = msg_command.command;
+	msg[2] = msg_command.crc;
+	msg[3] = msg_command.crc >> 8;
+
+	for (uint8_t i = 4; i < 32; i++) {
+		msg[i] = msg_command.zeros[i - 4];
+	}
+
+
 	while (1) {
 
-		UART_send(&msg_command);
-		HAL_Delay(500);
+		UART_send(msg);
+		wait_function();
+
+		for (uint8_t i = 0; i < 4; i++) {
+			LCD_UsrLog("%d ", RX_buffer[i]);
+		}
+		LCD_UsrLog("\n");
+
+		HAL_Delay(250);
 
 	}
 
@@ -98,6 +117,10 @@ void load_analog_input_table()
 
 }
 
+void update_outputs()
+{
+
+}
 
 void execute_program()
 {
@@ -118,6 +141,25 @@ void execute_program()
 
 	digital_output_slaves[0].digital_pins_state = dout_state;
 	//a_out_state = aout_state;
+}
+
+
+void wait_function()
+{
+	uint8_t counter;
+	uint8_t ok = 0;
+
+	while (!interrupt_flag && !ok) {
+		counter++;
+		if(counter >= 100)
+			ok = 1;
+		HAL_Delay(10);
+	}
+
+	if(ok)
+		LCD_UsrLog("Time out\n");
+
+	interrupt_flag = 0;
 }
 
 uint16_t generate_crc()

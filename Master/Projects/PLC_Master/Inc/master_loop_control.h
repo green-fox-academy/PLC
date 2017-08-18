@@ -107,7 +107,7 @@ typedef struct{
 	uint8_t address;
 	uint8_t command;
 	uint16_t crc;
-	uint8_t zeros[28 ];
+	uint8_t zeros[28];
 }command_slave_t;
 
 // Master -> Slave one byte data transfare
