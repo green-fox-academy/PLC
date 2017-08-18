@@ -55,24 +55,23 @@ void test_uart_sender()
 	msg_command.command = SCAN_SLAVE;
 	msg_command.crc = 3333;
 
-	uint8_t msg[32];
-	msg[0] = msg_command.address;
-	msg[1] = msg_command.command;
-	msg[2] = msg_command.crc;
-	msg[3] = msg_command.crc >> 8;
-
+	TX_buffer[0] = msg_command.address;
+	TX_buffer[1] = msg_command.command;
+	TX_buffer[2] = msg_command.crc;
+	TX_buffer[3] = msg_command.crc >> 8;
 
 	while (1) {
 
-		UART_send(msg);
+		UART_send(TX_buffer);
 		wait_function();
 
-		for (uint8_t i = 0; i < 4; i++) {
-			LCD_UsrLog("%d ", RX_buffer[i]);
-		}
-		LCD_UsrLog("\n");
+		msg_command.address = RX_buffer[0];
+		msg_command.command = RX_buffer[1];
+		msg_command.crc = RX_buffer[2] + (RX_buffer[3] << 8);
 
-		HAL_Delay(1000);
+		printf("adr: %d, com: %d, crc: %d\n", msg_command.address, msg_command.command, msg_command.crc);
+
+		HAL_Delay(500);
 
 	}
 

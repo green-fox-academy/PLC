@@ -32,6 +32,7 @@ UART_HandleTypeDef uart_handle;
 
 uint8_t TX_buffer[TXBUFFERSIZE];
 uint8_t RX_buffer[RXBUFFERSIZE];
+
 uint8_t address;
 volatile uint8_t interrupt_flag;
 

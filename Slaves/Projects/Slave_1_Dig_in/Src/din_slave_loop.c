@@ -47,11 +47,13 @@ void din_slave_loop_thread()
 /* Response for scan is the scan message */
 void response_to_scan()
 {
+	/*
 	TX_buffer[0] = 111;
 	TX_buffer[1] = 222;
 	TX_buffer[2] = 133;
 	TX_buffer[3] = 244;
-	UART_send(TX_buffer);
+	*/
+	UART_send(RX_buffer);
 }
 
 void send_pins_states()
