@@ -42,10 +42,16 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx_nucleo.h"
-#include "modbus.h"
 #include "GPIO.h"
+#include "uart.h"
 
 /* Exported types ------------------------------------------------------------*/
+ typedef struct {
+ 	uint8_t address;
+ 	uint16_t number_16;
+ 	uint8_t number_8;
+ }test_struct;
+
 /* Exported constants --------------------------------------------------------*/
 /* User can use this section to tailor USARTx/UARTx instance used and associated
    resources */

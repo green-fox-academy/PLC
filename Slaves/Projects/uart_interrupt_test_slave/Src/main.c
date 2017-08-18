@@ -37,16 +37,44 @@ int main(void)
 
 	system_init();
 
-	slave_address = 9;  // DIN:1 / DOUT:5 / AIN: 9 / AOUT : 13
+	  uint8_t msg[4];
+	  msg[0] = 1;
+	  msg[1] = 2;
+	  msg[2] = 3;
+	  msg[3] = 4;
 
-//	modbus_DIN_listen();
+	  test_struct test_msg;
+	  test_msg.address = 10;
+	  test_msg.number_16 = 2310;
+	  test_msg.number_8 = 128;
 
-//	modbus_DOUT_listen();
+		uint8_t msg_20b[20];
+		msg_20b[0] = test_msg.address;
+		msg_20b[1] = test_msg.number_16;
+		msg_20b[2] = test_msg.number_16 >> 8;
+		msg_20b[3] = test_msg.number_8;
 
-	modbus_ain_listen();
 
-//	modbus_aout_listen();
+	while(1) {
 
+		if (interrupt_flag) {
+
+			interrupt_flag = 0;
+
+			test_msg.address = RX_buffer[0];
+			test_msg.number_16 = RX_buffer[1] + (RX_buffer[2] << 8);
+			test_msg.number_8 = RX_buffer[3];
+
+			UART_send(RX_buffer);
+		}
+
+/*
+		UART_send(msg_20b);
+
+		HAL_Delay(250);
+*/
+
+	}
 }
 
 void system_init()

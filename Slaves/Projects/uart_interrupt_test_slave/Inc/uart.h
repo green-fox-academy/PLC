@@ -1,31 +1,32 @@
 #ifndef __UART_H_
 #define __UART_H_
 
-#include "stm32f7xx_hal.h"
-#include "cmsis_os.h"
+/* Includes ------------------------------------------------------------------*/
+#include "stm32l4xx_hal.h"
+#include "stm32l4xx_nucleo.h"
 #include <string.h>
 #include <stdlib.h>
 
 #define TXBUFFERSIZE        16			// transmit
 #define RXBUFFERSIZE        16			// receive
 
-#define USARTx                           USART6
-#define USARTx_CLK_ENABLE()              __USART6_CLK_ENABLE()
-#define USARTx_RX_GPIO_CLK_ENABLE()      __GPIOC_CLK_ENABLE()
-#define USARTx_TX_GPIO_CLK_ENABLE()      __GPIOC_CLK_ENABLE()
+#define USARTx                           USART3
+#define USARTx_CLK_ENABLE()              __HAL_RCC_USART3_CLK_ENABLE()
+#define USARTx_RX_GPIO_CLK_ENABLE()      __HAL_RCC_GPIOC_CLK_ENABLE()
+#define USARTx_TX_GPIO_CLK_ENABLE()    	 __HAL_RCC_GPIOC_CLK_ENABLE()
 
-#define USARTx_FORCE_RESET()             __USART6_FORCE_RESET()
-#define USARTx_RELEASE_RESET()           __USART6_RELEASE_RESET()
+#define USARTx_FORCE_RESET()             __HAL_RCC_USART3_FORCE_RESET()
+#define USARTx_RELEASE_RESET()           __HAL_RCC_USART3_RELEASE_RESET()
 
 #define BAUDRATE						115200
 
 /* Definition for USARTx Pins */
-#define USARTx_TX_PIN                    GPIO_PIN_6 //PIN: D1
+#define USARTx_TX_PIN                    GPIO_PIN_10
 #define USARTx_TX_GPIO_PORT              GPIOC
-#define USARTx_TX_AF                     GPIO_AF8_USART6
-#define USARTx_RX_PIN                    GPIO_PIN_7 //PIN: D0
+#define USARTx_TX_AF                     GPIO_AF7_USART3
+#define USARTx_RX_PIN                    GPIO_PIN_11
 #define USARTx_RX_GPIO_PORT              GPIOC
-#define USARTx_RX_AF                     GPIO_AF8_USART6
+#define USARTx_RX_AF                     GPIO_AF7_USART3
 
 UART_HandleTypeDef uart_handle;
 
