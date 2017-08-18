@@ -99,15 +99,23 @@ int main(void)
 			BSP_LED_Off(LED2);
 			gpio_reset_digital_pin(digital_pin);
 		}
-		uint16_t adc_measured_value = adc_measure(analog_pin);
-		char str[6];
-		char ctr[2];
-		sprintf(str, "%d", adc_measured_value);
-		sprintf(ctr, "%d", i);
-		uart_send(ctr);
-		uart_send(". ADC measured value: ");
-		uart_send(str);
-		uart_send("\n\r");
+		uint16_t adc_measured_value[6];
+
+		for (uint8_t j = 0; j < 6; j++) {
+			char value_in_string[6];
+			char counter[2];
+			char pot_counter[2];
+			adc_measured_value[j] = adc_measure(j);
+			sprintf(value_in_string, "%d", adc_measured_value[j]);
+			sprintf(counter, "%d", i);
+			sprintf(pot_counter, "%d", j);
+			uart_send(counter);
+			uart_send(". Measurement value on ");
+			uart_send(pot_counter);
+			uart_send("th potentio-meter: ");
+			uart_send(value_in_string);
+			uart_send("\n\r");
+		}
 		HAL_Delay(250);
 		uart_receive();
 		i++;
