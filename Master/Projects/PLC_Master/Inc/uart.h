@@ -6,8 +6,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define TXBUFFERSIZE        16			// transmit
-#define RXBUFFERSIZE        16			// receive
+#define TXBUFFERSIZE        32			// transmit
+#define RXBUFFERSIZE        32			// receive
 
 #define USARTx                           USART6
 #define USARTx_CLK_ENABLE()              __USART6_CLK_ENABLE()
@@ -32,9 +32,10 @@ UART_HandleTypeDef uart_handle;
 uint8_t TX_buffer[TXBUFFERSIZE];
 uint8_t RX_buffer[RXBUFFERSIZE];
 uint8_t address;
-uint8_t interrupt_flag;
+volatile uint8_t interrupt_flag;
 
-void modbus_interupt_init();
-void UART_send(char* buffer);
+void modbus_init();
+void UART_send(uint8_t *buffer);
+
 
 #endif /* __UART_H_ */

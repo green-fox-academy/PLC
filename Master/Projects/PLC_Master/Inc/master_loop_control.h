@@ -7,10 +7,6 @@
 
 /* Exported constants --------------------------------------------------------*/
 
-#define DIGITAL_RX_TX	5 	// address:1, command:1, data:1, CRC:2
-#define ANALOG_RX_TX	16	// address:1, command:1, data:12, CRC:2
-#define ANALOG_TX		4	// address:1, command:1, CRC:2
-
 /* Command list with lexicode 3distance*/
 #define SCAN_SLAVE		0b00001111
 #define READ_DIGITAL	0b00110011
@@ -86,27 +82,33 @@
 
 /* Exported types ------------------------------------------------------------*/
 
-/* Struct for store digital slave pin state*/
+/* ################################################
+ * #### Tables for store input and output data ####
+ * ################################################ */
+
+/* Struct for store digital slave pins states */
 typedef struct {
 	uint8_t slave_address;
 	uint8_t digital_pins_state;
-}slave_digital_t;
+}digital_table_t;
 
-/* Struct for store analoge slave pin state*/
+/* Struct for store analoge slave pins states */
 typedef struct {
 	uint8_t slave_address;
 	uint16_t analoge_pins_state[6];
-}slave_analog_t;
+}analog_tale_t;
 
-/* ## Protocol message frames ## */
+
+/* ###############################################
+ * #### Message frames for different commands ####
+ * ############################################### */
 
 typedef struct{
 	uint8_t address;
 	uint8_t command;
 	uint16_t crc;
-	uint8_t zeros[12];
+	uint8_t zeros[28 ];
 }command_slave_t;
-
 
 // Master -> Slave one byte data transfare
 typedef struct {
@@ -114,8 +116,8 @@ typedef struct {
 	uint8_t command;
 	uint8_t data;
 	uint16_t crc;
-	uint8_t zeros[11];
-}data_1b_t;
+	uint8_t zeros[27];
+}data_1x8bit_t;
 
 /* Master -> analog out slave
  * analog in slave -> master
@@ -126,29 +128,37 @@ typedef struct {
 	uint8_t command;
 	uint16_t data[6];
 	uint16_t crc;
-}data_12b_t;
+	uint8_t zeros[16]
+}data_6x16bit_t;
 
 /* Exported variables ------------------------------------------------------- */
 
-// Message frames
+/* ###########################
+ * #### Message variables ####
+ * ########################### */
 command_slave_t msg_command;
-data_1b_t msg_1b;
-data_12b_t msg_16b;
+data_1x8bit_t msg_1x8b;
+data_6x16bit_t msg_6x16b;
+
+
+/* #####################################################
+ * #### Table variables for store input/output data ####
+ * ##################################################### */
 
 /* This array stores data from digital input slaves */
-slave_digital_t digital_input_slaves[4];
+digital_table_t digital_input_slaves[4];
 uint8_t num_of_dig_in;
 
 /* This array stores data for digital otput slaves */
-slave_digital_t digital_output_slaves[4];
+digital_table_t digital_output_slaves[4];
 uint8_t num_of_dig_out;
 
 /* This array stores data from analog input slaves */
-slave_analog_t analog_input_slaves[4];
+analog_tale_t analog_input_slaves[4];
 uint8_t num_of_an_in;
 
 /* This array stores data for analog otput slaves */
-slave_analog_t analog_output_slaves[4];
+analog_tale_t analog_output_slaves[4];
 uint8_t num_of_an_out;
 
 /* Theese arrays contains the addresses of the slaves */

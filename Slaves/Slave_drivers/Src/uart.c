@@ -1,6 +1,5 @@
 /* Includes ------------------------------------------------------------------*/
 #include "uart.h"
-#include "lcd_log.h"
 #include "main.h"
 
 /* Private typedef -----------------------------------------------------------*/
@@ -14,13 +13,15 @@ void uart_init();
 void buffer_init();;
 
 /* Private functions ---------------------------------------------------------*/
+void modbus_error_handler(uint8_t error);
 
 void UART_send(uint8_t *buffer)
 {
 	// Send buffer content
-	HAL_UART_Transmit(&uart_handle, (uint8_t*) buffer, 32, 4);
+	HAL_UART_Transmit(&uart_handle, (uint8_t*) buffer, 16, 4);
 
 }
+
 
 void modbus_init()
 {
@@ -33,7 +34,6 @@ void buffer_init()
 {
 	for (int i = 0; i < RXBUFFERSIZE; i++) {
 		RX_buffer[i] = 0;
-		TX_buffer[i] = 0;
 	}
 }
 
@@ -49,21 +49,18 @@ void uart_init()
 	uart_handle.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
 
 	if(HAL_UART_DeInit(&uart_handle) != HAL_OK)
-		LCD_UsrLog("Uart deinit error.\n");
-	 // Error_Handler();
-
+		;
 	if(HAL_UART_Init(&uart_handle) != HAL_OK)
-	LCD_UsrLog("Uart init error.\n");
-		// Error_Handler();
+		;
+		// Error_
+
 
 	//Setup interrupts for UART
-	HAL_NVIC_SetPriority(USART6_IRQn, 0, 0);
-	HAL_NVIC_EnableIRQ(USART6_IRQn);
+	HAL_NVIC_SetPriority(USART3_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(USART3_IRQn);
 
 	// Start UART receiver in interrupt mode
 	HAL_UART_Receive_IT(&uart_handle, RX_buffer, 16);
-
-	LCD_UsrLog("UART - Initialized.\n");
 
 	address = 10;
 	interrupt_flag = 0;
@@ -98,7 +95,6 @@ void rx_tx_GPIO_init()
 
 	HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &GPIO_InitStruct);
 
-	LCD_UsrLog("GPIO - Rx,Tx - Initialized.\n");
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
@@ -107,5 +103,23 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
 	interrupt_flag = 1;
 	// Re-enable the interrupt
-	HAL_UART_Receive_IT(huart, RX_buffer, 32);
+	HAL_UART_Receive_IT(huart, RX_buffer, 16);
+}
+
+void modbus_error_handler(uint8_t error)
+{
+	switch (error) {
+
+	case 1 :
+		;
+		break;
+	case 2 :
+		;
+		break;
+	case 3 :
+		;
+		break;
+	default :
+		;
+	}
 }

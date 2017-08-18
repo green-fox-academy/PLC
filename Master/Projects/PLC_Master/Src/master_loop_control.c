@@ -4,6 +4,7 @@
 #include "cmsis_os.h"
 #include "main.h"
 #include "lcd_log.h"
+
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private typedef -----------------------------------------------------------*/
@@ -38,13 +39,6 @@ void control_slaves_thread(void const * argument)
 		osDelay(1);
 
 	}
-}
-
-void scan_slaves()
-{
-	scan_digital_slaves();
-	scan_ain_slaves();
-	scan_aout_slaves();
 }
 
 void test_uart_sender()
@@ -82,90 +76,25 @@ void test_uart_receiver()
 
 
 
-
-/*	Function name:	  scan_din_slaves
- * 	Function purpose: Scan all the digital slaves in the system.
- * 					  If there is one it will register it to table
- */
-void scan_digital_slaves()
+void scan_system_slaves()
 {
-
-	uint8_t j = 0;
-	num_of_dig_in = 0;
-
-	msg_command.command = SCAN_SLAVE;
-	msg_command.crc = generate_crc();
-
-	// Set the zeros to 0
-	for (uint8_t i = 0; i < 12; i++) {
-	msg_command.zeros[i] = 0;
-	}
-
-	// Digital input slave
-	for (uint8_t i = 0; i < 4; i++) {
-		msg_command.address = digital_input_slaves_address[i];
-
-		UART_send(&msg_command);
-		while(!interrupt_flag); // This is not the best
-		interrupt_flag = 0;
-
-		if (rec_msg.address == dig_rx_tx.address &&
-			rec_msg.command == dig_rx_tx.command &&
-			rec_msg.data == dig_rx_tx.data &&
-			rec_msg.crc == dig_rx_tx.crc) {
-				digital_input_slaves[i].slave_address = dig_rx_tx.address;
-				digital_input_slaves[i].digital_pins_state = 0; // Set 0 for safety
-		}
-
-		// Digital output slave
-		dig_rx_tx.address = digital_output_slaves_address[i];
-		dig_rx_tx.crc = generate_crc();
-
-		modbus_transmit(&dig_rx_tx, DIGITAL_RX_TX);
-		HAL_UART_Receive(&UartHandle, &rec_msg, DIGITAL_RX_TX , 3);
-
-		if (rec_msg.address == dig_rx_tx.address &&
-			rec_msg.command == dig_rx_tx.command &&
-			rec_msg.data == dig_rx_tx.data &&
-			rec_msg.crc == dig_rx_tx.crc) {
-				digital_output_slaves[i].slave_address = dig_rx_tx.address;
-				digital_output_slaves[i].digital_pins_state = 0; // Set 0 for safety
-		}
-
-			digital_input_slaves[j].slave_address = dig_rx_tx.address;
-			digital_input_slaves[j].digital_pins_state = 0;
-			j++;
-			num_of_dig_in++;
-		}
-	}
 
 }
 
-
-void scan_analog_slaves()
+void load_input_tables()
 {
-}
-
-void scan_inputs()
-{
-	scan_digital_input();
-	scan_analog_input();
+	load_digital_input_table();
+	load_analog_input_table();
 }
 
 
-void scan_digital_input(digital_rx_tx_t* digital_frame, uint8_t slave_index)
+void load_digital_input_table()
 {
 
-	modbus_transmit(digital_frame, DIGITAL_RX_TX);
-	dig_rx_tx = (digital_rx_tx_t)modbus_receive(DIGITAL_RX_TX);
+}
 
-	if (digital_frame.address == dig_rx_tx.address &&
-		digital_frame.command == dig_rx_tx.command &&
-		digital_frame.crc == dig_rx_tx.crc) {
-
-	}
-
-	digital_input_slaves[slave_index].digital_pins_state = dig_rx_tx.data;
+void load_analog_input_table()
+{
 
 }
 

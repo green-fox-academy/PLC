@@ -78,9 +78,7 @@ static void Error_Handler(void);
 static void CPU_CACHE_Enable(void);
 
 /* Private functions ---------------------------------------------------------*/
-void copy_array(uint16_t *target_array, uint16_t *source_array, uint8_t array_len);
-void make_8b_msg(uint8_t *b8_data, uint8_t adr, uint16_t *b16_data, uint8_t b16_len);
-void logic_process(uint8_t *d_in_state, uint8_t *d_out_state );
+
 
 /**
   * @brief  Main program
@@ -91,16 +89,15 @@ int main(void)
 {
 	system_init();
 
-	/* Init thread */
+	/* Init thread
 	//	osThreadDef(Start, StartThread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 5);
 	//	osThreadCreate (osThread(Start), NULL);
 
-	/* Start scheduler */
+	// Start scheduler
 	//  osKernelStart();
+	*/
 
-	test_uart_receiver();
 
-//	test_uart_sender();
 
 }
 
@@ -141,7 +138,9 @@ void system_init(void)
 		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
 	}
 
-	/* Initialize Modbus */
+	/* Initialize modbus */
+
+	modbus_init();
 
 }
 
@@ -190,22 +189,6 @@ static void StartThread(void const * argument)
 	}
 }
 
-void copy_array(uint16_t *target_array, uint16_t *source_array, uint8_t array_len)
-{
-	for (uint8_t i = 0; i < array_len; i++) {
-		target_array[i] = source_array[i];
-	}
-}
-
-void make_8b_msg(uint8_t *b8_data, uint8_t adr, uint16_t *b16_data, uint8_t b16_len)
-{
-    b8_data[0] = adr;
-
-    for (int i = 1; i <= b16_len; i++) {
-        b8_data[2 * i - 1] = b16_data[i - 1];
-        b8_data[2 * i] = b16_data[i -1] >> 8;
-    }
-}
 
 /**
   * @brief  Initializes the lwIP stack
