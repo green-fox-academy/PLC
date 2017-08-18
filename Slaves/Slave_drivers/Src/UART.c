@@ -74,7 +74,7 @@ void uart_send(char* buffer)
 	uint32_t timeout = 500;
 
 	// Send buffer content
-	HAL_UART_Transmit(&uart_handle, (uint8_t*) buffer, bufflength, timeout);
+	HAL_UART_Transmit(&uart_handle, (uint8_t*)buffer, bufflength, timeout);
 	HAL_Delay(50);
 
 	// Send new line
@@ -87,7 +87,7 @@ void uart_receive(void)
 	uint16_t bufflength = strlen(buffer);
 	uint32_t timeout = 500;
 	HAL_UART_Receive(&uart_handle, (uint8_t *)buffer, bufflength, timeout);
-	BSP_LED_Toggle(LED2);
+	//BSP_LED_Toggle(LED2);
 	HAL_Delay(250);
 }
 

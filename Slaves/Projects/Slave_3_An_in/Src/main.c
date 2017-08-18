@@ -45,9 +45,12 @@
 /* Private variables ---------------------------------------------------------*/
 // uint8_t analog_pin = 0; //user input for which analog input pin is used; 0..5 equals A0..A5
 // uint8_t digital_pin = 2; //user input for which digital input pin is used; 0..15 equals D0..D15
-
+uint16_t pot_measurement[10];
+uint8_t potnumber;
+uint32_t sum;
 
 /* Private function prototypes -----------------------------------------------*/
+uint16_t pot_measure_avg(uint8_t potnumber);
 static void SystemClock_Config(void);
 
 int main(void)
@@ -89,18 +92,24 @@ int main(void)
 	adc_init();
 	uart_send("ADC initialized\n\r");
 
+	uint8_t selected_pot = 0;
+	uint32_t sum_all = 0;
+	uint32_t sum_1 = 0;
 
+	// loop - i measurement series for each potmeter
 	uint8_t i = 1;
-	while (i < 11) {
-
+	while (i < 6) {
 		uint16_t adc_measured_value[6];
-
 		for (uint8_t j = 0; j < 6; j++) {
-			if (adc_measure(j) < 4095/2 ) {
-				//BSP_LED_On(LED2);
+			if (adc_measure(j) > 4095 ) { // note: the value depends on the ADC resolution! its 2^<res>!
+				BSP_LED_Toggle(LED2);
+				uart_send("ADC measurement error!\n\r");
+				return -1;
+			} else if (adc_measure(j) > 4095/2 ) {
+				BSP_LED_On(LED2);
 				gpio_set_digital_pin(j+2);
 			} else {
-				//BSP_LED_Off(LED2);
+				BSP_LED_Off(LED2);
 				gpio_reset_digital_pin(j+2);
 			}
 
@@ -108,23 +117,57 @@ int main(void)
 			char counter[2];
 			char pot_counter[2];
 			adc_measured_value[j] = adc_measure(j);
+			sum_all += adc_measured_value[j];
 			sprintf(value_in_string, "%d", adc_measured_value[j]);
 			sprintf(counter, "%d", i);
 			sprintf(pot_counter, "%d", j+1);
 			uart_send(counter);
-			uart_send(". Measurement value on ");
+			uart_send("th measurement value on #");
 			uart_send(pot_counter);
-			uart_send("th potentio-meter: ");
+			uart_send(" potentiometer: ");
 			uart_send(value_in_string);
 			uart_send("\n\r");
 		}
+		sum_1 += adc_measured_value[selected_pot];
 		uart_receive();
 		uart_send("\n\r");
-		HAL_Delay(500);
+		HAL_Delay(100);
 		i++;
 	}
+	pot_measure_avg(selected_pot);
 	adc_deinit();
 	uart_send("ADC measurement finished.\n\r");
+	char summ[5];
+	sprintf(summ, "%d", pot_measure_avg(selected_pot));
+	uart_send("Average of the last ten measurements on the selected potentiometer: ");
+	uart_send(summ);
+	uart_send(".\n\r");
+	char summ_all[5];
+	sprintf(summ_all, "%d", sum_all);
+	uart_send("Sum of every pot meaurement: ");
+	uart_send(summ_all);
+	uart_send(".\n\r");
+	char summ_1[5];
+	sprintf(summ_1, "%d", sum_1);
+	uart_send("Sum of the selected pot measurements: ");
+	uart_send(summ_1);
+	uart_send(".\n\r");
+}
+// writetofile function...
+
+
+
+
+
+uint16_t pot_measure_avg(uint8_t potnumber)
+{
+	uint32_t sum = 0;
+	for (uint8_t i = 0; i < 10; i++) {
+		pot_measurement[i] = adc_measure(potnumber);
+		HAL_Delay(250);
+		sum += pot_measurement[i];
+	}
+	return (uint16_t)(sum/10);
 }
 
 /**
