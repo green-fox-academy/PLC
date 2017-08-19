@@ -21,6 +21,8 @@ uint8_t analog_output_slaves_address[]  = {13,14,15,16};
 uint16_t generate_crc();
 uint8_t wait_function();
 uint8_t verify_response(uint8_t from, uint8_t to);
+void print_out_TX(uint8_t from, uint8_t how_many);
+void print_out_RX(uint8_t from, uint8_t how_many);
 /*
  * Loop  cycle:
  * 	1 - CPU check
@@ -113,7 +115,6 @@ void scan_system_slaves()
 		// #### SCAN DIGITAL INPUT ####
 		TX_buffer[0] = digital_input_slaves_address[i];
 		UART_send(TX_buffer);
-
 		// If it isn't time out
 		if (!wait_function()) {
 			// If RX and TX are the same
@@ -127,7 +128,6 @@ void scan_system_slaves()
 		// #### SCAN DIGITAL OUTPUT ####
 		TX_buffer[0] = digital_output_slaves_address[i];
 		UART_send(TX_buffer);
-
 		// If it isn't time out
 		if (!wait_function()) {
 			// If RX and TX are the same
@@ -267,24 +267,47 @@ uint8_t wait_function()
 	uint8_t time_out = 0;
 
 	while (!interrupt_flag && !time_out) {
-		counter++;
-		if(counter >= 4)
+		if (counter >= 4)
 			time_out = 1;
+		counter++;
 		HAL_Delay(1);
 	}
-
+/*
 	if(time_out) {
-//		LCD_UsrLog("Time out\n");
+		LCD_UsrLog("Time out\n");
 		for (uint8_t i = 0; i < RXBUFFERSIZE; i++) {
 			RX_buffer[i] = 0;
 		}
 	}
-
+*/
 	interrupt_flag = 0;
 
 	return time_out;
 
 }
+
+void print_out_RX(uint8_t from, uint8_t how_many)
+{
+	LCD_UsrLog("RX: ");
+
+	for (uint8_t i = from; i < (from + how_many); i++) {
+		LCD_UsrLog("[%d]: %d ", i, RX_buffer[i]);
+	}
+
+	LCD_UsrLog("\n");
+}
+
+void print_out_TX(uint8_t from, uint8_t how_many)
+{
+	LCD_UsrLog("TX: ");
+
+	for (uint8_t i = from; i < (from + how_many); i++) {
+		LCD_UsrLog("[%d]: %d ", i, TX_buffer[i]);
+	}
+
+	LCD_UsrLog("\n");
+}
+
 
 uint16_t generate_crc()
 {
