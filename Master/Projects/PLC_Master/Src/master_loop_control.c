@@ -19,7 +19,8 @@ uint8_t analog_output_slaves_address[]  = {13,14,15,16};
 
 /* Private functions ------------------------------------------------------- */
 uint16_t generate_crc();
-void wait_function();
+uint8_t wait_function();
+uint8_t verify_response(uint8_t from, uint8_t to);
 /*
  * Loop  cycle:
  * 	1 - CPU check
@@ -94,6 +95,112 @@ void test_uart_receiver()
 
 void scan_system_slaves()
 {
+	num_of_dig_in = 0;
+	num_of_dig_out = 0;
+	num_of_an_in = 0;
+	num_of_an_out = 0;
+
+	msg_command.command = SCAN_SLAVE;
+	msg_command.crc = 3333;
+
+	TX_buffer[1] = msg_command.command;
+	TX_buffer[2] = msg_command.crc;
+	TX_buffer[3] = msg_command.crc >> 8;
+
+
+	for (uint8_t i = 0; i < 4; i++) {
+
+		// #### SCAN DIGITAL INPUT ####
+		TX_buffer[0] = digital_input_slaves_address[i];
+		UART_send(TX_buffer);
+
+		// If it isn't time out
+		if (!wait_function()) {
+			// If RX and TX are the same
+			if (!verify_response(0,4)){
+				// Loads the DIGITAL INPUT table with address
+				digital_input_slaves[num_of_dig_in].slave_address = digital_input_slaves_address[i];
+				num_of_dig_in++;
+			}
+		}
+
+		// #### SCAN DIGITAL OUTPUT ####
+		TX_buffer[0] = digital_output_slaves_address[i];
+		UART_send(TX_buffer);
+
+		// If it isn't time out
+		if (!wait_function()) {
+			// If RX and TX are the same
+			if (!verify_response(0,4)){
+				// Loads the DIGITAL OUTPUT table with address
+				digital_output_slaves[num_of_dig_out].slave_address = digital_output_slaves_address[i];
+				num_of_dig_out++;
+			}
+		}
+
+		// #### SCAN ANALOG INPUT ####
+		TX_buffer[0] = analog_input_slaves_address[i];
+		UART_send(TX_buffer);
+
+		// If it isn't time out
+		if (!wait_function()) {
+			// If RX and TX are the same
+			if (!verify_response(0,4)){
+				// Loads the ANALOG INPUT table with address
+				analog_input_slaves[num_of_an_in].slave_address = analog_input_slaves_address[i];
+				num_of_an_in++;
+			}
+		}
+
+		// #### SCAN ANALOG OUTPUT ####
+		TX_buffer[0] = analog_output_slaves_address[i];
+		UART_send(TX_buffer);
+
+		// If it isn't time out
+		if (!wait_function()) {
+			// If RX and TX are the same
+			if (!verify_response(0,4)){
+				// Loads the ANALOG OUTPUT table with address
+				analog_output_slaves[num_of_an_out].slave_address = analog_output_slaves_address[i];
+				num_of_an_out++;
+			}
+		}
+	}
+
+	// LOG OUT THE RESULTS
+
+	LCD_UsrLog("Digital inputs number: %d\n", num_of_dig_in);
+	if (num_of_dig_in) {
+		for (uint8_t i = 0; i < num_of_dig_in; i++) {
+			LCD_UsrLog("%dDI_IN adr: %d ", i, digital_input_slaves[i].slave_address);
+		}
+		LCD_UsrLog("\n");
+	}
+
+	LCD_UsrLog("Digital outputs number: %d\n", num_of_dig_out);
+	if (num_of_dig_out) {
+		for (uint8_t i = 0; i < num_of_dig_out; i++) {
+			LCD_UsrLog("%dDI_OUT adr: %d ", i, digital_output_slaves[i].slave_address);
+		}
+		LCD_UsrLog("\n");
+	}
+
+	LCD_UsrLog("Analog inputs number: %d\n", num_of_an_in);
+	if (num_of_an_in) {
+		for (uint8_t i = 0; i < num_of_an_in; i++) {
+			LCD_UsrLog("%dAN_IN adr: %d ", i, analog_input_slaves[i].slave_address);
+		}
+		LCD_UsrLog("\n");
+	}
+
+	LCD_UsrLog("Digital inputs number: %d\n", num_of_an_out);
+	if (num_of_an_out) {
+		for (uint8_t i = 0; i < num_of_an_out; i++) {
+			LCD_UsrLog("%dAN_OUT adr: %d ", i, analog_output_slaves[i].slave_address);
+		}
+		LCD_UsrLog("\n");
+	}
+
 
 }
 
@@ -140,27 +247,43 @@ void execute_program()
 	//a_out_state = aout_state;
 }
 
-
-void wait_function()
+// This function returns 0 if the RX_buffer and TX_buffer is the same
+uint8_t verify_response(uint8_t from, uint8_t to)
 {
-	uint8_t counter;
-	uint8_t ok = 0;
+	uint8_t msg_ok = 0;
 
-	while (!interrupt_flag && !ok) {
-		counter++;
-		if(counter >= 100)
-			ok = 1;
-		HAL_Delay(10);
+	for (uint8_t i = from; i < to; i++) {
+		if (RX_buffer[i] != TX_buffer[i])
+			msg_ok++;
 	}
 
-	if(ok) {
-		LCD_UsrLog("Time out\n");
+	return msg_ok;
+}
+
+
+uint8_t wait_function()
+{
+	uint8_t counter = 0;
+	uint8_t time_out = 0;
+
+	while (!interrupt_flag && !time_out) {
+		counter++;
+		if(counter >= 4)
+			time_out = 1;
+		HAL_Delay(1);
+	}
+
+	if(time_out) {
+//		LCD_UsrLog("Time out\n");
 		for (uint8_t i = 0; i < RXBUFFERSIZE; i++) {
 			RX_buffer[i] = 0;
 		}
 	}
 
 	interrupt_flag = 0;
+
+	return time_out;
+
 }
 
 uint16_t generate_crc()
