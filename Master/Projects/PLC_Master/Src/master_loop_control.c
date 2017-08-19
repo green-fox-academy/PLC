@@ -5,6 +5,14 @@
 #include "main.h"
 #include "lcd_log.h"
 
+ /*	Function name:
+  * 	Function purpose:
+  * 	Function input - :
+  * 	Function input - :
+  * 	Function Output - :
+  */
+
+
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private typedef -----------------------------------------------------------*/
@@ -94,14 +102,12 @@ void test_uart_receiver()
 
 
 
-
+/*	Function name: scan_system_slaves
+ * 	Function purpose: It sends a SCAN_SLAVE message to all possible slaves,
+ * 	if it receives correct answer, then puts the slave's address to its place in table.
+ */
 void scan_system_slaves()
 {
-	num_of_dig_in = 0;
-	num_of_dig_out = 0;
-	num_of_an_in = 0;
-	num_of_an_out = 0;
-
 	msg_command.command = SCAN_SLAVE;
 	msg_command.crc = 3333;
 
@@ -227,7 +233,6 @@ uint8_t verify_response(uint8_t from, uint8_t to)
 	return msg_ok;
 }
 
-
 uint8_t wait_function()
 {
 	uint8_t counter = 0;
@@ -260,7 +265,7 @@ void print_out_aviable_slaves()
 	LCD_UsrLog("Digital inputs number: %d\n", num_of_dig_in);
 	if (num_of_dig_in) {
 		for (uint8_t i = 0; i < num_of_dig_in; i++) {
-			LCD_UsrLog("%dDI_IN adr: %d ", i, digital_input_slaves[i].slave_address);
+			LCD_UsrLog("DI_IN%d adr: %d ", i, digital_input_slaves[i].slave_address);
 		}
 		LCD_UsrLog("\n");
 	}
@@ -268,7 +273,7 @@ void print_out_aviable_slaves()
 	LCD_UsrLog("Digital outputs number: %d\n", num_of_dig_out);
 	if (num_of_dig_out) {
 		for (uint8_t i = 0; i < num_of_dig_out; i++) {
-			LCD_UsrLog("%dDI_OUT adr: %d ", i, digital_output_slaves[i].slave_address);
+			LCD_UsrLog("DI_OUT%d adr: %d ", i, digital_output_slaves[i].slave_address);
 		}
 		LCD_UsrLog("\n");
 	}
@@ -276,7 +281,7 @@ void print_out_aviable_slaves()
 	LCD_UsrLog("Analog inputs number: %d\n", num_of_an_in);
 	if (num_of_an_in) {
 		for (uint8_t i = 0; i < num_of_an_in; i++) {
-			LCD_UsrLog("%dAN_IN adr: %d ", i, analog_input_slaves[i].slave_address);
+			LCD_UsrLog("AN_IN%d adr: %d ", i, analog_input_slaves[i].slave_address);
 		}
 		LCD_UsrLog("\n");
 	}
@@ -284,12 +289,11 @@ void print_out_aviable_slaves()
 	LCD_UsrLog("Digital inputs number: %d\n", num_of_an_out);
 	if (num_of_an_out) {
 		for (uint8_t i = 0; i < num_of_an_out; i++) {
-			LCD_UsrLog("%dAN_OUT adr: %d ", i, analog_output_slaves[i].slave_address);
+			LCD_UsrLog("AN_OUT%d adr: %d ", i, analog_output_slaves[i].slave_address);
 		}
 		LCD_UsrLog("\n");
 	}
 }
-
 
 void print_out_RX(uint8_t from, uint8_t how_many)
 {
@@ -313,7 +317,6 @@ void print_out_TX(uint8_t from, uint8_t how_many)
 	LCD_UsrLog("\n");
 }
 
-
 uint16_t generate_crc()
 {
 	uint16_t crc;
@@ -321,23 +324,27 @@ uint16_t generate_crc()
 	return crc;
 }
 
+/*	Function name:		master_loop_control_init
+ * 	Function purpose:	Init tables
+ */
 void master_loop_control_init()
 {
+	num_of_dig_in = 0;
+	num_of_dig_out = 0;
+	num_of_an_in = 0;
+	num_of_an_out = 0;
+
 	for (int i = 0; i < 4; i++) {
-		digital_input_slaves[i].slave_address = digital_input_slaves_address[i];
 		digital_input_slaves[i].digital_pins_state = 0;
 
-		digital_output_slaves[i].slave_address = digital_output_slaves_address[i];
 		digital_output_slaves[i].digital_pins_state = 0;
 
-		analog_input_slaves[i].slave_address = analog_input_slaves_address[i];
 		for (uint8_t j = 0; j < 6; j++) {
 			analog_input_slaves[i].analoge_pins_state[j] = 0;
 		}
 
-		analog_output_slaves[i].slave_address = analog_output_slaves_address[i];
 		for (uint8_t j = 0; j < 6; j++) {
-			analog_output_slaves[i].analoge_pins_state[j];
+			analog_output_slaves[i].analoge_pins_state[j] = 0;
 		}
 	}
 }
