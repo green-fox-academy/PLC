@@ -37,7 +37,7 @@ int main(void)
 
 	system_init();
 
-	slave_address = 2;
+	slave_address = 3;
 
 	din_slave_loop_thread();
 

@@ -63,7 +63,7 @@ void control_slaves_thread(void const * argument)
 		// system_check();
 		// slaves_check();
 		load_input_tables();
-		//print_out_digital_input_table();
+		print_out_digital_input_table();
 		//execute_program();
 		//upadte_outputs ();
 
@@ -203,7 +203,7 @@ void load_digital_input_table()
 		TX_buffer[2] = 22;
 		TX_buffer[3] = 33;
 
-		print_out_TX(0,4);
+//print_out_TX(0,4);
 		for (uint8_t i = 0; i < num_of_dig_in; i++) {
 
 			// Set the address and send the message
@@ -211,9 +211,9 @@ void load_digital_input_table()
 			UART_send(TX_buffer);
 
 			if (!wait_function()) {
-				print_out_RX(0,3);
+//print_out_RX(0,5);
 				// Checks the response if it was corrupted
-				if (!verify_response(2,3))
+				if (verify_response(2,3) == 0)
 					// Load the slave's pinstate to the table
 					digital_input_slaves[i].digital_pins_state = RX_buffer[2];
 			} else {
@@ -232,19 +232,19 @@ void load_analog_input_table()
 
 		// Set message
 		TX_buffer[1] = READ_SLAVE;
-		TX_buffer[2] = 3333;
-		TX_buffer[3] = 3333 >> 8;
+		TX_buffer[2] = 33;
+		TX_buffer[3] = 44;
 
 		for (uint8_t i = 0; i < num_of_an_in; i++) {
 
 			// Set the address and send the message
-			RX_buffer[0] = analog_input_slaves[i].slave_address;
+			TX_buffer[0] = analog_input_slaves[i].slave_address;
 			UART_send(TX_buffer);
 
 			if (wait_function()) {
 				// Checks the response if it was corrupted
 				if (!verify_response(2,14)) {
-					// This loads the analog input pinstate table
+					// This loads the analog input pinstate table 16bit datas start from buffer[2] and ends at buffer[13]
 					for (uint8_t j = 0; j < 6; j++) {
 						analog_input_slaves[i].analoge_pins_state[j] = RX_buffer[(j + 1) * 2] + (RX_buffer[((j + 1) * 2) + 1] << 8);
 					}
@@ -302,8 +302,8 @@ uint8_t verify_response(uint8_t tx_crc_start, uint8_t rx_crc_start)
 		msg_ok++;
 
 	// Check the CRC
-	if (RX_buffer[tx_crc_start] != TX_buffer[rx_crc_start] ||
-	RX_buffer[tx_crc_start + 1] != TX_buffer[rx_crc_start + 1])
+	if (TX_buffer[tx_crc_start] != RX_buffer[rx_crc_start] ||
+	TX_buffer[tx_crc_start + 1] != RX_buffer[rx_crc_start + 1])
 		msg_ok += 2;
 
 	return msg_ok;
@@ -374,7 +374,7 @@ void print_out_aviable_slaves()
 void print_out_digital_input_table()
 {
 	for (uint8_t i = 0; i < num_of_dig_in; i++) {
-		LCD_UsrLog("DIN%d adr: %d state: %d\n", i, digital_input_slaves[i].slave_address, digital_input_slaves[i].digital_pins_state);
+		LCD_UsrLog("DIN[%d] adr: %d state: %d\n", i, digital_input_slaves[i].slave_address, digital_input_slaves[i].digital_pins_state);
 	}
 }
 
