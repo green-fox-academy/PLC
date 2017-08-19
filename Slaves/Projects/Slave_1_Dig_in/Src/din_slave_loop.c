@@ -33,7 +33,7 @@ void din_slave_loop_thread()
 				if (RX_buffer[1] == SCAN_SLAVE) {
 					response_to_scan();
 
-				} else if (RX_buffer[1] == READ_DIGITAL) {
+				} else if (RX_buffer[1] == READ_SLAVE) {
 					send_pins_states();
 
 				} else {
@@ -65,6 +65,8 @@ void send_pins_states()
 	TX_buffer[2] = din_pins_states;		//Data
 	TX_buffer[3] = RX_buffer[2];		//CRC low
 	TX_buffer[4] = RX_buffer[3];		//CRC high
+
+	UART_send(TX_buffer);
 
 }
 
