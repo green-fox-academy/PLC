@@ -109,99 +109,66 @@ void scan_system_slaves()
 	TX_buffer[2] = msg_command.crc;
 	TX_buffer[3] = msg_command.crc >> 8;
 
+	// For safety scan repeats itself 10 times
+	for (uint8_t j = 0; j < 10; j++) {
 
-	for (uint8_t i = 0; i < 4; i++) {
+		for (uint8_t i = 0; i < 4; i++) {
 
-		// #### SCAN DIGITAL INPUT ####
-		TX_buffer[0] = digital_input_slaves_address[i];
-		UART_send(TX_buffer);
-		// If it isn't time out
-		if (!wait_function()) {
-			// If RX and TX are the same
-			if (!verify_response(0,4)){
-				// Loads the DIGITAL INPUT table with address
-				digital_input_slaves[num_of_dig_in].slave_address = digital_input_slaves_address[i];
-				num_of_dig_in++;
+			// #### SCAN DIGITAL INPUT ####
+			TX_buffer[0] = digital_input_slaves_address[i];
+			UART_send(TX_buffer);
+			// If it isn't time out
+			if (!wait_function()) {
+				// If RX and TX are the same
+				if (!verify_response(0,4)){
+					// Loads the DIGITAL INPUT table with address
+					digital_input_slaves[num_of_dig_in].slave_address = digital_input_slaves_address[i];
+					num_of_dig_in++;
+				}
+			}
+
+			// #### SCAN DIGITAL OUTPUT ####
+			TX_buffer[0] = digital_output_slaves_address[i];
+			UART_send(TX_buffer);
+			// If it isn't time out
+			if (!wait_function()) {
+				// If RX and TX are the same
+				if (!verify_response(0,4)){
+					// Loads the DIGITAL OUTPUT table with address
+					digital_output_slaves[num_of_dig_out].slave_address = digital_output_slaves_address[i];
+					num_of_dig_out++;
+				}
+			}
+
+			// #### SCAN ANALOG INPUT ####
+			TX_buffer[0] = analog_input_slaves_address[i];
+			UART_send(TX_buffer);
+
+			// If it isn't time out
+			if (!wait_function()) {
+				// If RX and TX are the same
+				if (!verify_response(0,4)){
+					// Loads the ANALOG INPUT table with address
+					analog_input_slaves[num_of_an_in].slave_address = analog_input_slaves_address[i];
+					num_of_an_in++;
+				}
+			}
+
+			// #### SCAN ANALOG OUTPUT ####
+			TX_buffer[0] = analog_output_slaves_address[i];
+			UART_send(TX_buffer);
+
+			// If it isn't time out
+			if (!wait_function()) {
+				// If RX and TX are the same
+				if (!verify_response(0,4)){
+					// Loads the ANALOG OUTPUT table with address
+					analog_output_slaves[num_of_an_out].slave_address = analog_output_slaves_address[i];
+					num_of_an_out++;
+				}
 			}
 		}
-
-		// #### SCAN DIGITAL OUTPUT ####
-		TX_buffer[0] = digital_output_slaves_address[i];
-		UART_send(TX_buffer);
-		// If it isn't time out
-		if (!wait_function()) {
-			// If RX and TX are the same
-			if (!verify_response(0,4)){
-				// Loads the DIGITAL OUTPUT table with address
-				digital_output_slaves[num_of_dig_out].slave_address = digital_output_slaves_address[i];
-				num_of_dig_out++;
-			}
-		}
-
-		// #### SCAN ANALOG INPUT ####
-		TX_buffer[0] = analog_input_slaves_address[i];
-		UART_send(TX_buffer);
-
-		// If it isn't time out
-		if (!wait_function()) {
-			// If RX and TX are the same
-			if (!verify_response(0,4)){
-				// Loads the ANALOG INPUT table with address
-				analog_input_slaves[num_of_an_in].slave_address = analog_input_slaves_address[i];
-				num_of_an_in++;
-			}
-		}
-
-		// #### SCAN ANALOG OUTPUT ####
-		TX_buffer[0] = analog_output_slaves_address[i];
-		UART_send(TX_buffer);
-
-		// If it isn't time out
-		if (!wait_function()) {
-			// If RX and TX are the same
-			if (!verify_response(0,4)){
-				// Loads the ANALOG OUTPUT table with address
-				analog_output_slaves[num_of_an_out].slave_address = analog_output_slaves_address[i];
-				num_of_an_out++;
-			}
-		}
 	}
-
-	// LOG OUT THE RESULTS
-
-	LCD_UsrLog("Digital inputs number: %d\n", num_of_dig_in);
-	if (num_of_dig_in) {
-		for (uint8_t i = 0; i < num_of_dig_in; i++) {
-			LCD_UsrLog("%dDI_IN adr: %d ", i, digital_input_slaves[i].slave_address);
-		}
-		LCD_UsrLog("\n");
-	}
-
-	LCD_UsrLog("Digital outputs number: %d\n", num_of_dig_out);
-	if (num_of_dig_out) {
-		for (uint8_t i = 0; i < num_of_dig_out; i++) {
-			LCD_UsrLog("%dDI_OUT adr: %d ", i, digital_output_slaves[i].slave_address);
-		}
-		LCD_UsrLog("\n");
-	}
-
-	LCD_UsrLog("Analog inputs number: %d\n", num_of_an_in);
-	if (num_of_an_in) {
-		for (uint8_t i = 0; i < num_of_an_in; i++) {
-			LCD_UsrLog("%dAN_IN adr: %d ", i, analog_input_slaves[i].slave_address);
-		}
-		LCD_UsrLog("\n");
-	}
-
-	LCD_UsrLog("Digital inputs number: %d\n", num_of_an_out);
-	if (num_of_an_out) {
-		for (uint8_t i = 0; i < num_of_an_out; i++) {
-			LCD_UsrLog("%dAN_OUT adr: %d ", i, analog_output_slaves[i].slave_address);
-		}
-		LCD_UsrLog("\n");
-	}
-
-
 }
 
 void load_input_tables()
@@ -285,6 +252,44 @@ uint8_t wait_function()
 	return time_out;
 
 }
+
+void print_out_aviable_slaves()
+{
+	// LOG OUT THE RESULTS
+
+	LCD_UsrLog("Digital inputs number: %d\n", num_of_dig_in);
+	if (num_of_dig_in) {
+		for (uint8_t i = 0; i < num_of_dig_in; i++) {
+			LCD_UsrLog("%dDI_IN adr: %d ", i, digital_input_slaves[i].slave_address);
+		}
+		LCD_UsrLog("\n");
+	}
+
+	LCD_UsrLog("Digital outputs number: %d\n", num_of_dig_out);
+	if (num_of_dig_out) {
+		for (uint8_t i = 0; i < num_of_dig_out; i++) {
+			LCD_UsrLog("%dDI_OUT adr: %d ", i, digital_output_slaves[i].slave_address);
+		}
+		LCD_UsrLog("\n");
+	}
+
+	LCD_UsrLog("Analog inputs number: %d\n", num_of_an_in);
+	if (num_of_an_in) {
+		for (uint8_t i = 0; i < num_of_an_in; i++) {
+			LCD_UsrLog("%dAN_IN adr: %d ", i, analog_input_slaves[i].slave_address);
+		}
+		LCD_UsrLog("\n");
+	}
+
+	LCD_UsrLog("Digital inputs number: %d\n", num_of_an_out);
+	if (num_of_an_out) {
+		for (uint8_t i = 0; i < num_of_an_out; i++) {
+			LCD_UsrLog("%dAN_OUT adr: %d ", i, analog_output_slaves[i].slave_address);
+		}
+		LCD_UsrLog("\n");
+	}
+}
+
 
 void print_out_RX(uint8_t from, uint8_t how_many)
 {

@@ -91,7 +91,10 @@ int main(void)
 
 //	test_uart_sender();
 
+
 	scan_system_slaves();
+
+	print_out_aviable_slaves();
 
 	/* Init thread
 	//	osThreadDef(Start, StartThread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 5);

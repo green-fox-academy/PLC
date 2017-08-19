@@ -167,6 +167,7 @@ uint8_t num_of_an_out;
 void test_uart_sender();
 void test_uart_receiver();
 void scan_system_slaves();
+void print_out_aviable_slaves();
 
 #endif /* __MASTER_LOOP_CONTROL_H */
 
