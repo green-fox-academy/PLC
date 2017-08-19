@@ -216,7 +216,34 @@ void load_digital_input_table()
 
 void load_analog_input_table()
 {
+	if (num_of_an_in) {
 
+		// Set message
+		TX_buffer[1] = READ_SLAVE;
+		TX_buffer[2] = 3333;
+		TX_buffer[3] = 3333 >> 8;
+
+		for (uint8_t i = 0; i < num_of_an_in; i++) {
+
+			// Set the address and send the message
+			RX_buffer[0] = analog_input_slaves[i].slave_address;
+			UART_send(TX_buffer);
+
+			if (wait_function()) {
+				// Checks the response if it was corrupted
+				if (!verify_response(2,14)) {
+					// This loads the analog input pinstate table
+					for (uint8_t j = 0; j < 6; j++) {
+						analog_input_slaves[i].analoge_pins_state[j] = RX_buffer[(j + 1) * 2] + (RX_buffer[((j + 1) * 2) + 1] << 8);
+					}
+				}
+			} else {
+				LCD_UsrLog("Receive: Time out.\n");
+			}
+		}
+	} else {
+		LCD_UsrLog("There are no analog inputs.\n");
+	}
 }
 
 void update_outputs()
