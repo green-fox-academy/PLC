@@ -9,14 +9,14 @@
 
 /* Command list with lexicode 3distance*/
 #define SCAN_SLAVE		0b00001111  // 15
-#define READ_DIGITAL	0b00110011	// 33
-#define WRITE_DIGITAL	0b01010101	// 55
-#define READ_ANALOG		0b01101010	// 106
-#define WRITE_ANALOG	0b10010110	// 150
-#define HOLD_INPUTS		0b10101011	// 171
-#define HOLD_OUTPUTS	0b11011011	// 219
-#define STOP_SLAVE		0b11101101	// 237
-#define START_SLAVE		0b11110111	// 247
+#define READ_SLAVE		0b00110011	// 33
+#define WRITE_SLAVE		0b01010101	// 55
+#define HOLD_INPUTS		0b01101010	// 106
+#define HOLD_OUTPUTS	0b10010110	// 150
+#define STOP_SLAVE		0b10101011	// 171
+#define START_SLAVE		0b11011011	// 219
+// #define something1		0b11101101	// 237
+// #define something2		0b11110111	// 247
 
 // Defines for logic process
 

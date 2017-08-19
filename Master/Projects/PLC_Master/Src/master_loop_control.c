@@ -28,7 +28,7 @@ uint8_t analog_output_slaves_address[]  = {13,14,15,16};
 /* Private functions ------------------------------------------------------- */
 uint16_t generate_crc();
 uint8_t wait_function();
-uint8_t verify_response(uint8_t from, uint8_t to);
+uint8_t verify_response(uint8_t tx_crc_start, uint8_t rx_crc_start);
 void print_out_TX(uint8_t from, uint8_t how_many);
 void print_out_RX(uint8_t from, uint8_t how_many);
 /*
@@ -102,8 +102,8 @@ void test_uart_receiver()
 
 
 
-/*	Function name: scan_system_slaves
- * 	Function purpose: It sends a SCAN_SLAVE message to all possible slaves,
+/*	Function name:	 	scan_system_slaves
+ * 	Function purpose:	It sends a SCAN_SLAVE message to all possible slaves,
  * 	if it receives correct answer, then puts the slave's address to its place in table.
  */
 void scan_system_slaves()
@@ -125,8 +125,8 @@ void scan_system_slaves()
 			UART_send(TX_buffer);
 			// If it isn't time out
 			if (!wait_function()) {
-				// If RX and TX are the same
-				if (!verify_response(0,4)){
+				// Checks the response if it was corrupted
+				if (!verify_response(2,2)){
 					// Loads the DIGITAL INPUT table with address
 					digital_input_slaves[num_of_dig_in].slave_address = digital_input_slaves_address[i];
 					num_of_dig_in++;
@@ -138,8 +138,8 @@ void scan_system_slaves()
 			UART_send(TX_buffer);
 			// If it isn't time out
 			if (!wait_function()) {
-				// If RX and TX are the same
-				if (!verify_response(0,4)){
+				// Checks the response if it was corrupted
+				if (!verify_response(2,2)){
 					// Loads the DIGITAL OUTPUT table with address
 					digital_output_slaves[num_of_dig_out].slave_address = digital_output_slaves_address[i];
 					num_of_dig_out++;
@@ -152,8 +152,8 @@ void scan_system_slaves()
 
 			// If it isn't time out
 			if (!wait_function()) {
-				// If RX and TX are the same
-				if (!verify_response(0,4)){
+				// Checks the response if it was corrupted
+				if (!verify_response(2,2)){
 					// Loads the ANALOG INPUT table with address
 					analog_input_slaves[num_of_an_in].slave_address = analog_input_slaves_address[i];
 					num_of_an_in++;
@@ -166,8 +166,8 @@ void scan_system_slaves()
 
 			// If it isn't time out
 			if (!wait_function()) {
-				// If RX and TX are the same
-				if (!verify_response(0,4)){
+				// Checks the response if it was corrupted
+				if (!verify_response(2,2)){
 					// Loads the ANALOG OUTPUT table with address
 					analog_output_slaves[num_of_an_out].slave_address = analog_output_slaves_address[i];
 					num_of_an_out++;
@@ -186,7 +186,32 @@ void load_input_tables()
 
 void load_digital_input_table()
 {
+	if (num_of_dig_in) {
 
+		// Set message
+		TX_buffer[1] = READ_SLAVE;
+		TX_buffer[2] = 3333;
+		TX_buffer[3] = 3333 >> 8;
+
+		for (uint8_t i = 0; i < num_of_dig_in; i++) {
+
+			// Set the address and send the message
+			RX_buffer[0] = digital_input_slaves[i].slave_address;
+			UART_send(TX_buffer);
+
+			if (wait_function()) {
+				// Checks the response if it was corrupted
+				if (!verify_response(2,3))
+					// Load the slave's pinstate to the table
+					digital_input_slaves[i].digital_pins_state = RX_buffer[2];
+			} else {
+				LCD_UsrLog("Receive: Time out.\n");
+			}
+		}
+
+	} else {
+		LCD_UsrLog("There are no digital inputs.\n");
+	}
 }
 
 void load_analog_input_table()
@@ -220,15 +245,27 @@ void execute_program()
 	//a_out_state = aout_state;
 }
 
-// This function returns 0 if the RX_buffer and TX_buffer is the same
-uint8_t verify_response(uint8_t from, uint8_t to)
+/*	Function name:		verify_response
+ * 	Function purpose:
+ * 	Function input - 	uint8_t tx_crc_start: starting index of the TX's CRC number
+ * 	Function input -	uint8_t rx_crc_start: starting index of the RX's CRC number
+ * 	Function Output - 	0 if it was ok,
+ * 						1 if address or command msg corrupted
+ * 						2 if CRC was corrupted
+ * 						3 if address or command and CRC was corrupted
+ */
+uint8_t verify_response(uint8_t tx_crc_start, uint8_t rx_crc_start)
 {
 	uint8_t msg_ok = 0;
 
-	for (uint8_t i = from; i < to; i++) {
-		if (RX_buffer[i] != TX_buffer[i])
-			msg_ok++;
-	}
+	// Check the address and the command
+	if (RX_buffer[0] != TX_buffer[0] || RX_buffer[1] != TX_buffer[1])
+		msg_ok++;
+
+	// Check the CRC
+	if (RX_buffer[tx_crc_start] != TX_buffer[rx_crc_start] ||
+	RX_buffer[tx_crc_start + 1] != TX_buffer[rx_crc_start + 1])
+		msg_ok += 2;
 
 	return msg_ok;
 }
