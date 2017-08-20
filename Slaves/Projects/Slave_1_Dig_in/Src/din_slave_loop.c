@@ -18,7 +18,6 @@ void send_false_command_err();
 
 void din_slave_loop_thread()
 {
-
 	while (1)
 	{
 		// Wait for message arrival
@@ -26,33 +25,40 @@ void din_slave_loop_thread()
 
 			interrupt_flag = 0;
 
-			// Check is it for this slave
+			// Check if it is for this slave
 			if (RX_buffer[0] == slave_address) {
 
-				// Check the command
-				if (RX_buffer[1] == SCAN_SLAVE) {
-					response_to_scan();
-
-				} else if (RX_buffer[1] == READ_SLAVE) {
-					send_pins_states();
-
-				} else {
-					send_false_command_err();
+				switch (RX_buffer[1]) {
+					case SCAN_SLAVE :
+						response_to_scan();
+						break;
+					case READ_SLAVE :
+						send_pins_states();
+						break;
+					case HOLD_INPUTS :
+						break;
+					case HOLD_OUTPUTS :
+						break;
+					case STOP_SLAVE :
+						break;
+					case START_SLAVE :
+						break;
+					default :
+						send_false_command_err();
 				}
+				// Check the command
+			// Check if it is a broadcast message
+			} else if (RX_buffer[0] == 255) {
+
+				// Check the command
 			}
 		}
 	}
 }
 
-/* Response for scan is the scan message */
+/* Response for scan is the scan message itself */
 void response_to_scan()
 {
-	/*
-	TX_buffer[0] = 111;
-	TX_buffer[1] = 222;
-	TX_buffer[2] = 133;
-	TX_buffer[3] = 244;
-	*/
 	UART_send(RX_buffer);
 }
 
