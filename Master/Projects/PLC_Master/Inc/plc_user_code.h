@@ -214,7 +214,6 @@
 #define AOU23		analog_output_slaves[3].analoge_pins_state[4]
 #define AOU24		analog_output_slaves[3].analoge_pins_state[5]
 
-/* Command list with lexicode 3distance*/
 
 /* Exported types ------------------------------------------------------------*/
 
