@@ -1,5 +1,10 @@
+/* ############################### *
+ * ##### DIGITAL INPUT SLAVE ##### *
+ * ############################### */
+
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "din_slave_loop.h"
 
 /** @addtogroup STM32L4xx_HAL_Examples
   * @{
@@ -37,7 +42,7 @@ int main(void)
 
 	system_init();
 
-	slave_address = 3;
+	slave_address = 1;
 
 	din_slave_loop_thread();
 

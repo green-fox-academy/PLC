@@ -4,6 +4,7 @@
 #include "cmsis_os.h"
 #include "main.h"
 #include "lcd_log.h"
+#include "plc_user_code.h"
 
  /*	Function name:
   * 	Function purpose:
@@ -41,6 +42,8 @@ void print_out_RX(uint8_t from, uint8_t how_many);
 void print_out_digital_input_table();
 void print_out_available_slaves();
 
+void scan_system_slaves();
+
 // Load functions
 void load_analog_input_table();
 void load_digital_input_table();
@@ -63,14 +66,14 @@ void update_analog_output_tables();
  * 	5 - Update outputs (send data to output slaves)
  */
 
-void control_slaves_thread(void const * argument)
+void control_slaves_thread()
 {
 
 	master_loop_control_init();
 
 	scan_system_slaves();
 
-	print_out_aviable_slaves();
+	print_out_available_slaves();
 
 	HAL_Delay(2000);
 
@@ -81,9 +84,7 @@ void control_slaves_thread(void const * argument)
 		load_input_tables();
 		print_out_digital_input_table();
 		execute_program();
-		upadte_outputs ();
-
-		//osDelay(1);
+		update_outputs();
 
 		HAL_Delay(1000);
 
@@ -250,17 +251,18 @@ void update_digital_output_tables()
 	if (num_of_dig_out) {
 
 		TX_buffer[1] = WRITE_SLAVE;
-		TX_buffer[2] = 22;
-		TX_buffer[3] = 33;
+		TX_buffer[3] = 22; // CRC low
+		TX_buffer[4] = 33; // CRC high
 
 		for (uint8_t i = 0; i < num_of_dig_out; i++) {
 
 			TX_buffer[0] = digital_output_slaves[i].slave_address;
+			TX_buffer[2] = digital_output_slaves[i].digital_pins_state;
 			UART_send(TX_buffer);
 
 			if (!wait_function())
 				// Checks the response if it was corrupted
-				digital_output_slaves[i].slave_status = verify_command_address_crc(2,3);
+				digital_output_slaves[i].slave_status = verify_command_address_crc(3,3);
 			else
 				// If it was timed out
 				digital_output_slaves[i].slave_status = 4;
@@ -298,15 +300,8 @@ void execute_program()
 	digital_output_slaves[0].digital_pins_state = dout_state;
 	//a_out_state = aout_state;
 */
-	if (digital_input_slaves[0].digital_pins_state & 0b00000001)
-		digital_output_slaves[0].digital_pins_state |= 0b00000001;
-	else
-		digital_output_slaves[0].digital_pins_state &= 0b11111110;
-
-	if (digital_input_slaves[0].digital_pins_state & 0b00000010)
-		digital_output_slaves[0].digital_pins_state |= 0b00000010;
-	else
-		digital_output_slaves[0].digital_pins_state &= 0b11111101;
+	if (DIN1) DOU1_ON; else DOU1_OFF;
+	if (DIN2) DOU2_ON; else DOU2_OFF;
 }
 
 /*	Function name:		verify_response

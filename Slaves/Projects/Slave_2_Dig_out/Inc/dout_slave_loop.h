@@ -1,6 +1,6 @@
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __DIN_SLAVE_LOOP_H
-#define __DIN_SLAVE_LOOP_H
+#ifndef __DOUT_SLAVE_LOOP_H
+#define __DOUT_SLAVE_LOOP_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_hal.h"
@@ -11,7 +11,7 @@
 
 /* Command list with lexicode 3distance*/
 #define SCAN_SLAVE		0b00001111  // 15
-#define READ_SLAVE		0b00110011	// 33
+#define WRITE_SLAVE		0b01010101	// 55
 #define HOLD_INPUTS		0b01101010	// 106
 #define HOLD_OUTPUTS	0b10010110	// 150
 #define STOP_SLAVE		0b10101011	// 171
@@ -26,9 +26,9 @@ uint8_t din_pins_states;
 
 /* Exported functions ------------------------------------------------------- */
 
-void din_slave_loop_thread();
+void dout_slave_loop_thread();
 
-#endif /* __DIN_SLAVE_LOOP_H*/
+#endif /* __DOUT_SLAVE_LOOP_H*/
 
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

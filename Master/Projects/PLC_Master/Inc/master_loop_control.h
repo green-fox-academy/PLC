@@ -178,7 +178,7 @@ uint8_t num_of_an_out;
 
 /* Exported functions ------------------------------------------------------- */
 
-void control_slaves_thread(void const * argument);
+void control_slaves_thread();
 
 #endif /* __MASTER_LOOP_CONTROL_H */
 

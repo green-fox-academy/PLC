@@ -1,5 +1,10 @@
+/* ################################ *
+ * ##### DIGITAL OUTPUT SLAVE ##### *
+ * ################################ */
+
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dout_slave_loop.h"
 
 /** @addtogroup STM32L4xx_HAL_Examples
   * @{
@@ -39,7 +44,7 @@ int main(void)
 
 	slave_address = 5;
 
-	modbus_DOUT_listen();
+	dout_slave_loop_thread();
 
 }
 

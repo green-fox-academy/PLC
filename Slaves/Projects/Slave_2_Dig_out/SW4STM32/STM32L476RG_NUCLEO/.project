@@ -336,6 +336,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/startup_stm32l476xx.s</locationURI>
 		</link>
 		<link>
+			<name>Slave_2_Dig_out/User/dout_slave_loop.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/dout_slave_loop.c</locationURI>
+		</link>
+		<link>
 			<name>Slave_2_Dig_out/User/main.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Src/main.c</locationURI>
@@ -351,9 +356,9 @@
 			<locationURI>PARENT-4-PROJECT_LOC/Slave_drivers/Src/GPIO.c</locationURI>
 		</link>
 		<link>
-			<name>Slave_drivers/Src/modbus.c</name>
+			<name>Slave_drivers/Src/uart.c</name>
 			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/Slave_drivers/Src/modbus.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/Slave_drivers/Src/uart.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/STM32L476RG_NUCLEO/stm32l4xx_nucleo.c</name>
