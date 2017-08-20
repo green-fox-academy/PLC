@@ -142,21 +142,78 @@
 #define DOU7 	(dout_state & 0b01000000)  //D14 status on output board
 #define DOU8	(dout_state & 0b10000000)  //D15 status on output board
 
-/* Analog input value of pins */
-#define AIN1		ain_state[0]
-#define AIN2		ain_state[1]
-#define AIN3		ain_state[2]
-#define AIN4		ain_state[3]
-#define AIN5		ain_state[4]
-#define AIN6		ain_state[5]
+/* ############################################## *
+ * ##### GET ANALOG INPUT SLAVE'S PINSTATES ##### *
+ * ############################################## */
 
-/* Write analoge output pins */
-#define AOU1=		aout_state[0]=
-#define AOU2=		aout_state[1]=
-#define AOU3=		aout_state[2]=
-#define AOU4=		aout_state[3]=
-#define AOU5=		aout_state[4]=
-#define AOU6=		aout_state[5]=
+// Analog input slave 1
+#define AIN1		analog_input_slaves[0].analoge_pins_state[0] // A0 status on input board
+#define AIN2		analog_input_slaves[0].analoge_pins_state[1] // A1 status on input board
+#define AIN3		analog_input_slaves[0].analoge_pins_state[2] // A2 status on input board
+#define AIN4		analog_input_slaves[0].analoge_pins_state[3] // A3 status on input board
+#define AIN5		analog_input_slaves[0].analoge_pins_state[4] // A4 status on input board
+#define AIN6		analog_input_slaves[0].analoge_pins_state[5] // A5 status on input board
+
+// Analog input slave 2
+#define AIN7		analog_input_slaves[1].analoge_pins_state[0] // A0 status on input board
+#define AIN8		analog_input_slaves[1].analoge_pins_state[1] // A1 status on input board
+#define AIN9		analog_input_slaves[1].analoge_pins_state[2] // A2 status on input board
+#define AIN10		analog_input_slaves[1].analoge_pins_state[3] // A3 status on input board
+#define AIN11		analog_input_slaves[1].analoge_pins_state[4] // A4 status on input board
+#define AIN12		analog_input_slaves[1].analoge_pins_state[5] // A5 status on input board
+
+// Analog input slave 3
+#define AIN13		analog_input_slaves[2].analoge_pins_state[0] // A0 status on input board
+#define AIN14		analog_input_slaves[2].analoge_pins_state[1] // A1 status on input board
+#define AIN15		analog_input_slaves[2].analoge_pins_state[2] // A2 status on input board
+#define AIN16		analog_input_slaves[2].analoge_pins_state[3] // A3 status on input board
+#define AIN17		analog_input_slaves[2].analoge_pins_state[4] // A4 status on input board
+#define AIN18		analog_input_slaves[2].analoge_pins_state[5] // A5 status on input board
+
+// Analog input slave 4
+#define AIN19		analog_input_slaves[3].analoge_pins_state[0] // A0 status on input board
+#define AIN20		analog_input_slaves[3].analoge_pins_state[1] // A1 status on input board
+#define AIN21		analog_input_slaves[3].analoge_pins_state[2] // A2 status on input board
+#define AIN22		analog_input_slaves[3].analoge_pins_state[3] // A3 status on input board
+#define AIN23		analog_input_slaves[3].analoge_pins_state[4] // A4 status on input board
+#define AIN24		analog_input_slaves[3].analoge_pins_state[5] // A5 status on input board
+
+/* ############################################## *
+ * ##### GET ANALOG OUTPUT SLAVE'S PINSTATES #### *
+ * ############################################## */
+
+// Analog output slave 1
+#define AOU1		analog_output_slaves[0].analoge_pins_state[0]
+#define AOU2		analog_output_slaves[0].analoge_pins_state[1]
+#define AOU3		analog_output_slaves[0].analoge_pins_state[2]
+#define AOU4		analog_output_slaves[0].analoge_pins_state[3]
+#define AOU5		analog_output_slaves[0].analoge_pins_state[4]
+#define AOU6		analog_output_slaves[0].analoge_pins_state[5]
+
+// Analog output slave 2
+#define AOU7		analog_output_slaves[1].analoge_pins_state[0]
+#define AOU8		analog_output_slaves[1].analoge_pins_state[1]
+#define AOU9		analog_output_slaves[1].analoge_pins_state[2]
+#define AOU10		analog_output_slaves[1].analoge_pins_state[3]
+#define AOU11		analog_output_slaves[1].analoge_pins_state[4]
+#define AOU12		analog_output_slaves[1].analoge_pins_state[5]
+
+// Analog output slave 3
+#define AOU13		analog_output_slaves[2].analoge_pins_state[0]
+#define AOU14		analog_output_slaves[2].analoge_pins_state[1]
+#define AOU15		analog_output_slaves[2].analoge_pins_state[2]
+#define AOU16		analog_output_slaves[2].analoge_pins_state[3]
+#define AOU17		analog_output_slaves[2].analoge_pins_state[4]
+#define AOU18		analog_output_slaves[2].analoge_pins_state[5]
+
+// Analog output slave 4
+#define AOU19		analog_output_slaves[3].analoge_pins_state[0]
+#define AOU20		analog_output_slaves[3].analoge_pins_state[1]
+#define AOU21		analog_output_slaves[3].analoge_pins_state[2]
+#define AOU22		analog_output_slaves[3].analoge_pins_state[3]
+#define AOU23		analog_output_slaves[3].analoge_pins_state[4]
+#define AOU24		analog_output_slaves[3].analoge_pins_state[5]
+
 /* Command list with lexicode 3distance*/
 
 /* Exported types ------------------------------------------------------------*/
