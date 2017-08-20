@@ -164,8 +164,8 @@ void scan_system_slaves()
 
 void load_input_tables()
 {
-	load_digital_input_table();
-	//load_analog_input_table();
+	// load_digital_input_table();
+	load_analog_input_table();
 }
 
 void load_digital_input_table()
@@ -241,8 +241,8 @@ void load_analog_input_table()
 
 void update_outputs()
 {
-	update_digital_output_tables();
-	//update_analog_output_tables();
+	//update_digital_output_tables();
+	update_analog_output_tables();
 }
 
 void update_digital_output_tables()
@@ -276,30 +276,43 @@ void update_digital_output_tables()
 
 void update_analog_output_tables()
 {
+	// If there is at least one analog output slave
+	if (num_of_an_out) {
 
+		// Set command and CRC
+		TX_buffer[1] = WRITE_SLAVE;
+		TX_buffer[14] = 33;
+		TX_buffer[15] = 44;
+
+		for (uint8_t i = 0; i < num_of_an_out; i++) {
+
+			// Set the address
+			TX_buffer[0] = analog_output_slaves.slave_address;
+
+			// Set uint16_t pinstate data to TX_buffer, from buffer[2] to buffer[13]
+			for (uint8_t j = 0; j < 6; j++) {
+				TX_buffer[(j + 1) * 2] = analog_output_slaves[i].analoge_pins_state[j];
+				TX_buffer[((j + 1) * 2) + 1] = analog_output_slaves[i].analoge_pins_state[j] >> 8;
+			}
+
+			// Send message
+			UART_send(TX_buffer);
+
+			if (!wait_function())
+				// Checks the response if it was corrupted
+				analog_output_slaves.slave_status = verify_command_address_crc(14,14);
+			else
+				// Time out
+				analog_output_slaves.slave_status = 4;
+		}
+
+	} else {
+		LCD_UsrLog("There are no analog outputs.\n");
+	}
 }
 
 void execute_program()
 {
-/*
-	// Variables made from tables
-	uint8_t din_state = digital_input_slaves[0].digital_pins_state;
-	uint8_t dout_state = digital_output_slaves[0].digital_pins_state;
-
-	if (DIN1) DOU1_ON; else DOU1_OFF;
-	if (DIN2) DOU2_ON; else DOU2_OFF;
-	if (DIN3) DOU3_ON; else DOU3_OFF;
-	if (DIN4) DOU4_ON; else DOU4_OFF;
-	if (DIN5) DOU5_ON; else DOU5_OFF;
-	if (DIN6) DOU6_ON; else DOU6_OFF;
-	if (DIN7) DOU7_ON; else DOU7_OFF;
-	if (DIN8) DOU8_ON; else DOU8_OFF;
-
-	// Update output table
-
-	digital_output_slaves[0].digital_pins_state = dout_state;
-	//a_out_state = aout_state;
-*/
 	if (DIN1) DOU1_ON; else DOU1_OFF;
 	if (DIN2) DOU2_ON; else DOU2_OFF;
 }
