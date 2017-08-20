@@ -313,15 +313,24 @@ void update_analog_output_tables()
 
 void execute_program()
 {
+/*
 	if (DIN1) DOU1_ON; else DOU1_OFF;
 	if (DIN2) DOU2_ON; else DOU2_OFF;
+*/
+	AOU1 = AIN1;
+	AOU2 = AIN2;
+	AOU3 = AIN3;
+	AOU4 = AIN4;
+	AOU5 = AIN5;
+	AOU6 = AIN6;
+
 }
 
 /*	Function name:		verify_response
  * 	Function purpose:
  * 	Function input - 	uint8_t tx_crc_start: starting index of the TX's CRC number
  * 	Function input -	uint8_t rx_crc_start: starting index of the RX's CRC number
- * 	Function Output - 	0 if it was ok,
+ * 	Function Output - 	0 if it was OK
  * 						1 if address or command msg corrupted
  * 						2 if CRC was corrupted
  * 						3 if address or command and CRC was corrupted
