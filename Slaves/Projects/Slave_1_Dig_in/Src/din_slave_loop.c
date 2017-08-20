@@ -28,6 +28,7 @@ void din_slave_loop_thread()
 			// Check if it is for this slave
 			if (RX_buffer[0] == slave_address) {
 
+				// Command handle
 				switch (RX_buffer[1]) {
 					case SCAN_SLAVE :
 						response_to_scan();
@@ -46,11 +47,24 @@ void din_slave_loop_thread()
 					default :
 						send_false_command_err();
 				}
-				// Check the command
+
 			// Check if it is a broadcast message
 			} else if (RX_buffer[0] == 255) {
 
-				// Check the command
+				// Command handle
+				switch (RX_buffer[1]) {
+					case HOLD_INPUTS :
+						break;
+					case HOLD_OUTPUTS :
+						break;
+					case STOP_SLAVE :
+						break;
+					case START_SLAVE :
+						break;
+					default :
+						send_false_command_err();
+
+				}
 			}
 		}
 	}
@@ -60,6 +74,11 @@ void din_slave_loop_thread()
 void response_to_scan()
 {
 	UART_send(RX_buffer);
+}
+
+void send_false_command_err()
+{
+
 }
 
 void send_pins_states()
@@ -76,26 +95,17 @@ void send_pins_states()
 
 }
 
-void send_false_command_err()
-{
-
-}
-
-
 void wait_function()
 {
-	uint8_t counter;
+	uint8_t counter = 0;
 	uint8_t ok = 0;
 
 	while (!interrupt_flag && !ok) {
 		counter++;
-		if(counter >= 100)
+		if(counter >= 4)
 			ok = 1;
-		HAL_Delay(10);
+		HAL_Delay(1);
 	}
-
-	if(ok)
-		LCD_UsrLog("Time out\n");
 
 	interrupt_flag = 0;
 }

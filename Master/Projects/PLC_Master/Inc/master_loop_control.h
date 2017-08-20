@@ -86,16 +86,30 @@
  * #### Tables for store input and output data ####
  * ################################################ */
 
-/* Struct for store digital slave pins states */
+/* Struct for store digital slaves address, pinstate, status
+ * status: 0 if it is Ok
+ * status: 1 if address or command msg corrupted
+ * status: 2 if CRC was corrupted
+ * status: 3 if address or command and CRC was corrupted
+ * status: 4 if message timed out
+ * */
 typedef struct {
 	uint8_t slave_address;
 	uint8_t digital_pins_state;
+	uint8_t slave_status;
 }digital_table_t;
 
-/* Struct for store analoge slave pins states */
+/* Struct for store analog slaves address, pinstate, status
+ * status: 0 if it is Ok
+ * status: 1 if address or command msg corrupted
+ * status: 2 if CRC was corrupted
+ * status: 3 if address or command and CRC was corrupted
+ * status: 4 if message timed out
+ * */
 typedef struct {
 	uint8_t slave_address;
 	uint16_t analoge_pins_state[6];
+	uint8_t slave_status;
 }analog_tale_t;
 
 
@@ -164,10 +178,7 @@ uint8_t num_of_an_out;
 
 /* Exported functions ------------------------------------------------------- */
 
-void test_uart_sender();
-void test_uart_receiver();
-void scan_system_slaves();
-void print_out_aviable_slaves();
+void control_slaves_thread(void const * argument);
 
 #endif /* __MASTER_LOOP_CONTROL_H */
 
