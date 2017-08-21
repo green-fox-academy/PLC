@@ -77,7 +77,6 @@ void system_init()
 
 	/* Init Uart and modbus protocol C11 : RX and C10 : TX */
 	modbus_init();
-	PWM_pin_init();
 
 	/* Init PINs from DPIN8 to DPIN15 as a digital outputs */
 	for (int i = 8; i < 16; i++) {
@@ -86,9 +85,10 @@ void system_init()
 
 	/* Init PINs from DPIN9 to DPIN11 as a PWM */
 	for (int i = 9; i < 12; i++) {
-		gpio_init_digital_pin_pwm(i, GPIO_MODE_AF_PP, GPIO_NOPULL);
+		pwm_pin_init(i, GPIO_MODE_AF_PP, GPIO_NOPULL);
 	}
 
+	/* Init pwm function from DPIN9 DPIN11 */
 	for (int i = 0; i < 3; i++) {
 		pwm_init(i);
 	}
@@ -100,22 +100,6 @@ void system_init()
 
 	//slave_address = slave_address_set();
 
-}
-
-
-
-void PWM_pin_init()
-{
-	__HAL_RCC_GPIOC_CLK_ENABLE();
-
-	GPIO_InitTypeDef gpio_c;
-	gpio_c.Pin = GPIO_PIN_7;
-	gpio_c.Mode = GPIO_MODE_AF_PP;
-	//gpio_c.Mode = GPIO_MODE_OUTPUT_PP;
-	gpio_c.Pull = GPIO_NOPULL;
-	gpio_c.Speed = GPIO_SPEED_FREQ_HIGH;
-	gpio_c.Alternate = GPIO_AF2_TIM3;
-	HAL_GPIO_Init(GPIOC, &gpio_c);
 }
 
 
