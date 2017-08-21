@@ -1,6 +1,6 @@
 #include "PWM.h"
 
-void pwm_init()
+void pwm_test_init()
 {
 	// TIM3_CH2 init as PWM
 	// D9  -> PC7
@@ -31,6 +31,15 @@ void pwm_set_duty(float duty)
 	HAL_TIM_PWM_Start(&pwm_handle, TIM_CHANNEL_2);
 }
 
+void pwm_inti(uint8_t pin_index)
+{
+	TIM_HandleTypeDef pwm_handle;
+	TIM_OC_InitTypeDef pwm_oc_init;
+
+	pwm_clk_enable(stm32l476rg_digital_pins_pwm[pin_index].Alternate);
+
+
+}
 
 
 typedef struct {
