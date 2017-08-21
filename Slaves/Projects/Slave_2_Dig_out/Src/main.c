@@ -23,7 +23,6 @@ UART_HandleTypeDef UartHandle;
 void SystemClock_Config(void);
 static void Error_Handler(void);
 void system_init();
-void PWM_pin_init();
 uint8_t slave_address_set();
 
 /* Private functions ---------------------------------------------------------*/
