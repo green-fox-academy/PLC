@@ -39,9 +39,12 @@ void master_loop_control_init();
 // Print functions
 void print_out_TX(uint8_t from, uint8_t how_many);
 void print_out_RX(uint8_t from, uint8_t how_many);
-void print_out_digital_input_table();
 void print_out_available_slaves();
+void print_out_digital_input_table();
+void print_out_digital_output_table();
 void print_out_analog_input_table();
+void print_out_analog_output_table();
+
 
 void scan_system_slaves();
 
@@ -69,7 +72,6 @@ void update_analog_output_tables();
 
 void control_slaves_thread()
 {
-
 	master_loop_control_init();
 
 	scan_system_slaves();
@@ -84,13 +86,15 @@ void control_slaves_thread()
 		// slaves_check();
 		load_input_tables();
 
+		//print_out_digital_input_table();
 		print_out_analog_input_table();
 
-		//print_out_digital_input_table();
+		execute_program();
 
-		//xecute_program();
+		//print_out_digital_output_table();
+		print_out_analog_output_table();
 
-		//update_outputs();
+		update_outputs();
 
 		HAL_Delay(1000);
 
@@ -323,12 +327,12 @@ void execute_program()
 	if (DIN1) DOU1_ON; else DOU1_OFF;
 	if (DIN2) DOU2_ON; else DOU2_OFF;
 */
-	AOU1 = AIN1;
-	AOU2 = AIN2;
-	AOU3 = AIN3;
-	AOU4 = AIN4;
-	AOU5 = AIN5;
-	AOU6 = AIN6;
+	AOU1 = AIN1 / 2;
+	AOU2 = AIN2 / 2;
+	AOU3 = AIN3 / 2;
+	AOU4 = AIN4 / 2;
+	AOU5 = AIN5 / 2;
+	AOU6 = AIN6 / 2;
 
 }
 
@@ -426,12 +430,23 @@ void print_out_digital_input_table()
 	}
 }
 
-print_out_analog_input_table()
+void print_out_analog_input_table()
 {
 	for (uint8_t i = 0; i < num_of_an_in; i++) {
 		LCD_UsrLog("AIN[%d]: ", i);
 		for (uint8_t j = 0; j < 6; j++) {
 			LCD_UsrLog("%d, ", analog_input_slaves[i].analoge_pins_state[j]);
+		}
+		LCD_UsrLog("\n");
+	}
+}
+
+void print_out_analog_output_table()
+{
+	for (uint8_t i = 0; i < num_of_an_out; i++) {
+		LCD_UsrLog("AOUT[%d]: ", i);
+		for (uint8_t j = 0; j < 6; j++) {
+			LCD_UsrLog("%d, ", analog_output_slaves[i].analoge_pins_state[j]);
 		}
 		LCD_UsrLog("\n");
 	}

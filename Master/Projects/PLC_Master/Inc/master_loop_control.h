@@ -81,7 +81,7 @@ typedef struct {
 	uint8_t command;
 	uint16_t data[6];
 	uint16_t crc;
-	uint8_t zeros[16]
+	uint8_t zeros[16];
 }data_6x16bit_t;
 
 /* Exported variables ------------------------------------------------------- */

@@ -16,12 +16,8 @@ void response_to_scan();
 void set_pins_states();
 void send_false_command_err();
 
-void ain_slave_loop_thread()
+void aout_slave_loop_thread()
 {
-	// This is for test before adc is merged
-	for (uint8_t i = 0; i < 6; i++) {
-		ain_pins_states[i] = (i + 1) * 600;
-	}
 
 	while (1)
 	{
@@ -85,22 +81,12 @@ void send_false_command_err()
 
 }
 
-void send_pins_states()
+void set_pins_states()
 {
-	// Set buffer : addres and command
-	TX_buffer[0] = slave_address;
-	TX_buffer[1] = READ_SLAVE;
 
-	// Load uint16t array to buffer
-	for (uint8_t i = 0; i < 6; i++) {
-		TX_buffer[(i + 1) * 2] = adc_measure();
-		TX_buffer[((i + 1) * 2) + 1] = adc_measure() >> 8;
-	}
-
-	TX_buffer[14] = RX_buffer[2];
-	TX_buffer[15] = RX_buffer[3];
-
-	UART_send(TX_buffer);
+	// Here set the pins wiht data came from RX
+	// UART_send(TX_buffer);
+	UART_send(RX_buffer);
 
 }
 

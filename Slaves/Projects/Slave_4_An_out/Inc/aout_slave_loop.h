@@ -22,11 +22,11 @@
 /* Exported variables ------------------------------------------------------- */
 
 // This data holds the actual pin states
-uint16_t ain_pins_states[6];
+uint16_t aout_pins_states[6];
 
 /* Exported functions ------------------------------------------------------- */
 
-void ain_slave_loop_thread();
+void aout_slave_loop_thread();
 
 #endif /* __AIN_SLAVE_LOOP_H*/
 

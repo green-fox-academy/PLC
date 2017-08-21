@@ -39,7 +39,7 @@ int main(void)
 
 	slave_address = 13;
 
-	modbus_aout_listen();
+	aout_slave_loop_thread();
 
 }
 
