@@ -3,11 +3,8 @@
 
 #include "stm32l4xx_hal.h"
 
-TIM_HandleTypeDef pwm_handle;
-TIM_OC_InitTypeDef pwm_oc_init;
-
-
-void pwm_init();
+void pwm_pin_init(uint8_t pin_index, uint32_t mode, uint32_t pull);
+void pwm_init(uint8_t pin_index);
 void pwm_set_duty(float duty);
 
 
