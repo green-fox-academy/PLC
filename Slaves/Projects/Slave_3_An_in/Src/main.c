@@ -92,15 +92,17 @@ int main(void)
 	adc_init();
 	uart_send("ADC initialized\n\r");
 
+	uint16_t adc_measured_value[6];
+	uint16_t pot_measure_avg_value;
 	uint8_t selected_pot = 0;
 	uint32_t sum_all = 0;
 	uint32_t sum_1 = 0;
 	//uint32_t avg_1 = 0;
 
 	// loop - i measurement series for each potmeter
+
 	uint8_t i = 1;
 	while (i < 6) {
-		uint16_t adc_measured_value[6];
 		for (uint8_t j = 0; j < 6; j++) {
 			adc_measured_value[j] = adc_measure(j);
 			if (adc_measured_value[j] > 4095 ) { // note: the value depends on the ADC resolution! its 2^<res>!
@@ -137,11 +139,11 @@ int main(void)
 		i++;
 	}
 
-	pot_measure_avg(selected_pot);
+	pot_measure_avg_value = pot_measure_avg(selected_pot);
 	adc_deinit();
 	uart_send("ADC measurement finished.\n\r");
 	char summ[5];
-	sprintf(summ, "%d", pot_measure_avg(selected_pot));
+	sprintf(summ, "%d", pot_measure_avg_value);
 	uart_send("Average of the last ten measurements on the selected potentiometer: ");
 	uart_send(summ);
 	uart_send(".\n\r");
@@ -166,6 +168,7 @@ int main(void)
 	uart_send("th potentiometer's values: ");
 	uart_send(avgg_1);
 	uart_send(".\n\r");
+
 	// forever loop for brighten up LEDs
 	while (1){
 			for (uint8_t h = 0; h < 6; h++) {
@@ -184,11 +187,6 @@ int main(void)
 			}
 		}
 }
-// writetofile function...
-
-
-
-
 
 uint16_t pot_measure_avg(uint8_t potnumber)
 {

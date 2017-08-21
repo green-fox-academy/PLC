@@ -46,6 +46,7 @@
 #include "GPIO.h"
 #include "adc.h"
 #include "uart.h"
+#include "stdio.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
