@@ -336,6 +336,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/startup_stm32l476xx.s</locationURI>
 		</link>
 		<link>
+			<name>Slave_4_An_out/User/aout_slave_loop.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/aout_slave_loop.c</locationURI>
+		</link>
+		<link>
 			<name>Slave_4_An_out/User/main.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Src/main.c</locationURI>

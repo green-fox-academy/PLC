@@ -42,7 +42,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx_nucleo.h"
-#include "ain_slave_loop.h"
 #include "uart.h"
 #include "GPIO.h"
 
