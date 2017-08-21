@@ -62,6 +62,7 @@ void PendSV_Handler(void);
 void SysTick_Handler(void);
 void ETH_IRQHandler(void);
 void USART6_IRQHandler(void);
+void TIM4_IRQHandler();
 
 #ifdef __cplusplus
 }

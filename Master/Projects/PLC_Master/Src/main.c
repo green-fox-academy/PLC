@@ -92,7 +92,7 @@ int main(void)
 //	test_uart_sender();
 
 
-	control_slaves_thread();
+	//control_slaves_thread();
 
 	/* Init thread
 	//	osThreadDef(Start, StartThread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 5);
@@ -146,6 +146,8 @@ void system_init(void)
 	/* Initialize modbus */
 
 	modbus_init();
+
+	timer4_init();
 
 }
 
