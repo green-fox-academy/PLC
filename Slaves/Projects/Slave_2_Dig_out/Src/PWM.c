@@ -49,11 +49,20 @@ typedef struct {
 } gpio_pins_t_pwm;
 
 typedef struct {
-
-};
+	TIM_TypeDef *tim;
+	HAL_TIM_ActiveChannel channel;
+	TIM_TypeDef tim_ch;
+}pwm_tim_ch;
 
 
 /* Private variables ---------------------------------------------------------*/
+
+const pwm_tim_ch stm32l476rg_pwm_set[] = {
+		{TIM3, HAL_TIM_ACTIVE_CHANNEL_2, TIM_CHANNEL_2},
+		{TIM4, HAL_TIM_ACTIVE_CHANNEL_1, TIM_CHANNEL_1},
+		{TIM17, HAL_TIM_ACTIVE_CHANNEL_1, TIM_CHANNEL_1},
+};
+
 const gpio_pins_t_pwm stm32l476rg_digital_pins_pwm[] = {
 	{GPIOA, GPIO_PIN_3, 0},  				   	//PIN: D0
 	{GPIOA, GPIO_PIN_2, 0},						//PIN: D1
