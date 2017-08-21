@@ -29,7 +29,7 @@ void pwm_set_duty(float duty);
  *
  */
 
-void gpio_init_digital_pin_pwm(uint8_t pin_index, uint32_t mode, uint32_t pull);
+void pwm_gpio_init_digital_pin(uint8_t pin_index, uint32_t mode, uint32_t pull);
 
 
 #endif // PWM_H_INCLUDED
