@@ -87,7 +87,7 @@ void system_init()
 
 	/* Init PINs from DPIN9 to DPIN11 as a PWM */
 	/*for (int i = 9; i < 12; i++) {
-		gpio_init_digital_pin_pwm(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
+		gpio_init_digital_pin_pwm(i, GPIO_MODE_AF_PP, GPIO_NOPULL);
 	}*/
 
 	/* Init Pins from DPIN2 to DPIN6 as an Digital inputs for Slave_address */
