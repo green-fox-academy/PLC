@@ -93,13 +93,13 @@ void gpio_clk_enable_pwm(GPIO_TypeDef *port)
 		__HAL_RCC_GPIOG_CLK_ENABLE();
 }
 
-void pwm_clk_enable(GPIO_TypeDef *port, uint16_t pin)
+void pwm_clk_enable(GPIO_TypeDef *Alternate)
 {
-	if (port == GPIOA && pin == GPIO_PIN_7)
+	if (Alternate == GPIO_AF14_TIM17)
 		__HAL_RCC_TIM17_CLK_ENABLE();
-	else if (port == GPIOB && pin == GPIO_PIN_6)
+	else if (Alternate == GPIO_AF2_TIM4)
 		__HAL_RCC_TIM4_CLK_ENABLE();
-	else if (port == GPIOC && pin == GPIO_PIN_7)
+	else if (Alternate == GPIO_AF2_TIM3)
 		__HAL_RCC_TIM3_CLK_ENABLE();
 	/*else if (port == GPIOD)
 		__HAL_RCC_GPIOD_CLK_ENABLE();
@@ -114,7 +114,7 @@ void pwm_clk_enable(GPIO_TypeDef *port, uint16_t pin)
 
 /* ########## Functions for Digital pins ########## */
 
-void gpio_init_digital_pin_pwm(uint8_t pin_index, uint32_t mode, uint32_t pull)
+void pwm_gpio_init_digital_pin(uint8_t pin_index, uint32_t mode, uint32_t pull)
 {
 	GPIO_InitTypeDef gpio_init_structure_pwm;
 
