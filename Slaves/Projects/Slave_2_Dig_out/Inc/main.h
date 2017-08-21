@@ -51,8 +51,6 @@
    resources */
 /* Definition for USARTx clock resources */
 
-uint8_t slave_address;
-
 #endif /* __MAIN_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

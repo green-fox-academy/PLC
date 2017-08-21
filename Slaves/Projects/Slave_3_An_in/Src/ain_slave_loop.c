@@ -1,5 +1,6 @@
 /* Includes ------------------------------------------------------------------*/
-#include "din_slave_loop.h"
+#include "ain_slave_loop.h"
+#include "main.h"
 
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -16,8 +17,13 @@ void response_to_scan();
 void send_pins_states();
 void send_false_command_err();
 
-void din_slave_loop_thread()
+void ain_slave_loop_thread()
 {
+	// This is for test before adc is merged
+	for (uint8_t i = 0; i < 6; i++) {
+		ain_pins_states[i] = (i + 1) * 600;
+	}
+
 	while (1)
 	{
 		// Wait for message arrival
@@ -63,7 +69,6 @@ void din_slave_loop_thread()
 						break;
 					default :
 						send_false_command_err();
-
 				}
 			}
 		}
@@ -83,13 +88,18 @@ void send_false_command_err()
 
 void send_pins_states()
 {
-	din_pins_states = gpio_read_8_pin(8, 15);
+	// Set buffer : addres and command
+	TX_buffer[0] = slave_address;
+	TX_buffer[1] = READ_SLAVE;
 
-	TX_buffer[0] = slave_address;		//Address
-	TX_buffer[1] = READ_SLAVE;			//Command
-	TX_buffer[2] = din_pins_states;		//Data
-	TX_buffer[3] = RX_buffer[2];		//CRC low
-	TX_buffer[4] = RX_buffer[3];		//CRC high
+	// Load uint16t array to buffer
+	for (uint8_t i = 0; i < 6; i++) {
+		TX_buffer[(i + 1) * 2] = adc_measure();
+		TX_buffer[((i + 1) * 2) + 1] = adc_measure() >> 8;
+	}
+
+	TX_buffer[14] = RX_buffer[2];
+	TX_buffer[15] = RX_buffer[3];
 
 	UART_send(TX_buffer);
 

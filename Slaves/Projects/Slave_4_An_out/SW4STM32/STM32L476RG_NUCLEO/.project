@@ -351,9 +351,9 @@
 			<locationURI>PARENT-4-PROJECT_LOC/Slave_drivers/Src/GPIO.c</locationURI>
 		</link>
 		<link>
-			<name>Slave_drivers/Src/modbus.c</name>
+			<name>Slave_drivers/Src/uart.c</name>
 			<type>1</type>
-			<locationURI>PARENT-4-PROJECT_LOC/Slave_drivers/Src/modbus.c</locationURI>
+			<locationURI>PARENT-4-PROJECT_LOC/Slave_drivers/Src/uart.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/BSP/STM32L476RG_NUCLEO/stm32l4xx_nucleo.c</name>

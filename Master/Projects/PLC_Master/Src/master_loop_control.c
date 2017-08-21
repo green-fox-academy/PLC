@@ -41,6 +41,7 @@ void print_out_TX(uint8_t from, uint8_t how_many);
 void print_out_RX(uint8_t from, uint8_t how_many);
 void print_out_digital_input_table();
 void print_out_available_slaves();
+void print_out_analog_input_table();
 
 void scan_system_slaves();
 
@@ -82,9 +83,14 @@ void control_slaves_thread()
 		// system_check();
 		// slaves_check();
 		load_input_tables();
-		print_out_digital_input_table();
-		execute_program();
-		update_outputs();
+
+		print_out_analog_input_table();
+
+		//print_out_digital_input_table();
+
+		//xecute_program();
+
+		//update_outputs();
 
 		HAL_Delay(1000);
 
@@ -287,7 +293,7 @@ void update_analog_output_tables()
 		for (uint8_t i = 0; i < num_of_an_out; i++) {
 
 			// Set the address
-			TX_buffer[0] = analog_output_slaves.slave_address;
+			TX_buffer[0] = analog_output_slaves[i].slave_address;
 
 			// Set uint16_t pinstate data to TX_buffer, from buffer[2] to buffer[13]
 			for (uint8_t j = 0; j < 6; j++) {
@@ -300,10 +306,10 @@ void update_analog_output_tables()
 
 			if (!wait_function())
 				// Checks the response if it was corrupted
-				analog_output_slaves.slave_status = verify_command_address_crc(14,14);
+				analog_output_slaves[i].slave_status = verify_command_address_crc(14,14);
 			else
 				// Time out
-				analog_output_slaves.slave_status = 4;
+				analog_output_slaves[i].slave_status = 4;
 		}
 
 	} else {
@@ -417,6 +423,17 @@ void print_out_digital_input_table()
 {
 	for (uint8_t i = 0; i < num_of_dig_in; i++) {
 		LCD_UsrLog("DIN[%d] adr: %d state: %d\n", i, digital_input_slaves[i].slave_address, digital_input_slaves[i].digital_pins_state);
+	}
+}
+
+print_out_analog_input_table()
+{
+	for (uint8_t i = 0; i < num_of_an_in; i++) {
+		LCD_UsrLog("AIN[%d]: ", i);
+		for (uint8_t j = 0; j < 6; j++) {
+			LCD_UsrLog("%d, ", analog_input_slaves[i].analoge_pins_state[j]);
+		}
+		LCD_UsrLog("\n");
 	}
 }
 

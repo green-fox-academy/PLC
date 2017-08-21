@@ -42,15 +42,14 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx_nucleo.h"
-#include "modbus.h"
+#include "ain_slave_loop.h"
+#include "uart.h"
 #include "GPIO.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 
 uint16_t adc_measure();
-
-uint8_t slave_address;
 
 #endif /* __MAIN_H */
 
