@@ -1,34 +1,10 @@
 #include "PWM.h"
 
-/*void pwm_test_init()
-{
-	// TIM3_CH2 init as PWM
-	// D9  -> PC7
-	__HAL_RCC_TIM3_CLK_ENABLE();		//clock enable
-
-	pwm_handle.Instance = TIM3;
-	pwm_handle.State = HAL_TIM_STATE_RESET;
-	pwm_handle.Channel = HAL_TIM_ACTIVE_CHANNEL_2;
-	pwm_handle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	pwm_handle.Init.CounterMode = TIM_COUNTERMODE_UP;
-	pwm_handle.Init.Period = 0xFFFF;
-	pwm_handle.Init.Prescaler = 0;
-	HAL_TIM_PWM_Init(&pwm_handle);
-
-	pwm_oc_init.OCFastMode = TIM_OCFAST_DISABLE;
-	pwm_oc_init.OCIdleState = TIM_OCIDLESTATE_RESET;
-	pwm_oc_init.OCMode = TIM_OCMODE_PWM1;
-	pwm_oc_init.OCPolarity = TIM_OCPOLARITY_HIGH;
-	pwm_oc_init.Pulse = 0xFFFF;
-	HAL_TIM_PWM_ConfigChannel(&pwm_handle, &pwm_oc_init, TIM_CHANNEL_2);
-}*/
-
 typedef struct {
 	TIM_TypeDef *tim;
 	HAL_TIM_ActiveChannel channel;
 	uint32_t tim_ch;
 }pwm_tim_ch;
-
 
 typedef struct {
 	GPIO_TypeDef *port;
@@ -39,6 +15,7 @@ typedef struct {
 
 TIM_HandleTypeDef pwm_handle[3];
 TIM_OC_InitTypeDef pwm_oc_init[3];
+
 /* Private variables ---------------------------------------------------------*/
 
 const pwm_tim_ch stm32l476rg_pwm_set[] = {
@@ -71,7 +48,6 @@ const gpio_pins_t_pwm stm32l476rg_digital_pins_pwm[] = {
 	{GPIOC, GPIO_PIN_1, 0},     				//PIN: A4 - As a Digital PIN
 	{GPIOC, GPIO_PIN_0, 0},     				//PIN: A5 - As a Digital PIN
 };
-
 
 /* Private function prototypes -----------------------------------------------*/
 
@@ -114,7 +90,7 @@ void pwm_clk_enable(uint8_t Alternate)
 }
 
 
-/* ########## Functions for Digital pins ########## */
+/* ########## Functions for Digital pins PWM ########## */
 
 void pwm_pin_init(uint8_t pin_index, uint32_t mode, uint32_t pull)
 {
@@ -154,15 +130,15 @@ void pwm_init(uint8_t pin_index)
 	pwm_oc_init[pin_index].OCMode = TIM_OCMODE_PWM1;
 	pwm_oc_init[pin_index].OCPolarity = TIM_OCPOLARITY_HIGH;
 	pwm_oc_init[pin_index].Pulse = 0xFFFF;
-	HAL_TIM_PWM_ConfigChannel(&pwm_handle[pin_index], &pwm_oc_init[pin_index], stm32l476rg_pwm_set[pin_index].tim_ch);		//stm32l476rg_pwm_set[pin_index].tim_ch
+	HAL_TIM_PWM_ConfigChannel(&pwm_handle[pin_index], &pwm_oc_init[pin_index], stm32l476rg_pwm_set[pin_index].tim_ch);
 }
 
 void pwm_set_duty(float duty, uint8_t pin_index)
 {
 	uint32_t pulse = pwm_handle[pin_index].Init.Period * (duty / 100.0);
 	pwm_oc_init[pin_index].Pulse = pulse;
-	HAL_TIM_PWM_ConfigChannel(&pwm_handle[pin_index], &pwm_oc_init[pin_index], stm32l476rg_pwm_set[pin_index].tim_ch);		//stm32l476rg_pwm_set[pin_index].tim_ch
-	HAL_TIM_PWM_Start(&pwm_handle[pin_index], stm32l476rg_pwm_set[pin_index].tim_ch);		//stm32l476rg_pwm_set[pin_index].tim_ch
+	HAL_TIM_PWM_ConfigChannel(&pwm_handle[pin_index], &pwm_oc_init[pin_index], stm32l476rg_pwm_set[pin_index].tim_ch);
+	HAL_TIM_PWM_Start(&pwm_handle[pin_index], stm32l476rg_pwm_set[pin_index].tim_ch);
 }
 
 
