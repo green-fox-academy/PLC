@@ -3,7 +3,7 @@
 
 #include "stm32l4xx_hal.h"
 
-void pwm_pin_init(uint8_t pin_index, uint32_t mode, uint32_t pull);
+
 void pwm_init(uint8_t pin_index);
 void pwm_set_duty(float duty);
 
@@ -25,8 +25,8 @@ void pwm_set_duty(float duty);
  * 		GPIO_NOPULL
  *
  */
+void pwm_pin_init(uint8_t pin_index, uint32_t mode, uint32_t pull);
 
-void pwm_gpio_init_digital_pin(uint8_t pin_index, uint32_t mode, uint32_t pull);
 
 
 #endif // PWM_H_INCLUDED
