@@ -5,6 +5,7 @@
 #include "main.h"
 #include "lcd_log.h"
 #include "plc_user_code.h"
+#include "timer.h"
 
  /*	Function name:
   * 	Function purpose:

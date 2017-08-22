@@ -57,9 +57,11 @@
 #include "lcd_log.h"
 #include "socket_server.h"
 #include "socket_client.h"
+
 #include "GPIO.h"
 #include "master_loop_control.h"
 #include "uart.h"
+#include "timer.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -101,6 +103,12 @@ int main(void)
 	// Start scheduler
 	//  osKernelStart();
 	*/
+
+	uint8_t i = 0;
+	while(1) {
+		i++;
+		i--;
+	}
 
 
 
@@ -147,7 +155,7 @@ void system_init(void)
 
 	modbus_init();
 
-	timer4_init();
+	timer3_init();
 
 }
 

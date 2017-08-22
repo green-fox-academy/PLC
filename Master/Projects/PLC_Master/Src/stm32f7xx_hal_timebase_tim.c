@@ -43,6 +43,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
+#include "stm32746g_discovery.h"
 /** @addtogroup STM32F7xx_HAL_Driver
   * @{
   */
@@ -161,7 +162,11 @@ void HAL_ResumeTick(void)
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  HAL_IncTick();
+	if (htim -> Instance == TIM6) {
+		HAL_IncTick();
+	} else if (htim -> Instance == TIM3) {
+		BSP_LED_Toggle(LED_GREEN);
+	}
 }
 
 /**

@@ -48,6 +48,7 @@
 /* Private variables ---------------------------------------------------------*/
 extern ETH_HandleTypeDef EthHandle;
 extern UART_HandleTypeDef uart_handle;
+extern TIM_HandleTypeDef tim3_handle;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -56,6 +57,10 @@ extern UART_HandleTypeDef uart_handle;
 /******************************************************************************/
 
 
+void TIM3_IRQHandler(void)
+{
+	HAL_TIM_IRQHandler(&tim3_handle);
+}
 
 void USART6_IRQHandler(void)
 {

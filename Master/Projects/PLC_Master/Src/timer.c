@@ -9,33 +9,29 @@
 /* Private functions ---------------------------------------------------------*/
 
 
-void timer4_init(void)
+void timer3_init(void)
 {
-	tim4_handle.Instance = TIM4;
-	tim4_handle.Init.AutoReloadPreload = DISABLE;
-	tim4_handle.Init.CounterMode = TIM_COUNTERMODE_UP;
-	tim4_handle.Init.Period =  0xFFFF;
-	tim4_handle.Init.Prescaler = 100;
-	tim4_handle.Init.RepetitionCounter = 0;
-	tim4_handle.State = HAL_TIM_STATE_RESET;
-	__HAL_RCC_TIM4_CLK_ENABLE();
-	HAL_NVIC_SetPriority(TIM4_IRQn, 0, 0);
-	HAL_NVIC_EnableIRQ(TIM4_IRQn);
-	HAL_TIM_Base_Init(&tim4_handle);
-	HAL_TIM_Base_Start_IT(&tim4_handle);
+//	  uwPrescalerValue = (uint32_t)((SystemCoreClock / 2) / 10000) - 1;
+
+	time_out_flag = 0;
+
+	  /* Set TIMx instance */
+	tim3_handle.Instance = TIM3;
+
+	tim3_handle.Init.Period            = PERIOD;
+	tim3_handle.Init.Prescaler         = PRESCALE;
+	tim3_handle.Init.ClockDivision     = 0;
+	tim3_handle.Init.CounterMode       = TIM_COUNTERMODE_UP;
+	tim3_handle.Init.RepetitionCounter = 0;
+	tim3_handle.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+
+	  HAL_TIM_Base_Init(&tim3_handle);
+
+	  /*##-2- Start the TIM Base generation in interrupt mode ####################*/
+	  /* Start Channel1 */
+	  HAL_TIM_Base_Start_IT(&tim3_handle);
+
 }
 
-/*
-void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim)
-{
+// THe Interrupt handler is in stm32f7xx_hal_timiebase_tim.c
 
-}
-*/
-
-/*
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-	gpio_toggle_digital_pin(2);
-
-}
-*/

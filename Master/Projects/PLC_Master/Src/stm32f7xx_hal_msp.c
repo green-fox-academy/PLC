@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
-  * @file    LwIP/LwIP_HTTP_Server_Netconn_RTOS/Inc/stm32f7xx_it.h 
+  * @file    TIM/TIM_TimeBase/Src/stm32f7xx_hal_msp.c
   * @author  MCD Application Team
-  * @version V1.2.0
-  * @date    30-December-2016
-  * @brief   This file contains the headers of the interrupt handlers.    
+  * @version V1.1.0
+  * @date    30-December-2016 
+  * @brief   HAL MSP module.
   ******************************************************************************
   * @attention
   *
@@ -35,42 +35,65 @@
   ******************************************************************************
   */
 
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __STM32F7xx_IT_H
-#define __STM32F7xx_IT_H
-
-#ifdef __cplusplus
- extern "C" {
-#endif 
-
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f7xx.h"
+#include "timer.h"
 
-/* Exported types ------------------------------------------------------------*/
-/* Exported constants --------------------------------------------------------*/
-/* Exported macro ------------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */
+/** @addtogroup STM32F7xx_HAL_Examples
+  * @{
+  */
 
-void NMI_Handler(void);
-void HardFault_Handler(void);
-void MemManage_Handler(void);
-void BusFault_Handler(void);
-void UsageFault_Handler(void);
-void SVC_Handler(void);
-void DebugMon_Handler(void);
-void PendSV_Handler(void);
-void SysTick_Handler(void);
-void ETH_IRQHandler(void);
-void USART6_IRQHandler(void);
+/** @defgroup HAL_MSP
+  * @brief HAL MSP module.
+  * @{
+  */
 
-// void TIM4_IRQHandler();
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/* Private function prototypes -----------------------------------------------*/
+/* Private functions ---------------------------------------------------------*/
 
-void TIM3_IRQHandler(void);
+/** @defgroup HAL_MSP_Private_Functions
+  * @{
+  */
 
-#ifdef __cplusplus
+
+/**
+  * @brief TIM MSP Initialization
+  *        This function configures the hardware resources used in this example:
+  *           - Peripheral's clock enable
+  * @param htim: TIM handle pointer
+  * @retval None
+  */
+
+void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim)
+{
+	if (htim->Instance == TIM3) {
+		  //##-1- Enable peripheral clock #################################
+		  // TIMx Peripheral clock enable
+		  TIMx_CLK_ENABLE();
+
+		  //##-2- Configure the NVIC for TIMx ########################################
+		  // Set the TIMx priority
+		  HAL_NVIC_SetPriority(TIMx_IRQn, 1, 0);
+
+		  // Enable the TIMx global Interrupt
+		  HAL_NVIC_EnableIRQ(TIMx_IRQn);
+	}
 }
-#endif
 
-#endif /* __STM32F7xx_IT_H */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

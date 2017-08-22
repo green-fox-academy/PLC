@@ -66,6 +66,11 @@
 			<locationURI>PARENT-2-PROJECT_LOC/Src/socket_server.c</locationURI>
 		</link>
 		<link>
+			<name>Application/Master_Control_Logic/stm32f7xx_hal_msp.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/stm32f7xx_hal_msp.c</locationURI>
+		</link>
+		<link>
 			<name>Application/Master_Control_Logic/stm32f7xx_hal_timebase_tim.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Src/stm32f7xx_hal_timebase_tim.c</locationURI>
