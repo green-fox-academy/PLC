@@ -1,6 +1,6 @@
 #include "PWM.h"
 
-void pwm_test_init()
+/*void pwm_test_init()
 {
 	// TIM3_CH2 init as PWM
 	// D9  -> PC7
@@ -21,46 +21,7 @@ void pwm_test_init()
 	pwm_oc_init.OCPolarity = TIM_OCPOLARITY_HIGH;
 	pwm_oc_init.Pulse = 0xFFFF;
 	HAL_TIM_PWM_ConfigChannel(&pwm_handle, &pwm_oc_init, TIM_CHANNEL_2);
-}
-
-void pwm_set_duty(float duty)
-{
-	uint32_t pulse = pwm_handle.Init.Period * (duty / 100.0);
-	pwm_oc_init.Pulse = pulse;
-	HAL_TIM_PWM_ConfigChannel(&pwm_handle, &pwm_oc_init, TIM_CHANNEL_2);
-	HAL_TIM_PWM_Start(&pwm_handle, TIM_CHANNEL_2);
-}
-
-void pwm_init(uint8_t pin_index)
-{
-	TIM_HandleTypeDef pwm_handle;
-	TIM_OC_InitTypeDef pwm_oc_init;
-
-	pwm_clk_enable(stm32l476rg_digital_pins_pwm[pin_index].Alternate);
-
-	pwm_handle.Instance = stm32l476rg_pwm_set[pin_index].tim;
-	pwm_handle.State = HAL_TIM_STATE_RESET;
-	pwm_handle.Channel = stm32l476rg_pwm_set[pin_index].channel;
-	pwm_handle.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-	pwm_handle.Init.CounterMode = TIM_COUNTERMODE_UP;
-	pwm_handle.Init.Period = 0xFFFF;
-	pwm_handle.Init.Prescaler = 0;
-	HAL_TIM_PWM_Init(&pwm_handle);
-
-	pwm_oc_init.OCFastMode = TIM_OCFAST_DISABLE;
-	pwm_oc_init.OCIdleState = TIM_OCIDLESTATE_RESET;
-	pwm_oc_init.OCMode = TIM_OCMODE_PWM1;
-	pwm_oc_init.OCPolarity = TIM_OCPOLARITY_HIGH;
-	pwm_oc_init.Pulse = 0xFFFF;
-	HAL_TIM_PWM_ConfigChannel(&pwm_handle, &pwm_oc_init, stm32l476rg_pwm_set[pin_index].tim_ch);
-}
-
-
-typedef struct {
-	GPIO_TypeDef *port;
-	uint16_t pin;
-	GPIO_InitTypeDef *Alternate;
-} gpio_pins_t_pwm;
+}*/
 
 typedef struct {
 	TIM_TypeDef *tim;
@@ -69,6 +30,15 @@ typedef struct {
 }pwm_tim_ch;
 
 
+typedef struct {
+	GPIO_TypeDef *port;
+	uint16_t pin;
+	GPIO_InitTypeDef *Alternate;
+} gpio_pins_t_pwm;
+
+
+TIM_HandleTypeDef pwm_handle[3];
+TIM_OC_InitTypeDef pwm_oc_init[3];
 /* Private variables ---------------------------------------------------------*/
 
 const pwm_tim_ch stm32l476rg_pwm_set[] = {
@@ -146,7 +116,7 @@ void pwm_clk_enable(GPIO_TypeDef *Alternate)
 
 /* ########## Functions for Digital pins ########## */
 
-void pwm_gpio_init_digital_pin(uint8_t pin_index, uint32_t mode, uint32_t pull)
+void pwm_pin_init(uint8_t pin_index, uint32_t mode, uint32_t pull)
 {
 	GPIO_InitTypeDef gpio_init_structure_pwm;
 
@@ -163,3 +133,36 @@ void pwm_gpio_init_digital_pin(uint8_t pin_index, uint32_t mode, uint32_t pull)
 	// Init the pin
 	HAL_GPIO_Init(stm32l476rg_digital_pins_pwm[pin_index].port, &gpio_init_structure_pwm);
 }
+
+void pwm_init(uint8_t pin_index)
+{
+	//set the clock
+	pwm_clk_enable(stm32l476rg_digital_pins_pwm[pin_index].Alternate);
+
+	//set the init structure
+	pwm_handle[pin_index].Instance = stm32l476rg_pwm_set[pin_index].tim;
+	pwm_handle[pin_index].State = HAL_TIM_STATE_RESET;
+	pwm_handle[pin_index].Channel = stm32l476rg_pwm_set[pin_index].channel;
+	pwm_handle[pin_index].Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+	pwm_handle[pin_index].Init.CounterMode = TIM_COUNTERMODE_UP;
+	pwm_handle[pin_index].Init.Period = 0xFFFF;
+	pwm_handle[pin_index].Init.Prescaler = 0;
+	HAL_TIM_PWM_Init(&pwm_handle[pin_index]);
+
+	pwm_oc_init[pin_index].OCFastMode = TIM_OCFAST_DISABLE;
+	pwm_oc_init[pin_index].OCIdleState = TIM_OCIDLESTATE_RESET;
+	pwm_oc_init[pin_index].OCMode = TIM_OCMODE_PWM1;
+	pwm_oc_init[pin_index].OCPolarity = TIM_OCPOLARITY_HIGH;
+	pwm_oc_init[pin_index].Pulse = 0xFFFF;
+	HAL_TIM_PWM_ConfigChannel(&pwm_handle[pin_index], &pwm_oc_init[pin_index], stm32l476rg_pwm_set[pin_index].tim_ch);
+}
+
+void pwm_set_duty(float duty, uint8_t pin_index)
+{
+	uint32_t pulse = pwm_handle[pin_index].Init.Period * (duty / 100.0);
+	pwm_oc_init[pin_index].Pulse = pulse;
+	HAL_TIM_PWM_ConfigChannel(&pwm_handle[pin_index], &pwm_oc_init[pin_index], stm32l476rg_pwm_set[pin_index].tim_ch);
+	HAL_TIM_PWM_Start(&pwm_handle[pin_index], stm32l476rg_pwm_set[pin_index].tim_ch);
+}
+
+
