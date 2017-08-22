@@ -54,6 +54,13 @@
 
 TIM_HandleTypeDef pwm_handle;
 TIM_OC_InitTypeDef pwm_oc_init;
+
+TIM_HandleTypeDef pwm_handle1;
+TIM_OC_InitTypeDef pwm_oc_init1;
+
+TIM_HandleTypeDef pwm_handle2;
+TIM_OC_InitTypeDef pwm_oc_init2;
+
 TIM_MasterConfigTypeDef sMasterConfig;
 TIM_Base_InitTypeDef teszt;
 
@@ -80,6 +87,32 @@ void PWM_pin_init()
 	gpio_c.Speed = GPIO_SPEED_FREQ_HIGH;
 	gpio_c.Alternate = GPIO_AF2_TIM3;
 	HAL_GPIO_Init(GPIOC, &gpio_c);
+
+
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+	__TIM4_CLK_ENABLE();
+
+	GPIO_InitTypeDef gpio_b;
+	gpio_b.Pin = GPIO_PIN_6;
+	gpio_b.Mode = GPIO_MODE_AF_PP;
+	//gpio_c.Mode = GPIO_MODE_OUTPUT_PP;
+	gpio_b.Pull = GPIO_NOPULL;
+	gpio_b.Speed = GPIO_SPEED_FREQ_HIGH;
+	gpio_b.Alternate = GPIO_AF2_TIM4;
+	HAL_GPIO_Init(GPIOB, &gpio_b);
+
+
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	__TIM17_CLK_ENABLE();
+
+	GPIO_InitTypeDef gpio_a;
+	gpio_a.Pin = GPIO_PIN_7;
+	gpio_a.Mode = GPIO_MODE_AF_PP;
+	//gpio_c.Mode = GPIO_MODE_OUTPUT_PP;
+	gpio_a.Pull = GPIO_NOPULL;
+	gpio_a.Speed = GPIO_SPEED_FREQ_HIGH;
+	gpio_a.Alternate = GPIO_AF14_TIM17;
+	HAL_GPIO_Init(GPIOA, &gpio_a);
 }
 
 /*void teszt_init()
@@ -113,6 +146,56 @@ void pwm_init()
 	pwm_oc_init.Pulse = 0xFFFF;
 	HAL_TIM_PWM_ConfigChannel(&pwm_handle, &pwm_oc_init, TIM_CHANNEL_2);
 
+
+
+
+
+
+	pwm_handle1.Instance = TIM4;
+	//pwm_handle.State = HAL_TIM_STATE_RESET;
+	//pwm_handle.Channel = HAL_TIM_ACTIVE_CHANNEL_2;
+	pwm_handle1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+	pwm_handle1.Init.CounterMode = TIM_COUNTERMODE_UP;
+	pwm_handle1.Init.Period = 0xFFFF;
+	pwm_handle1.Init.Prescaler = 0;
+	HAL_TIM_PWM_Init(&pwm_handle1);
+
+	//sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+	//sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+	//HAL_TIMEx_MasterConfigSynchronization(&pwm_handle, &sMasterConfig);
+
+	pwm_oc_init1.OCFastMode = TIM_OCFAST_DISABLE;
+	pwm_oc_init1.OCIdleState = TIM_OCIDLESTATE_RESET;
+	pwm_oc_init1.OCMode = TIM_OCMODE_PWM1;
+	pwm_oc_init1.OCPolarity = TIM_OCPOLARITY_HIGH;
+	pwm_oc_init1.Pulse = 0xFFFF;
+	HAL_TIM_PWM_ConfigChannel(&pwm_handle1, &pwm_oc_init1, TIM_CHANNEL_1);
+
+
+
+
+
+
+	pwm_handle2.Instance = TIM17;
+	//pwm_handle.State = HAL_TIM_STATE_RESET;
+	//pwm_handle.Channel = HAL_TIM_ACTIVE_CHANNEL_2;
+	pwm_handle2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+	pwm_handle2.Init.CounterMode = TIM_COUNTERMODE_UP;
+	pwm_handle2.Init.Period = 0xFFFF;
+	pwm_handle2.Init.Prescaler = 0;
+	HAL_TIM_PWM_Init(&pwm_handle2);
+
+	//sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+	//sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+	//HAL_TIMEx_MasterConfigSynchronization(&pwm_handle, &sMasterConfig);
+
+	pwm_oc_init2.OCFastMode = TIM_OCFAST_DISABLE;
+	pwm_oc_init2.OCIdleState = TIM_OCIDLESTATE_RESET;
+	pwm_oc_init2.OCMode = TIM_OCMODE_PWM1;
+	pwm_oc_init2.OCPolarity = TIM_OCPOLARITY_HIGH;
+	pwm_oc_init2.Pulse = 0xFFFF;
+	HAL_TIM_PWM_ConfigChannel(&pwm_handle2, &pwm_oc_init2, TIM_CHANNEL_1);
+
 	//HAL_TIM_PWM_Start(&pwm_handle, TIM_CHANNEL_2);
 }
 
@@ -128,6 +211,22 @@ void pwm_set_duty(float duty)
 	pwm_oc_init.Pulse = pulse;
 	HAL_TIM_PWM_ConfigChannel(&pwm_handle, &pwm_oc_init, TIM_CHANNEL_2);
 	HAL_TIM_PWM_Start(&pwm_handle, TIM_CHANNEL_2);
+}
+
+void pwm_set_duty1(float duty)
+{
+	uint32_t pulse = pwm_handle1.Init.Period * (duty / 100.0);
+	pwm_oc_init1.Pulse = pulse;
+	HAL_TIM_PWM_ConfigChannel(&pwm_handle1, &pwm_oc_init1, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&pwm_handle1, TIM_CHANNEL_1);
+}
+
+void pwm_set_duty2(float duty)
+{
+	uint32_t pulse = pwm_handle2.Init.Period * (duty / 100.0);
+	pwm_oc_init2.Pulse = pulse;
+	HAL_TIM_PWM_ConfigChannel(&pwm_handle2, &pwm_oc_init2, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&pwm_handle2, TIM_CHANNEL_1);
 }
 
 int main(void)
@@ -166,6 +265,28 @@ int main(void)
 		  pwm_set_duty(i);
 		  HAL_Delay(30);
 	  	  }
+
+
+
+		for (int i = 0; i <=100; i++) {
+		  pwm_set_duty1(i);
+		  HAL_Delay(30);
+		}
+		for (int i = 100; i >= 0; i--) {
+		  pwm_set_duty1(i);
+		  HAL_Delay(30);
+		  }
+
+
+
+		for (int i = 0; i <=100; i++) {
+		  pwm_set_duty2(i);
+		  HAL_Delay(30);
+		  }
+		for (int i = 100; i >= 0; i--) {
+		  pwm_set_duty2(i);
+		  HAL_Delay(30);
+		  }
 
 	 //HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
   }
