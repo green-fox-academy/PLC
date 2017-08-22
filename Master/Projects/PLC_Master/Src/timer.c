@@ -11,7 +11,6 @@
 
 void timer3_init(void)
 {
-//	  uwPrescalerValue = (uint32_t)((SystemCoreClock / 2) / 10000) - 1;
 
 	time_out_flag = 0;
 
@@ -29,7 +28,7 @@ void timer3_init(void)
 
 	  /*##-2- Start the TIM Base generation in interrupt mode ####################*/
 	  /* Start Channel1 */
-	  HAL_TIM_Base_Start_IT(&tim3_handle);
+	  //HAL_TIM_Base_Start_IT(&tim3_handle);
 
 }
 

@@ -48,6 +48,7 @@ void print_out_analog_output_table();
 
 
 void scan_system_slaves();
+void slaves_check();
 
 // Load functions
 void load_analog_input_table();
@@ -84,7 +85,9 @@ void control_slaves_thread()
 	while (1) {
 
 		// system_check();
-		// slaves_check();
+
+		slaves_check();
+
 		load_input_tables();
 
 		//print_out_digital_input_table();
@@ -173,6 +176,34 @@ void scan_system_slaves()
 	}
 }
 
+void slaves_check()
+{
+	for (uint8_t i = 0; i < num_of_dig_in; i++) {
+		if (digital_input_slaves[i].slave_status == 4) {
+			LCD_UsrLog("DIN[%d] ERR: Timed Out.\n", i);
+		}
+	}
+
+	for (uint8_t i = 0; i < num_of_dig_out; i++) {
+		if (digital_output_slaves[i].slave_status == 4) {
+			LCD_UsrLog("DOU[%d] ERR: Timed Out.\n", i);
+		}
+	}
+
+	for (uint8_t i = 0; i < num_of_an_in; i++) {
+		if (analog_input_slaves[i].slave_status == 4) {
+			LCD_UsrLog("AIN[%d] ERR: Timed Out.\n", i);
+		}
+	}
+
+	for (uint8_t i = 0; i < num_of_an_out; i++) {
+		if (analog_output_slaves[i].slave_status == 4) {
+			LCD_UsrLog("AOU[%d] ERR: Timed Out.\n", i);
+		}
+	}
+}
+
+
 void load_input_tables()
 {
 	// load_digital_input_table();
@@ -208,9 +239,6 @@ void load_digital_input_table()
 				digital_input_slaves[i].slave_status = 4;
 			}
 		}
-
-	} else {
-		LCD_UsrLog("There are no digital inputs.\n");
 	}
 }
 
@@ -228,7 +256,7 @@ void load_analog_input_table()
 			// Set the address and send the message
 			TX_buffer[0] = analog_input_slaves[i].slave_address;
 			UART_send(TX_buffer);
-
+			print_out_TX(2,6);
 			if (!wait_function()) {
 				// Checks the response if it was corrupted
 				analog_input_slaves[i].slave_status = verify_command_address_crc(2,14);
@@ -244,9 +272,6 @@ void load_analog_input_table()
 				analog_input_slaves[i].slave_status = 4;
 			}
 		}
-
-	} else {
-		LCD_UsrLog("There are no analog inputs.\n");
 	}
 }
 
@@ -278,11 +303,7 @@ void update_digital_output_tables()
 				// If it was timed out
 				digital_output_slaves[i].slave_status = 4;
 		}
-
-	} else {
-		LCD_UsrLog("There are no digital outputs.\n");
 	}
-
 }
 
 void update_analog_output_tables()
@@ -316,18 +337,15 @@ void update_analog_output_tables()
 				// Time out
 				analog_output_slaves[i].slave_status = 4;
 		}
-
-	} else {
-		LCD_UsrLog("There are no analog outputs.\n");
 	}
 }
 
 void execute_program()
 {
-/*
+
 	if (DIN1) DOU1_ON; else DOU1_OFF;
 	if (DIN2) DOU2_ON; else DOU2_OFF;
-*/
+
 	AOU1 = AIN1 / 2;
 	AOU2 = AIN2 / 2;
 	AOU3 = AIN3 / 2;
@@ -369,6 +387,7 @@ uint8_t verify_command_address_crc(uint8_t tx_crc_start, uint8_t rx_crc_start)
  */
 uint8_t wait_function()
 {
+/*
 	uint8_t counter = 0;
 	uint8_t time_out = 0;
 
@@ -382,6 +401,24 @@ uint8_t wait_function()
 	interrupt_flag = 0;
 
 	return time_out;
+*/
+
+	uint8_t time_out = 0;
+
+	HAL_TIM_Base_Start_IT(&tim3_handle);
+
+	while (!interrupt_flag && !time_out_flag);
+
+	if (time_out_flag) {
+		time_out = 1;
+	}
+	HAL_TIM_Base_Stop_IT(&tim3_handle);
+
+	time_out_flag = 0;
+	interrupt_flag = 0;
+
+	return time_out;
+
 }
 
 /*	Function name:		print_out_available_slaves
@@ -434,7 +471,7 @@ void print_out_digital_input_table()
 void print_out_analog_input_table()
 {
 	for (uint8_t i = 0; i < num_of_an_in; i++) {
-		LCD_UsrLog("AIN[%d]: ", i);
+		LCD_UsrLog("AIN[%d]:  ", i);
 		for (uint8_t j = 0; j < 6; j++) {
 			LCD_UsrLog("%d, ", analog_input_slaves[i].analoge_pins_state[j]);
 		}

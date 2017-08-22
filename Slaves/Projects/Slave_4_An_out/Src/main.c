@@ -1,5 +1,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "aout_slave_loop.h"
 
 /** @addtogroup STM32L4xx_HAL_Examples
   * @{

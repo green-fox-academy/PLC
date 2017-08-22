@@ -91,10 +91,7 @@ int main(void)
 {
 	system_init();
 
-//	test_uart_sender();
-
-
-	//control_slaves_thread();
+	control_slaves_thread();
 
 	/* Init thread
 	//	osThreadDef(Start, StartThread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 5);
@@ -103,13 +100,6 @@ int main(void)
 	// Start scheduler
 	//  osKernelStart();
 	*/
-
-	uint8_t i = 0;
-	while(1) {
-		i++;
-		i--;
-	}
-
 
 
 }

@@ -18,7 +18,7 @@
 #define USARTx_FORCE_RESET()             __USART6_FORCE_RESET()
 #define USARTx_RELEASE_RESET()           __USART6_RELEASE_RESET()
 
-#define BAUDRATE						115200
+#define BAUDRATE						1000000
 
 /* Definition for USARTx Pins */
 #define USARTx_TX_PIN                    GPIO_PIN_6 //PIN: D1

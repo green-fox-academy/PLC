@@ -5,12 +5,13 @@
 #include "stm32f7xx_hal.h"
 #include "GPIO.h"
 
-#define jj           		TIM3
+// The speed of this timer clock is 200 MHZ / 4 = 50 MHZ
+
 #define TIMx_CLK_ENABLE()	__HAL_RCC_TIM3_CLK_ENABLE()
 #define TIMx_IRQn           TIM3_IRQn
 #define TIMx_IRQHandler     TIM3_IRQHandler
-#define PRESCALE 			500
-#define PERIOD				10000
+#define PRESCALE 			5000
+#define PERIOD				400 // 10.000 = 1 Second
 
 TIM_HandleTypeDef tim3_handle;
 

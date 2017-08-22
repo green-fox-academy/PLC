@@ -44,6 +44,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
 #include "stm32746g_discovery.h"
+#include "timer.h"
 /** @addtogroup STM32F7xx_HAL_Driver
   * @{
   */
@@ -165,7 +166,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	if (htim -> Instance == TIM6) {
 		HAL_IncTick();
 	} else if (htim -> Instance == TIM3) {
-		BSP_LED_Toggle(LED_GREEN);
+		time_out_flag = 1;
 	}
 }
 
