@@ -41,14 +41,16 @@ int main(void)
 
 	//modbus_DOUT_listen();
 while(1) {
+	for (int j = 0; j < 3; j++) {
 	for (int i = 0; i <=100; i++) {
-		  pwm_set_duty(i);
+		  pwm_set_duty(i, j);
 		  HAL_Delay(30);
 		  }
 	for (int i = 100; i >= 0; i--) {
-		  pwm_set_duty(i);
+		  pwm_set_duty(i, j);
 		  HAL_Delay(30);
 		  }
+	}
 
 }
 }
@@ -78,9 +80,9 @@ void system_init()
 	modbus_init();
 
 	/* Init PINs from DPIN8 to DPIN15 as a digital outputs */
-	for (int i = 8; i < 16; i++) {
+	/*for (int i = 8; i < 16; i++) {
 		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
-	}
+	}*/
 
 	/* Init PINs from DPIN9 to DPIN11 as a PWM */
 	for (int i = 9; i < 12; i++) {
