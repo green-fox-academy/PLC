@@ -47,7 +47,10 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 void adc_init(void);
-uint16_t adc_measure(uint8_t adc_index);
+void adc_valid_measurement(void);
+
+/* Global variables --------------------------------------------------------- */
+uint16_t valid_data[6];
 
 #endif /* __ADC_H */
 

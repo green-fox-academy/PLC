@@ -44,9 +44,12 @@
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef adc_handle;
 ADC_ChannelConfTypeDef adc_channel[6];
+uint16_t temp_data[10];
+uint16_t temp_sum;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
+uint16_t trimmed_mean();
 
 /**
   * @brief  ADC1 initialization and configuration
@@ -114,12 +117,42 @@ void adc_deinit(void)
   * @param  pin number of potmeter's connection to board between 0..5 (refers to A0..A5 pins)
   * @retval measurement value between 0...4095 (note: adc is initialized for 12 bit resolution)
   */
-uint16_t adc_measure(uint8_t analog_pin)
+uint16_t adc_measure(uint8_t index)
 {
-	HAL_ADC_ConfigChannel(&adc_handle, &adc_channel[analog_pin]);
+	HAL_ADC_ConfigChannel(&adc_handle, &adc_channel[index]);
 	HAL_ADC_Start(&adc_handle);
 	HAL_ADC_PollForConversion(&adc_handle, HAL_MAX_DELAY);
 	return HAL_ADC_GetValue(&adc_handle);
 }
+
+void adc_valid_measurement(void)
+{
+	for (uint8_t i = 0; i < 6; i++) {
+		temp_sum = 0;
+		for (uint8_t j = 0; j < 10; j++) {
+			temp_data[j] = adc_measure(i);
+			temp_sum += temp_data[j];
+		}
+		valid_data[i] = trimmed_mean();
+	}
+}
+
+uint16_t trimmed_mean()
+{
+	uint16_t max = temp_data[0];
+	for (uint8_t i = 0; i < 10; i++) {
+		if (temp_data[i] > max) {
+			max = temp_data[i];
+		}
+	}
+	uint16_t min = temp_data[0];
+	for (uint8_t i = 0; i < 10; i++) {
+		if (temp_data[i] < min) {
+			min = temp_data[i];
+		}
+	}
+	return (temp_sum - min - max)/8;
+}
+
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

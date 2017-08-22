@@ -92,18 +92,23 @@ int main(void)
 	adc_init();
 	uart_send("ADC initialized\n\r");
 
+	uint8_t selected_pot = 0;
+	/*
 	uint16_t adc_measured_value[6];
 	uint16_t pot_measure_avg_value;
 	uint8_t selected_pot = 0;
 	uint32_t sum_all = 0;
 	uint32_t sum_1 = 0;
 	//uint32_t avg_1 = 0;
-
+//	uint8_t i = 1;
+*/
 	// loop - i measurement series for each potmeter
 
-	uint8_t i = 1;
-	while (i < 6) {
-		for (uint8_t j = 0; j < 6; j++) {
+
+//	while (i < 5) {
+/*		for (uint8_t j = 0; j < 6; j++) {
+
+
 			adc_measured_value[j] = adc_measure(j);
 			if (adc_measured_value[j] > 4095 ) { // note: the value depends on the ADC resolution! its 2^<res>!
 				BSP_LED_Toggle(LED2);
@@ -168,10 +173,19 @@ int main(void)
 	uart_send("th potentiometer's values: ");
 	uart_send(avgg_1);
 	uart_send(".\n\r");
-
+*/
 	// forever loop for brighten up LEDs
-	while (1){
-			for (uint8_t h = 0; h < 6; h++) {
+	while (1) {
+		//uint16_t data1 = valid_data[0];
+		adc_valid_measurement();
+		char datta1[5];
+		sprintf(datta1, "%d", valid_data[selected_pot]);
+		uart_send("Selected ADC trimmed mean measurement: ");
+		uart_send(datta1);
+		uart_send("\n\r");
+		HAL_Delay(250);
+
+		for (uint8_t h = 0; h < 6; h++) {
 				if (adc_measure(h) > 4095 ) { // note: the value depends on the ADC resolution! its 2^<res>!
 					BSP_LED_Toggle(LED2);
 					uart_send("ADC measurement error!\n\r");
@@ -198,6 +212,7 @@ uint16_t pot_measure_avg(uint8_t potnumber)
 	}
 	return (uint16_t)(sum/10);
 }
+
 
 /**
   * @brief  System Clock Configuration
