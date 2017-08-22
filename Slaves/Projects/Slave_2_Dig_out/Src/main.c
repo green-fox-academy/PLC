@@ -42,14 +42,14 @@ int main(void)
 	//modbus_DOUT_listen();
 while(1) {
 	for (int j = 0; j < 3; j++) {
-	for (int i = 0; i <=100; i++) {
-		  pwm_set_duty(i, j);
-		  HAL_Delay(30);
-		  }
-	for (int i = 100; i >= 0; i--) {
-		  pwm_set_duty(i, j);
-		  HAL_Delay(30);
-		  }
+		for (int i = 0; i <=100; i++) {
+			  pwm_set_duty(i, j);
+			  HAL_Delay(30);
+			  }
+		for (int i = 100; i >= 0; i--) {
+			  pwm_set_duty(i, j);
+			  HAL_Delay(30);
+			  }
 	}
 
 }

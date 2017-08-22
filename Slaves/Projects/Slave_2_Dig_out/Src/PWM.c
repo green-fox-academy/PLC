@@ -26,14 +26,14 @@
 typedef struct {
 	TIM_TypeDef *tim;
 	HAL_TIM_ActiveChannel channel;
-	TIM_TypeDef tim_ch;
+	uint32_t tim_ch;
 }pwm_tim_ch;
 
 
 typedef struct {
 	GPIO_TypeDef *port;
 	uint16_t pin;
-	GPIO_InitTypeDef *Alternate;
+	uint8_t Alternate;
 } gpio_pins_t_pwm;
 
 
@@ -95,7 +95,7 @@ void gpio_clk_enable_pwm(GPIO_TypeDef *port)
 		__HAL_RCC_GPIOG_CLK_ENABLE();
 }
 
-void pwm_clk_enable(GPIO_TypeDef *Alternate)
+void pwm_clk_enable(uint8_t Alternate)
 {
 	if (Alternate == GPIO_AF14_TIM17)
 		__HAL_RCC_TIM17_CLK_ENABLE();
@@ -137,7 +137,7 @@ void pwm_pin_init(uint8_t pin_index, uint32_t mode, uint32_t pull)
 void pwm_init(uint8_t pin_index)
 {
 	//set the clock
-	pwm_clk_enable(stm32l476rg_digital_pins_pwm[pin_index].Alternate);
+	pwm_clk_enable(stm32l476rg_digital_pins_pwm[pin_index + 9].Alternate);
 
 	//set the init structure
 	pwm_handle[pin_index].Instance = stm32l476rg_pwm_set[pin_index].tim;
@@ -154,15 +154,15 @@ void pwm_init(uint8_t pin_index)
 	pwm_oc_init[pin_index].OCMode = TIM_OCMODE_PWM1;
 	pwm_oc_init[pin_index].OCPolarity = TIM_OCPOLARITY_HIGH;
 	pwm_oc_init[pin_index].Pulse = 0xFFFF;
-	HAL_TIM_PWM_ConfigChannel(&pwm_handle[pin_index], &pwm_oc_init[pin_index], stm32l476rg_pwm_set[pin_index].tim_ch);
+	HAL_TIM_PWM_ConfigChannel(&pwm_handle[pin_index], &pwm_oc_init[pin_index], stm32l476rg_pwm_set[pin_index].tim_ch);		//stm32l476rg_pwm_set[pin_index].tim_ch
 }
 
 void pwm_set_duty(float duty, uint8_t pin_index)
 {
 	uint32_t pulse = pwm_handle[pin_index].Init.Period * (duty / 100.0);
 	pwm_oc_init[pin_index].Pulse = pulse;
-	HAL_TIM_PWM_ConfigChannel(&pwm_handle[pin_index], &pwm_oc_init[pin_index], stm32l476rg_pwm_set[pin_index].tim_ch);
-	HAL_TIM_PWM_Start(&pwm_handle[pin_index], stm32l476rg_pwm_set[pin_index].tim_ch);
+	HAL_TIM_PWM_ConfigChannel(&pwm_handle[pin_index], &pwm_oc_init[pin_index], stm32l476rg_pwm_set[pin_index].tim_ch);		//stm32l476rg_pwm_set[pin_index].tim_ch
+	HAL_TIM_PWM_Start(&pwm_handle[pin_index], stm32l476rg_pwm_set[pin_index].tim_ch);		//stm32l476rg_pwm_set[pin_index].tim_ch
 }
 
 
