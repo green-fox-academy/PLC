@@ -26,6 +26,9 @@ void ain_slave_loop_thread()
 
 	while (1)
 	{
+		
+		
+		
 		// Wait for message arrival
 		if(interrupt_flag) {
 

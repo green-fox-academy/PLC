@@ -187,9 +187,6 @@ uint8_t set_digital_output_slave_mode(uint8_t mode, uint8_t slave_index)
 	} else {
 		TX_buffer[0] = digital_output_slaves[slave_index].slave_address;
 		TX_buffer[1] = mode;
-		TX_buffer[2]
-
-
 
 	}
 }
