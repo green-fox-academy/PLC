@@ -15,8 +15,8 @@
 #define HOLD_OUTPUTS	0b10010110	// 150
 #define STOP_SLAVE		0b10101011	// 171
 #define START_SLAVE		0b11011011	// 219
-// #define something1		0b11101101	// 237
-// #define something2		0b11110111	// 247
+#define MODE_1			0b11101101	// 237
+#define MODE_2			0b11110111	// 247
 
 
 /* Exported types ------------------------------------------------------------*/

@@ -80,14 +80,15 @@ void rx_tx_GPIO_init()
 	/*##-2- Configure peripheral GPIO ##*/
 	/* UART TX GPIO pin configuration  */
 	GPIO_InitStruct.Pin       = USARTx_TX_PIN;
-	GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Mode      = GPIO_MODE_AF_OD;
 	GPIO_InitStruct.Pull      = GPIO_PULLUP;
-	GPIO_InitStruct.Speed     = GPIO_SPEED_HIGH;
+	GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW  ;
 	GPIO_InitStruct.Alternate = USARTx_TX_AF;
 
 	HAL_GPIO_Init(USARTx_TX_GPIO_PORT, &GPIO_InitStruct);
 
 	/* UART RX GPIO pin configuration  */
+	GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
 	GPIO_InitStruct.Pin = USARTx_RX_PIN;
 	GPIO_InitStruct.Alternate = USARTx_RX_AF;
 

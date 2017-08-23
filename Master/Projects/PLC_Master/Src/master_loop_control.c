@@ -1,4 +1,4 @@
-/* Includes ------------------------------------------------------------------*/
+/* Includes -----------p-------------------------------------------------------*/
 #include "master_loop_control.h"
 #include "uart.h"
 #include "cmsis_os.h"
@@ -83,6 +83,7 @@ void control_slaves_thread()
 	HAL_Delay(2000);
 
 	while (1) {
+/*
 
 		// system_check();
 
@@ -101,6 +102,9 @@ void control_slaves_thread()
 		update_outputs();
 
 		HAL_Delay(1000);
+*/
+		scan_system_slaves();
+		HAL_Delay(1);
 
 	}
 }
@@ -387,7 +391,7 @@ uint8_t verify_command_address_crc(uint8_t tx_crc_start, uint8_t rx_crc_start)
  */
 uint8_t wait_function()
 {
-/*
+
 	uint8_t counter = 0;
 	uint8_t time_out = 0;
 
@@ -401,8 +405,8 @@ uint8_t wait_function()
 	interrupt_flag = 0;
 
 	return time_out;
-*/
 
+/*
 	uint8_t time_out = 0;
 
 	HAL_TIM_Base_Start_IT(&tim3_handle);
@@ -418,7 +422,7 @@ uint8_t wait_function()
 	interrupt_flag = 0;
 
 	return time_out;
-
+*/
 }
 
 /*	Function name:		print_out_available_slaves
