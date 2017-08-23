@@ -3,7 +3,7 @@
   * @file    PLC\Slaves\Slave_drivers\Src\adc.c
   * @author  Gyula Rasztovich
   * @version V1.0
-  * @date    10-08-2017
+  * @date    23-08-2017
   * @brief   adc init. Base: L4 cube empty template main.c file
   ******************************************************************************
   * @attention
@@ -42,7 +42,7 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-ADC_HandleTypeDef adc_handle;
+ADC_HandleTypeDef dac_handle;
 ADC_ChannelConfTypeDef adc_channel[6];
 uint16_t temp_data[10];
 uint16_t temp_sum;
@@ -62,11 +62,11 @@ void adc_init(void)
 	__HAL_RCC_ADC_CLK_ENABLE();
 
 	// Config ADC
-	adc_handle.Instance 			= ADC1;						// Register base address - ADC1 for all
-	adc_handle.Init.ClockPrescaler	= ADC_CLOCK_SYNC_PCLK_DIV2;	// Select ADC clock source
-	adc_handle.Init.Resolution 		= ADC_RESOLUTION_12B;		// Resolution: measurement values will between 0...4095 ((2^12)-1)
-	adc_handle.Init.DataAlign 		= ADC_DATAALIGN_RIGHT;		// Data right alignment
-	adc_handle.Init.EOCSelection	= ADC_EOC_SINGLE_CONV;		// Specify which EOC (End Of Conversion) flag is used for conversion by polling and interruption
+	dac_handle.Instance 			= ADC1;						// Register base address - ADC1 for all
+	dac_handle.Init.ClockPrescaler	= ADC_CLOCK_SYNC_PCLK_DIV2;	// Select ADC clock source
+	dac_handle.Init.Resolution 		= ADC_RESOLUTION_12B;		// Resolution: measurement values will between 0...4095 ((2^12)-1)
+	dac_handle.Init.DataAlign 		= ADC_DATAALIGN_RIGHT;		// Data right alignment
+	dac_handle.Init.EOCSelection	= ADC_EOC_SINGLE_CONV;		// Specify which EOC (End Of Conversion) flag is used for conversion by polling and interruption
 	/* Other optional ADC settings
 		adc_handle.State= HAL_ADC_STATE_RESET;					// ADC communication state (bit-map of ADC states)
 		adc_handle.Init.ScanConvMode= ADC_SCAN_DISABLE;			// Sequencer disabled (ADC conversion on only 1 channel: channel set on rank 1)
@@ -80,7 +80,7 @@ void adc_init(void)
 		adc_handle.Init.DMAContinuousRequests= DISABLE;			// ADC with DMA transfer: continuous requests to DMA disabled (default state) since DMA is not used in this example.
 		adc_handle.Init.Overrun= ADC_OVR_DATA_OVERWRITTEN;		// Select the behavior in case of overrun: data overwritten or preserved
 	*/
-	HAL_ADC_Init(&adc_handle);
+	HAL_ADC_Init(&dac_handle);
 
 	// Config ADC channel - channels are different for each pin, other settings are the same for each.
 	adc_channel[0].Channel 	= ADC_CHANNEL_5;					// A0 - PA0 - ADC12_IN5 	Specify the channel to configure into ADC regular group.
@@ -108,7 +108,7 @@ void adc_init(void)
   */
 void adc_deinit(void)
 {
-	HAL_ADC_Stop(&adc_handle);
+	HAL_ADC_Stop(&dac_handle);
 	return;
 }
 
@@ -119,10 +119,10 @@ void adc_deinit(void)
   */
 uint16_t adc_measure(uint8_t index)
 {
-	HAL_ADC_ConfigChannel(&adc_handle, &adc_channel[index]);
-	HAL_ADC_Start(&adc_handle);
-	HAL_ADC_PollForConversion(&adc_handle, HAL_MAX_DELAY);
-	return HAL_ADC_GetValue(&adc_handle);
+	HAL_ADC_ConfigChannel(&dac_handle, &adc_channel[index]);
+	HAL_ADC_Start(&dac_handle);
+	HAL_ADC_PollForConversion(&dac_handle, HAL_MAX_DELAY);
+	return HAL_ADC_GetValue(&dac_handle);
 }
 
 void adc_valid_measurement(void)

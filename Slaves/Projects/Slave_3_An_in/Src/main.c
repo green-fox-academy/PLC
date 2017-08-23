@@ -3,7 +3,7 @@
   * @file    PLC\Slaves\Projects\Slave_3_An_in\Src\main.c
   * @author  Gyula Rasztovich
   * @version V1.0
-  * @date    08-08-2017
+  * @date    23-08-2017
   * @brief   Main program body for Slave Analog In board.
   * 		 Base: L4 cube empty template file
   ******************************************************************************
@@ -43,14 +43,8 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-// uint8_t analog_pin = 0; //user input for which analog input pin is used; 0..5 equals A0..A5
-// uint8_t digital_pin = 2; //user input for which digital input pin is used; 0..15 equals D0..D15
-uint16_t pot_measurement[10];
-uint8_t potnumber;
-uint32_t sum;
 
 /* Private function prototypes -----------------------------------------------*/
-uint16_t pot_measure_avg(uint8_t potnumber);
 static void SystemClock_Config(void);
 
 int main(void)
@@ -76,7 +70,6 @@ int main(void)
 	uart_init();
 	uart_send("UART initialized\n\r");
 
-	/* Add your application code here */
 	// Init GPIO digital pin for LED
 	for (uint8_t i = 2; i < 8; i++) {
 		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
@@ -92,99 +85,25 @@ int main(void)
 	adc_init();
 	uart_send("ADC initialized\n\r");
 
+	// Select one ADC to send its measurement to terminal
 	uint8_t selected_pot = 0;
-	/*
-	uint16_t adc_measured_value[6];
-	uint16_t pot_measure_avg_value;
-	uint8_t selected_pot = 0;
-	uint32_t sum_all = 0;
-	uint32_t sum_1 = 0;
-	//uint32_t avg_1 = 0;
-//	uint8_t i = 1;
-*/
-	// loop - i measurement series for each potmeter
 
-
-//	while (i < 5) {
-/*		for (uint8_t j = 0; j < 6; j++) {
-
-
-			adc_measured_value[j] = adc_measure(j);
-			if (adc_measured_value[j] > 4095 ) { // note: the value depends on the ADC resolution! its 2^<res>!
-				BSP_LED_Toggle(LED2);
-				uart_send("ADC measurement error!\n\r");
-				return -1;
-			} else if (adc_measured_value[j] > 4095/2 ) {
-				BSP_LED_On(LED2);
-				gpio_set_digital_pin(j+2);
-			} else {
-				BSP_LED_Off(LED2);
-				gpio_reset_digital_pin(j+2);
-			}
-
-			char value_in_string[6];
-			char counter[2];
-			char pot_counter[2];
-
-			sum_all += adc_measured_value[j];
-			sprintf(value_in_string, "%d", adc_measured_value[j]);
-			sprintf(counter, "%d", i);
-			sprintf(pot_counter, "%d", j+1);
-			uart_send(counter);
-			uart_send("th measurement value on #");
-			uart_send(pot_counter);
-			uart_send(" potentiometer: ");
-			uart_send(value_in_string);
-			uart_send("\n\r");
-		}
-		sum_1 += adc_measured_value[selected_pot];
-		uart_receive();
-		uart_send("\n\r");
-		HAL_Delay(100);
-		i++;
-	}
-
-	pot_measure_avg_value = pot_measure_avg(selected_pot);
-	adc_deinit();
-	uart_send("ADC measurement finished.\n\r");
-	char summ[5];
-	sprintf(summ, "%d", pot_measure_avg_value);
-	uart_send("Average of the last ten measurements on the selected potentiometer: ");
-	uart_send(summ);
-	uart_send(".\n\r");
-	char summ_all[5];
-	sprintf(summ_all, "%d", sum_all);
-	uart_send("Sum of every pot meaurement: ");
-	uart_send(summ_all);
-	uart_send(".\n\r");
-	char summ_1[5];
-	char sellected_pot[5];
-	sprintf(summ_1, "%d", sum_1);
-	sprintf(sellected_pot, "%d", selected_pot+1);
-	uart_send("Sum of the ");
-	uart_send(sellected_pot);
-	uart_send("th potentiometer's values: ");
-	uart_send(summ_1);
-	uart_send(".\n\r");
-	char avgg_1[5];
-	sprintf(avgg_1, "%d", sum_1/5);
-	uart_send("Average of the ");
-	uart_send(sellected_pot);
-	uart_send("th potentiometer's values: ");
-	uart_send(avgg_1);
-	uart_send(".\n\r");
-*/
-	// forever loop for brighten up LEDs
+	// Forever loop: send to terminal the selected potmeter's measured values.
 	while (1) {
-		//uint16_t data1 = valid_data[0];
+		// start measurement
 		adc_valid_measurement();
+
+		//transform measured value to character in order to send it via uart to terminal
 		char datta1[5];
 		sprintf(datta1, "%d", valid_data[selected_pot]);
+
+		// send value to terminal
 		uart_send("Selected ADC trimmed mean measurement: ");
 		uart_send(datta1);
 		uart_send("\n\r");
 		HAL_Delay(250);
 
+		// Forever loop for brighten up LEDs if the measurement is over max/2
 		for (uint8_t h = 0; h < 6; h++) {
 				if (adc_measure(h) > 4095 ) { // note: the value depends on the ADC resolution! its 2^<res>!
 					BSP_LED_Toggle(LED2);
@@ -200,17 +119,6 @@ int main(void)
 				}
 			}
 		}
-}
-
-uint16_t pot_measure_avg(uint8_t potnumber)
-{
-	uint32_t sum = 0;
-	for (uint8_t i = 0; i < 10; i++) {
-		pot_measurement[i] = adc_measure(potnumber);
-		HAL_Delay(250);
-		sum += pot_measurement[i];
-	}
-	return (uint16_t)(sum/10);
 }
 
 
