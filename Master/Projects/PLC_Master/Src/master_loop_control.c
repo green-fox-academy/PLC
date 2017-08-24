@@ -99,7 +99,7 @@ void control_slaves_thread()
 		print_out_digital_output_table();
 		//print_out_analog_output_table();
 
-		//update_outputs();
+		update_outputs();
 
 		HAL_Delay(1000);
 	}
@@ -225,8 +225,8 @@ void slaves_check()
 
 void load_input_tables()
 {
-	 load_digital_input_table();
-	//load_analog_input_table();
+	load_digital_input_table();
+	load_analog_input_table();
 }
 
 void load_digital_input_table()
@@ -296,7 +296,7 @@ void load_analog_input_table()
 
 void update_outputs()
 {
-	//update_digital_output_tables();
+	update_digital_output_tables();
 	update_analog_output_tables();
 }
 
