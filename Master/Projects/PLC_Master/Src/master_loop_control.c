@@ -20,6 +20,9 @@
 /* Private typedef -----------------------------------------------------------*/
 
 /* Private variables ------------------------------------------------------- */
+uint8_t temp_counter = 1;
+uint8_t temp_mode = 0;
+
 
 /* These arrays contains the addresses of the slaves */
 uint8_t digital_input_slaves_address[]  = {1,2,3,4};
@@ -49,6 +52,7 @@ void print_out_analog_output_table();
 
 void scan_system_slaves();
 void slaves_check();
+void send_mode_switch(uint8_t mode, uint8_t slave_index);
 
 // Load functions
 void load_analog_input_table();
@@ -57,6 +61,7 @@ void load_input_tables();
 
 // The logic function
 void execute_program();
+void check_mode_select();
 
 // Update functions
 void update_outputs();
@@ -88,6 +93,8 @@ void control_slaves_thread()
 		// system_check();
 
 		slaves_check();
+
+		check_mode_select();
 
 		load_input_tables();
 
@@ -382,12 +389,110 @@ void update_analog_output_tables()
 	}
 }
 
+void check_mode_select()
+{
+	uint8_t D2_pinstate = gpio_read_digital_pin(2);
+	uint8_t D3_pinstate = gpio_read_digital_pin(3);
+
+	if (!D2_pinstate && !D3_pinstate) {
+		if (temp_mode != 0) {
+
+			temp_mode = 0;
+
+			for (uint8_t i = 0; i < num_of_dig_out; i++) {
+
+				digital_output_slaves[i].mode = MODE_1; // Set it to pwm mode
+
+				if (temp_mode == 2)
+					send_mode_switch(MODE_1, digital_output_slaves[i].slave_address);
+
+				LCD_UsrLog("DOU[%d] set mode: MODE_1\n", i);
+			}
+		}
+
+	} else if (D2_pinstate && !D3_pinstate) {
+		if (temp_mode != 1) {
+
+			temp_mode = 1;
+
+			for (uint8_t i = 0; i < num_of_dig_out; i++) {
+
+				digital_output_slaves[i].mode = MODE_1; // Set it to pwm mode
+
+				if (temp_mode == 2)
+					send_mode_switch(MODE_1, digital_output_slaves[i].slave_address);
+
+				LCD_UsrLog("DOU[%d] set mode: MODE_1\n", i);
+			}
+		}
+
+	} else if (D3_pinstate && !D2_pinstate) {
+		if (temp_mode != 2) {
+			temp_mode = 2;
+
+			for (uint8_t i = 0; i < num_of_dig_out; i++) {
+
+				digital_output_slaves[i].mode = MODE_2; // Set it to pwm mode
+
+				if (temp_mode != 2)
+					send_mode_switch(MODE_2, digital_output_slaves[i].slave_address);
+
+				LCD_UsrLog("DOU[%d] set mode: MODE_2\n", i);
+			}
+		}
+	}
+}
+
+void send_mode_switch(uint8_t mode, uint8_t slave_index)
+{
+	TX_buffer[0] = slave_index;
+	TX_buffer[1] = mode;
+	TX_buffer[2] = 22; // CRC low
+	TX_buffer[3] = 33; // CRC high
+
+	UART_send(TX_buffer);
+
+	if (!wait_function())
+		// Checks the response if it was corrupted
+		digital_output_slaves[slave_index].slave_status = verify_command_address_crc(2,2);
+	else
+		// If it was timed out
+		digital_output_slaves[slave_index].slave_status = 4;
+}
+
 void execute_program()
 {
 
+	if (temp_mode == 0) {			// Starting mode: DOUT
+
+		DOU2_OFF;
+		DOU3_ON;
+		DOU4_OFF;
+
+	} else if (temp_mode == 1) {	//
+
+		DOU2_ON;
+		DOU3_ON;
+		DOU4_ON;
+
+
+	} else if (temp_mode == 2) {	// DOUT: PWM mode
+
+		if (temp_counter >= 10) {
+			temp_counter = 1;
+		}
+
+		digital_output_slaves[0].pwm_duty_arr[0] = temp_counter * 10;
+		digital_output_slaves[0].pwm_duty_arr[1] = temp_counter * 10;
+		digital_output_slaves[0].pwm_duty_arr[2] = temp_counter * 10;
+
+		temp_counter++;
+	}
+
+/*
 	if (DIN1) DOU1_ON; else DOU1_OFF;
 	if (DIN2) DOU2_ON; else DOU2_OFF;
-/*
+
 	AOU1 = AIN1 / 2;
 	AOU2 = AIN2 / 2;
 	AOU3 = AIN3 / 2;
@@ -395,6 +500,8 @@ void execute_program()
 	AOU5 = AIN5 / 2;
 	AOU6 = AIN6 / 2;
 */
+
+
 
 }
 
@@ -588,7 +695,7 @@ void master_loop_control_init()
 		digital_output_slaves[i].slave_address = 0;
 		digital_output_slaves[i].digital_pins_state = 0;
 		digital_output_slaves[i].slave_status = 0;
-		digital_output_slaves[i].mode = MODE_1;
+		digital_output_slaves[i].mode = MODE_2;
 
 		for (uint8_t j = 0; j < 3; j++) {
 			digital_output_slaves[i].pwm_duty_arr[j] = 0;
