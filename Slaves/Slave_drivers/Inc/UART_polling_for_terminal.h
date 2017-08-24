@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
-  * @file    Templates/Inc/stm32l4xx_it.h 
-  * @author  MCD Application Team
-  * @version V1.8.0
-  * @date    21-April-2017
-  * @brief   This file contains the headers of the interrupt handlers.
+  * @file    PLC\Slaves\Slave_drivers\Inc\UART_polling_for_terminal.h
+  * @author  Gyula Rasztovich
+  * @version V1.0
+  * @date    17-08-2017
+  * @brief   Header for UART_poll_for_terminal.c module. Base: L4 Cube main.h template
   ******************************************************************************
   * @attention
   *
@@ -34,32 +34,24 @@
   *
   ******************************************************************************
   */
-
+  
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __STM32L4xx_IT_H
-#define __STM32L4xx_IT_H
-
-#ifdef __cplusplus
- extern "C" {
-#endif 
+#ifndef __UART_polling_for_terminal_H
+#define __UART_polling_for_terminal_H
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm32l4xx_hal.h"
+#include "stm32l4xx_nucleo.h"
+
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
+void uart_init(void);
+void uart_send(char* buffer);
+void uart_receive(void);
 
-void NMI_Handler(void);
-void HardFault_Handler(void);
-void SVC_Handler(void);
-void DebugMon_Handler(void);
-void PendSV_Handler(void);
-void SysTick_Handler(void);
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* __STM32L4xx_IT_H */
+#endif /* __UART_polling_for_terminal_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

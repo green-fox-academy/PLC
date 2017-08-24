@@ -9,7 +9,7 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
+static_void SystemClock_Config(void);
 void system_init();
 
 /* Private functions ---------------------------------------------------------*/
@@ -33,18 +33,17 @@ int main(void)
 void system_init()
 {
 	/* STM32L4xx HAL library initialization:
-	   - Configure the Flash prefetch
+	   - Configure the Flash prefetch, Flash preread and Buffer caches
 	   - Systick timer is configured by default as source of time base, but user
-		 can eventually implement his proper time base source (a general purpose
-		 timer for example or other time source), keeping in mind that Time base
-		 duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and
-		 handled in milliseconds basis.
-	   - Set NVIC Group Priority to 4
+			 can eventually implement his proper time base source (a general purpose
+			 timer for example or other time source), keeping in mind that Time base
+			 duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and
+			 handled in milliseconds basis.
 	   - Low Level Initialization
 	 */
 	HAL_Init();
 
-	/* Configure the system clock to 80 MHz */
+	/* Configure the System clock to have a frequency of 80 MHz */
 	SystemClock_Config();
 
 	//dac_init();
@@ -61,7 +60,7 @@ void system_init()
 
 /**
   * @brief  System Clock Configuration
-  *         The system Clock is configured as follows :
+  *         The system Clock is configured as follow : 
   *            System Clock source            = PLL (MSI)
   *            SYSCLK(Hz)                     = 80000000
   *            HCLK(Hz)                       = 80000000
@@ -78,10 +77,10 @@ void system_init()
   * @param  None
   * @retval None
   */
-void SystemClock_Config(void)
+static void SystemClock_Config(void)
 {
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct;
+  RCC_OscInitTypeDef RCC_OscInitStruct;
 
   /* MSI is enabled after System reset, activate PLL with MSI as source */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
@@ -135,13 +134,5 @@ void assert_failed(char *file, uint32_t line)
   }
 }
 #endif
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

@@ -195,9 +195,9 @@ uint8_t slave_address_set()
 	return slave_adr;
 }
 
-/* ########## Functions for Analoge pins ########## */
+/* ########## Functions for Analog pins ########## */
 
-void gpio_init_analoge_pin(uint8_t pin_index)
+void gpio_init_analog_pin(uint8_t pin_index)
 {
 	GPIO_InitTypeDef gpio_init_structure;
 
@@ -205,7 +205,7 @@ void gpio_init_analoge_pin(uint8_t pin_index)
 	gpio_clk_enable(stm32l476rg_analog_pins[pin_index].port);
 
 	gpio_init_structure.Pin = stm32l476rg_analog_pins[pin_index].pin;
-	gpio_init_structure.Mode = GPIO_MODE_ANALOG;
+	gpio_init_structure.Mode = GPIO_MODE_ANALOG_ADC_CONTROL;
 	gpio_init_structure.Pull = GPIO_NOPULL;
 	gpio_init_structure.Speed = GPIO_SPEED_FREQ_MEDIUM;
 
