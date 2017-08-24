@@ -59,6 +59,8 @@ void gpio_init_digital_pin(uint8_t pin_index, uint32_t mode, uint32_t pull);
  *	Function input - uint8_t pin_index: index of the pin
  *  Function input - GPIO_PinState State: can be: GPIO_PIN_SET or GPIO_PIN_RESET
  */
+void init_gpio_digital_pins();
+
 void gpio_write_digital_pin(uint8_t pin_index, GPIO_PinState State);
 
 void gpio_set_digital_pin(uint8_t pin_index);

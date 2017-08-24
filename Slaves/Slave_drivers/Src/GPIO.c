@@ -95,6 +95,13 @@ void gpio_init_digital_pin(uint8_t pin_index, uint32_t mode, uint32_t pull)
 	HAL_GPIO_Init(stm32l476rg_digital_pins[pin_index].port, &gpio_init_structure);
 }
 
+/* Init PINs from DPIN8 to DPIN15 as a digital outputs */
+void init_gpio_digital_pins()
+{
+	for (int i = 8; i < 16; i++) {
+		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
+	}
+}
 
 void gpio_write_digital_pin(uint8_t pin_index, GPIO_PinState State)
 {

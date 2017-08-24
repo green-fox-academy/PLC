@@ -141,4 +141,18 @@ void pwm_set_duty(float duty, uint8_t pin_index)
 	HAL_TIM_PWM_Start(&pwm_handle[pin_index], stm32l476rg_pwm_set[pin_index].tim_ch);
 }
 
+void init_pwms()
+{
+	/* Init PINs from DPIN9 to DPIN11 as a PWM */
+	for (int i = 9; i < 12; i++) {
+		pwm_pin_init(i, GPIO_MODE_AF_PP, GPIO_NOPULL);
+	}
+
+	/* Init pwm function from DPIN9 DPIN11 */
+	for (int i = 0; i < 3; i++) {
+		pwm_init(i);
+	}
+
+}
+
 

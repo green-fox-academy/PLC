@@ -70,20 +70,9 @@ void system_init()
 	/* Init Uart and modbus protocol C11 : RX and C10 : TX */
 	modbus_init();
 
-	/* Init PINs from DPIN8 to DPIN15 as a digital outputs */
-	for (int i = 8; i < 16; i++) {
-		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
-	}
+	init_gpio_digital_pins();
 
-	/* Init PINs from DPIN9 to DPIN11 as a PWM */
-	for (int i = 9; i < 12; i++) {
-		pwm_pin_init(i, GPIO_MODE_AF_PP, GPIO_NOPULL);
-	}
-
-	/* Init pwm function from DPIN9 DPIN11 */
-	for (int i = 0; i < 3; i++) {
-		pwm_init(i);
-	}
+	init_pwms();
 
 	/* Init Pins from DPIN2 to DPIN6 as an Digital inputs for Slave_address */
 	for (int i = 2; i < 7; i++) {
