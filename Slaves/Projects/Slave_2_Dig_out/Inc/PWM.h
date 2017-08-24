@@ -29,6 +29,4 @@ void pwm_pin_init(uint8_t pin_index, uint32_t mode, uint32_t pull);
 
 void init_pwms();
 
-
-
 #endif // PWM_H_INCLUDED
