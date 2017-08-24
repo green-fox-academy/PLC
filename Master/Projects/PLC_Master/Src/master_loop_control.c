@@ -328,8 +328,20 @@ void update_digital_output_tables()
 
 			} else if (digital_output_slaves[i].mode == MODE_2) {
 
-				TX_buffer[]
+				TX_buffer[2] = digital_output_slaves[i].pwm_duty_arr[0];
+				TX_buffer[3] = digital_output_slaves[i].pwm_duty_arr[1];
+				TX_buffer[4] = digital_output_slaves[i].pwm_duty_arr[2];
+				TX_buffer[5] = 22; // CRC low
+				TX_buffer[6] = 33; // CRC high
 
+				UART_send(TX_buffer);
+
+				if (!wait_function())
+					// Checks the response if it was corrupted
+					digital_output_slaves[i].slave_status = verify_command_address_crc(5,5);
+				else
+					// If it was timed out
+					digital_output_slaves[i].slave_status = 4;
 
 			}
 		}
