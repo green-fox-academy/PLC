@@ -43,9 +43,10 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
+
+/* Private functions ---------------------------------------------------------*/
 
 int main(void)
 {
@@ -75,11 +76,6 @@ int main(void)
 		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
 	}
 	uart_send("LEDs initialized\n\r");
-
-	// Init GPIO analog pin for ADC (argument: A(x) pin)
-	for (uint8_t i = 0; i < 6; i++) {
-		gpio_init_analog_pin(i);
-	}
 
 	// Init ADC
 	adc_init();
