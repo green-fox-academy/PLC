@@ -43,6 +43,9 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+//uint16_t A2_output_volt = 4000; // set A2 pin (PA4 pin) output voltage
+//uint16_t D13_output_volt = 4000; // set D13 pin (PA5 pin) output voltage
+
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
 
@@ -71,22 +74,58 @@ int main(void)
 	uart_init();
 	uart_send("UART initialized\n\r");
 
-	// Init GPIO digital pin for LED
-	for (uint8_t i = 2; i < 8; i++) {
-		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
-	}
-	uart_send("LEDs initialized\n\r");
-
 	// Init DAC
-	dac_init();
 	uart_send("DAC initialized\n\r");
 
-	// forever loop: wait for data from Master
+/*	uart_send("Output voltage on A2 pin: continious");
+	char A2_voltt[1];
+	sprintf(A2_voltt, "%d", A2_output_volt);
+	uart_send(A2_voltt);
+	uart_send("\n\r");
+
+	uart_send("Output voltage on D13 pin: ");
+	char D13_voltt[1];
+	sprintf(D13_voltt, "%d", D13_output_volt);
+	uart_send(D13_voltt);
+	uart_send("\n\r");
+*/
+	// Init both DAC channels
+	dac_init();
+
+	// forever loop: change LED brightness
 	while (1) {
-		// switch on and off LED2 to see if board is working
-BSP_LED_On(LED2);
-HAL_Delay(250);
-BSP_LED_Off(LED2);
+		for (uint16_t i = 0; i < 4095; i++) {
+			dac_1_setval(i);
+			//dac_2_setval(i);
+			for (uint16_t j = 4095; j > 0; j--) {
+				dac_2_setval(j);
+			}
+		}
+
+	}
+}
+
+
+/* while amivel egy led halványul
+ * 	while (1) {
+		for (uint16_t i = 0; i < 4095; i++) {
+			dac_1_setval(i);
+			dac_2_setval(i);
+			for (uint16_t j = 0; j < 4095; j++) {
+				dac_2_setval(j);
+			}
+		}
+	}
+ */
+
+
+
+/*		for (uint16_t k = 4095; k > 0; k--) {
+			dac_2_setval(k);
+			for (uint16_t l = 0; l < 4095; l++) {
+				dac_2_setval(l);
+			}
+		}*/
 
 		// Listen to Master and receive data
 		//rcv data from master
@@ -99,8 +138,6 @@ BSP_LED_Off(LED2);
 		// b) create a number from the state of switches on the control panel,
 		//	4 switches, each switch has 3 statements -> 0, 1, 2 --> 3^4 way of setting = 0..81
 
-			}
-}
 
 /**
   * @brief  System Clock Configuration
