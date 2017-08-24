@@ -85,7 +85,7 @@ void uart_receive(void)
 {
 	char* buffer;
 	uint16_t bufflength = strlen(buffer);
-	uint32_t timeout = 500;
+	uint32_t timeout = 100;
 	HAL_UART_Receive(&uart_handle, (uint8_t *)buffer, bufflength, timeout);
 	//BSP_LED_Toggle(LED2);
 	//HAL_Delay(10);
