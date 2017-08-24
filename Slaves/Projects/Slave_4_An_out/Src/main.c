@@ -39,7 +39,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -48,7 +47,6 @@
 static void SystemClock_Config(void);
 
 /* Private functions ---------------------------------------------------------*/
-
 
 int main(void)
 {
@@ -73,13 +71,35 @@ int main(void)
 	uart_init();
 	uart_send("UART initialized\n\r");
 
-	/* Infinite loop */
-	while (1)
-	{
-		BSP_LED_On(LED2);
-		HAL_Delay(250);
-		BSP_LED_Off(LED2);
+	// Init GPIO digital pin for LED
+	for (uint8_t i = 2; i < 8; i++) {
+		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
 	}
+	uart_send("LEDs initialized\n\r");
+
+	// Init DAC
+	dac_init();
+	uart_send("DAC initialized\n\r");
+
+	// forever loop: wait for data from Master
+	while (1) {
+		// switch on and off LED2 to see if board is working
+BSP_LED_On(LED2);
+HAL_Delay(250);
+BSP_LED_Off(LED2);
+
+		// Listen to Master and receive data
+		//rcv data from master
+
+		// incoming data: uint16_t array with numbers
+
+		// function to do with analog out
+		// 0) Test mode: send data to terminal with polling uart
+		// a) control LED's brightness with the An in potentiometers
+		// b) create a number from the state of switches on the control panel,
+		//	4 switches, each switch has 3 statements -> 0, 1, 2 --> 3^4 way of setting = 0..81
+
+			}
 }
 
 /**

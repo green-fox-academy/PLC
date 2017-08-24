@@ -14,7 +14,7 @@ void dac_init(void);
 
 
 /* Global variables --------------------------------------------------------- */
-
+uint16_t incoming_data;
 
 #endif /* __DAC_H */
 
