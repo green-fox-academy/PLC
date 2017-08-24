@@ -133,7 +133,7 @@ void pwm_init(uint8_t pin_index)
 	HAL_TIM_PWM_ConfigChannel(&pwm_handle[pin_index], &pwm_oc_init[pin_index], stm32l476rg_pwm_set[pin_index].tim_ch);
 }
 
-void pwm_set_duty(float duty, uint8_t pin_index)
+void pwm_set_duty(uint8_t duty, uint8_t pin_index)
 {
 	uint32_t pulse = pwm_handle[pin_index].Init.Period * (duty / 100.0);
 	pwm_oc_init[pin_index].Pulse = pulse;

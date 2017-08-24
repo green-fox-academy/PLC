@@ -167,7 +167,7 @@ void gpio_set_8_pin(uint8_t from, uint8_t to, uint8_t data)
 /* Init Pins from DPIN0 to DPIN4 as an Digital inputs for Slave_address */
 void gpio_set_address_pins()
 {
-	for (int i = 0; i < 5; i++) {
+	for (int i = 2; i < 7; i++) {
 		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
 	}
 }
@@ -195,8 +195,8 @@ uint8_t slave_address_set()
 {
 	uint8_t slave_adr = 0;
 
-	for (uint8_t i = 0; i < 5; i++) {
-		slave_adr += (gpio_read_digital_pin(i) << i);
+	for (uint8_t i = 2; i < 7; i++) {
+		slave_adr += (gpio_read_digital_pin(i) << (i - 2));
 	}
 
 	return slave_adr;

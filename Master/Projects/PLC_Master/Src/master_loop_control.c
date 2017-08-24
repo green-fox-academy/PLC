@@ -306,21 +306,32 @@ void update_digital_output_tables()
 	if (num_of_dig_out) {
 
 		TX_buffer[1] = WRITE_SLAVE;
-		TX_buffer[3] = 22; // CRC low
-		TX_buffer[4] = 33; // CRC high
 
 		for (uint8_t i = 0; i < num_of_dig_out; i++) {
 
 			TX_buffer[0] = digital_output_slaves[i].slave_address;
-			TX_buffer[2] = digital_output_slaves[i].digital_pins_state;
-			UART_send(TX_buffer);
 
-			if (!wait_function())
-				// Checks the response if it was corrupted
-				digital_output_slaves[i].slave_status = verify_command_address_crc(3,3);
-			else
-				// If it was timed out
-				digital_output_slaves[i].slave_status = 4;
+			if (digital_output_slaves[i].mode == MODE_1) {
+
+				TX_buffer[2] = digital_output_slaves[i].digital_pins_state;
+				TX_buffer[3] = 22; // CRC low
+				TX_buffer[4] = 33; // CRC high
+
+				UART_send(TX_buffer);
+
+				if (!wait_function())
+					// Checks the response if it was corrupted
+					digital_output_slaves[i].slave_status = verify_command_address_crc(3,3);
+				else
+					// If it was timed out
+					digital_output_slaves[i].slave_status = 4;
+
+			} else if (digital_output_slaves[i].mode == MODE_2) {
+
+				TX_buffer[]
+
+
+			}
 		}
 	}
 }
@@ -565,7 +576,11 @@ void master_loop_control_init()
 		digital_output_slaves[i].slave_address = 0;
 		digital_output_slaves[i].digital_pins_state = 0;
 		digital_output_slaves[i].slave_status = 0;
-		digital_output_slaves[i].mode = MODE_2;
+		digital_output_slaves[i].mode = MODE_1;
+
+		for (uint8_t j = 0; j < 3; j++) {
+			digital_output_slaves[i].pwm_duty_arr[j] = 0;
+		}
 
 		analog_input_slaves[i].slave_address = 0;
 		analog_input_slaves[i].slave_status = 0;

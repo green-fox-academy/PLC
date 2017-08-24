@@ -40,6 +40,7 @@
 typedef struct {
 	uint8_t slave_address;
 	uint8_t digital_pins_state;
+	uint8_t pwm_duty_arr[3];
 	uint8_t slave_status;
 	uint8_t mode;
 }digital_table_t;

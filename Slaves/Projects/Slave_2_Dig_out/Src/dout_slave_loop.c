@@ -36,6 +36,12 @@ void dout_slave_loop_thread()
 					case WRITE_SLAVE :
 						set_pins_state();
 						break;
+					case MODE_1 :
+						set_to_gpio_mode();
+						break;
+					case MODE_2 :
+						set_to_pwm_mode();
+						break;
 					case HOLD_INPUTS :
 						break;
 					case HOLD_OUTPUTS :
@@ -83,10 +89,43 @@ void send_false_command_err()
 
 void set_pins_state()
 {
-	// Temporally it will send the same msg back.
-	UART_send(RX_buffer);
 
-	gpio_set_8_pin(8, 15, RX_buffer[2]);
+	if (slave_mode == MODE_1) {
+		// Temporally it will send the same msg back.
+		UART_send(RX_buffer);
+
+		gpio_set_8_pin(8, 15, RX_buffer[2]);
+
+	} else if (slave_mode == MODE_2) {
+
+		// Temporally it will send the same msg back.
+		UART_send(RX_buffer);
+
+		// Checks if the PWM data changed, and sets the duty
+		for (uint8_t i = 0; i < 3; i++) {
+			if (RX_buffer[i + 2] != pwm_set_arr[i]) {
+				pwm_set_duty(RX_buffer[i + 2], i + 9);
+				pwm_set_arr[i] = RX_buffer[i + 2];
+			}
+		}
+
+	}
+}
+
+void set_to_gpio_mode()
+{
+	if (slave_mode != MODE_1) {
+		slave_mode = MODE_1;
+		init_gpio_digital_pins();
+	}
+}
+
+void set_to_pwm_mode()
+{
+	if (slave_mode != MODE_2) {
+		slave_mode = MODE_2;
+		init_pwms();
+	}
 
 }
 

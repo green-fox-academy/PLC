@@ -5,7 +5,7 @@
 
 
 void pwm_init(uint8_t pin_index);
-void pwm_set_duty(float duty, uint8_t pin_index);
+void pwm_set_duty(uint8_t duty, uint8_t pin_index);
 
 
 /* ########## Functions for Digital pins ########## */
