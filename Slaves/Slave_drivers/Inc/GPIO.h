@@ -67,6 +67,14 @@ void gpio_reset_digital_pin(uint8_t pin_index);
 
 void gpio_toggle_digital_pin(uint8_t pin_index);
 
+void gpio_set_dig_in_pins();
+
+void gpio_set_dig_out_pins();
+
+void gpio_set_address_pins();
+
+uint8_t slave_address_set();
+
 GPIO_PinState gpio_read_digital_pin(uint8_t pin_index);
 
 uint8_t gpio_read_8_pin(uint8_t from_pin_index, uint8_t to_pin_index);

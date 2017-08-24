@@ -19,15 +19,9 @@ void send_false_command_err();
 
 void ain_slave_loop_thread()
 {
-	// This is for test before adc is merged
-	for (uint8_t i = 0; i < 6; i++) {
-		ain_pins_states[i] = (i + 1) * 600;
-	}
 
 	while (1)
 	{
-		
-		
 		
 		// Wait for message arrival
 		if(interrupt_flag) {
@@ -91,16 +85,16 @@ void send_false_command_err()
 
 void send_pins_states()
 {
-	// Set buffer : addres and command
+	// Set buffer : address and command
 	TX_buffer[0] = slave_address;
 	TX_buffer[1] = READ_SLAVE;
-
+/*
 	// Load uint16t array to buffer
 	for (uint8_t i = 0; i < 6; i++) {
 		TX_buffer[(i + 1) * 2] = adc_measure();
 		TX_buffer[((i + 1) * 2) + 1] = adc_measure() >> 8;
 	}
-
+*/
 	TX_buffer[14] = RX_buffer[2];
 	TX_buffer[15] = RX_buffer[3];
 

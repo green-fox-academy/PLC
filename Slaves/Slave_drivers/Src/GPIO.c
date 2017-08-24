@@ -157,6 +157,44 @@ void gpio_set_8_pin(uint8_t from, uint8_t to, uint8_t data)
 	}
 }
 
+/* Init Pins from DPIN0 to DPIN4 as an Digital inputs for Slave_address */
+void gpio_set_address_pins()
+{
+	for (int i = 0; i < 5; i++) {
+		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
+	}
+}
+
+/* Init PINs from DPIN8 to DPIN15 as a digital outputs */
+void gpio_set_dig_out_pins()
+{
+	for (int i = 8; i < 16; i++) {
+		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
+	}
+}
+
+/* Init PINs from DPIN8 to DPIN15 as a digital inputs */
+void gpio_set_dig_in_pins()
+{
+	for (int i = 2; i < 16; i++) {
+		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
+	}
+}
+/* Function name: 		slave_address_set
+ * Function purpose:
+ *
+ */
+uint8_t slave_address_set()
+{
+	uint8_t slave_adr = 0;
+
+	for (uint8_t i = 0; i < 5; i++) {
+		slave_adr += (gpio_read_digital_pin(i) << i);
+	}
+
+	return slave_adr;
+}
+
 /* ########## Functions for Analoge pins ########## */
 
 void gpio_init_analoge_pin(uint8_t pin_index)

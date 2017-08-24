@@ -1,31 +1,18 @@
-/* ############################### *
- * ##### DIGITAL INPUT SLAVE ##### *
- * ############################### */
+/* ###### TOTORO PLC PROJECT - SLAVE 1 DIGITAL INPUT ##### */
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "din_slave_loop.h"
 
-/** @addtogroup STM32L4xx_HAL_Examples
-  * @{
-  */
-
-/** @addtogroup UART_TwoBoards_ComPolling
-  * @{
-  */
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-#define TRANSMITTER_BOARD
-
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-static void Error_Handler(void);
 void system_init();
-uint8_t slave_address_set();
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -62,40 +49,16 @@ void system_init()
 	/* Configure the system clock to 80 MHz */
 	SystemClock_Config();
 
-	/* Configure LED2 */
-	BSP_LED_Init(LED2);
-	BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
-
 	/* Init Uart and modbus protocol C11 : RX and C10 : TX */
 	modbus_init();
 
-	/* Init PINs from DPIN2 to DPIN15 as a digital inputs
-	 * DPIN2 - DPIN7  : 5Bit address for slave
-	 * DPIN8 - DPIN15 : 8BIT data
-	 */
+	gpio_set_dig_in_pins();
 
-	for (int i = 2; i < 16; i++) {
-		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
-	}
+	gpio_set_address_pins();
 
 	/* Init slave address */
-	//slave_address = slave_address_set();
+	slave_address = slave_address_set();
 
-}
-
-
-/* Function name: 		slave_address_set
- * Function purpose:	Make an 5bit address
- */
-uint8_t slave_address_set()
-{
-	uint8_t slave_adr = 0;
-
-	for (uint8_t i = 0; i < 5; i++) {
-		slave_adr += (gpio_read_digital_pin(i+2) << i);
-	}
-
-	return slave_adr;
 }
 
 /**
@@ -154,34 +117,6 @@ void SystemClock_Config(void)
   }
 }
 
-/**
-  * @brief  UART error callbacks
-  * @param  UartHandle: UART handle
-  * @note   This example shows a simple way to report transfer error, and you can
-  *         add your own implementation.
-  * @retval None
-  */
-void HAL_UART_ErrorCallback(UART_HandleTypeDef *UartHandle)
-{
-    Error_Handler();
-}
-
-/**
-  * @brief  This function is executed in case of error occurrence.
-  * @param  None
-  * @retval None
-  */
-static void Error_Handler(void)
-{
-  /* Turn LED2 on */
-  BSP_LED_On(LED2);
-  while(1)
-  {
-    /* Error if LED2 is slowly blinking (1 sec. period) */
-    BSP_LED_Toggle(LED2);
-    HAL_Delay(1000);
-  }
-}
 
 #ifdef  USE_FULL_ASSERT
 

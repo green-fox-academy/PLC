@@ -1,30 +1,16 @@
+/* ###### TOTORO PLC PROJECT - SLAVE 4 ANALOG OUTPUT ##### */
+
+
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "aout_slave_loop.h"
-
-/** @addtogroup STM32L4xx_HAL_Examples
-  * @{
-  */
-
-/** @addtogroup UART_TwoBoards_ComPolling
-  * @{
-  */
-
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-#define TRANSMITTER_BOARD
-
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-
-/* UART handler declaration */
-UART_HandleTypeDef UartHandle;
-
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-static void Error_Handler(void);
 void system_init();
-uint8_t slave_address_set();
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -61,50 +47,17 @@ void system_init()
 	/* Configure the system clock to 80 MHz */
 	SystemClock_Config();
 
-	/* Configure LED2 */
-	BSP_LED_Init(LED2);
-	BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
+	//dac_init();
 
-	/* Init Uart and modbus protocol DPIN0 : RX and DPIN1 : TX */
+	/* Init Uart and modbus protocol C11 : RX and C10 : TX */
 	modbus_init();
 
-	/* Init PINs from DPIN8 to DPIN15 as a digital outputs */
-/*
-	for (int i = 8; i < 16; i++) {
-		gpio_init_digital_pin(i, GPIO_MODE_OUTPUT_PP, GPIO_NOPULL);
-	}
-*/
-	/* Init PINs from DPIN8 to DPIN15 as a digital inputs */
-
-	for (int i = 8; i < 16; i++) {
-		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
-	}
-
-
-	/* Init Pins from DPIN2 to DPIN6 as an Digital inputs for Slave_address */
-	for (int i = 2; i < 7; i++) {
-		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
-	}
+	gpio_set_address_pins();
 
 	//slave_address = slave_address_set();
 
 }
 
-
-/* Function name: 		slave_address_set
- * Function purpose:
- *
- */
-uint8_t slave_address_set()
-{
-	uint8_t slave_adr = 0;
-
-	for (uint8_t i = 0; i < 5; i++) {
-		slave_adr += (gpio_read_digital_pin(i+2) << i);
-	}
-
-	return slave_adr;
-}
 
 /**
   * @brief  System Clock Configuration
@@ -159,35 +112,6 @@ void SystemClock_Config(void)
   {
     /* Initialization Error */
     while(1);
-  }
-}
-
-/**
-  * @brief  UART error callbacks
-  * @param  UartHandle: UART handle
-  * @note   This example shows a simple way to report transfer error, and you can
-  *         add your own implementation.
-  * @retval None
-  */
-void HAL_UART_ErrorCallback(UART_HandleTypeDef *UartHandle)
-{
-    Error_Handler();
-}
-
-/**
-  * @brief  This function is executed in case of error occurrence.
-  * @param  None
-  * @retval None
-  */
-static void Error_Handler(void)
-{
-  /* Turn LED2 on */
-  BSP_LED_On(LED2);
-  while(1)
-  {
-    /* Error if LED2 is slowly blinking (1 sec. period) */
-    BSP_LED_Toggle(LED2);
-    HAL_Delay(1000);
   }
 }
 
