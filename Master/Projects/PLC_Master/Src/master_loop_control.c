@@ -406,7 +406,7 @@ void check_mode_select()
 				if (temp_mode == 2)
 					send_mode_switch(MODE_1, digital_output_slaves[i].slave_address);
 
-				LCD_UsrLog("DOU[%d] set mode: MODE_1\n", i);
+				LCD_UsrLog("DOU[%d] set mode: MODE_1, tmp_mode: 0\n", i);
 			}
 		}
 
@@ -422,7 +422,7 @@ void check_mode_select()
 				if (temp_mode == 2)
 					send_mode_switch(MODE_1, digital_output_slaves[i].slave_address);
 
-				LCD_UsrLog("DOU[%d] set mode: MODE_1\n", i);
+				LCD_UsrLog("DOU[%d] set mode: MODE_1, tmp_mode: 1\n", i);
 			}
 		}
 
@@ -437,7 +437,7 @@ void check_mode_select()
 				if (temp_mode != 2)
 					send_mode_switch(MODE_2, digital_output_slaves[i].slave_address);
 
-				LCD_UsrLog("DOU[%d] set mode: MODE_2\n", i);
+				LCD_UsrLog("DOU[%d] set mode: MODE_2, tmp_mode: 2\n", i);
 			}
 		}
 	}
@@ -452,12 +452,14 @@ void send_mode_switch(uint8_t mode, uint8_t slave_index)
 
 	UART_send(TX_buffer);
 
-	if (!wait_function())
+	if (!wait_function()) {
 		// Checks the response if it was corrupted
 		digital_output_slaves[slave_index].slave_status = verify_command_address_crc(2,2);
-	else
+		print_out_RX(0,2);
+	} else {
 		// If it was timed out
 		digital_output_slaves[slave_index].slave_status = 4;
+	}
 }
 
 void execute_program()
