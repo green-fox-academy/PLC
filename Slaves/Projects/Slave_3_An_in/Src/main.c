@@ -49,7 +49,12 @@ void system_init()
 	/* Init Uart and modbus protocol C11 : RX and C10 : TX */
 	modbus_init();
 
-	//adc_init();
+	// Init GPIO analog pin for ADC (argument: A(x) pin)
+	for (uint8_t i = 0; i < 6; i++) {
+		gpio_init_analog_pin(i);
+	}
+
+	adc_init();
 
 	gpio_set_address_pins();
 

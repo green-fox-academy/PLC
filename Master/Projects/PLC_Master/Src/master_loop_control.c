@@ -80,10 +80,10 @@ void control_slaves_thread()
 
 	print_out_available_slaves();
 
-	HAL_Delay(2000);
+	HAL_Delay(4000);
 
 	while (1) {
-/*
+
 
 		// system_check();
 
@@ -94,18 +94,14 @@ void control_slaves_thread()
 		//print_out_digital_input_table();
 		print_out_analog_input_table();
 
-		execute_program();
+		//execute_program();
 
 		//print_out_digital_output_table();
-		print_out_analog_output_table();
+		//print_out_analog_output_table();
 
-		update_outputs();
+		//update_outputs();
 
 		HAL_Delay(1000);
-*/
-		scan_system_slaves();
-		HAL_Delay(1);
-
 	}
 }
 

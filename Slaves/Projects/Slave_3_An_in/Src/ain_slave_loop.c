@@ -1,6 +1,5 @@
 /* Includes ------------------------------------------------------------------*/
 #include "ain_slave_loop.h"
-#include "main.h"
 
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
@@ -22,8 +21,11 @@ void ain_slave_loop_thread()
 
 	while (1)
 	{
+
+		// Update 6 ADC data
+		adc_valid_measurement();
 		
-		// Wait for message arrival
+		// If message arrived
 		if(interrupt_flag) {
 
 			interrupt_flag = 0;
@@ -88,13 +90,13 @@ void send_pins_states()
 	// Set buffer : address and command
 	TX_buffer[0] = slave_address;
 	TX_buffer[1] = READ_SLAVE;
-/*
-	// Load uint16t array to buffer
+
+	// Load valid data array to buffer
 	for (uint8_t i = 0; i < 6; i++) {
-		TX_buffer[(i + 1) * 2] = adc_measure();
-		TX_buffer[((i + 1) * 2) + 1] = adc_measure() >> 8;
+		TX_buffer[(i + 1) * 2] = valid_data[i];
+		TX_buffer[((i + 1) * 2) + 1] = valid_data[i] >> 8;
 	}
-*/
+
 	TX_buffer[14] = RX_buffer[2];
 	TX_buffer[15] = RX_buffer[3];
 
