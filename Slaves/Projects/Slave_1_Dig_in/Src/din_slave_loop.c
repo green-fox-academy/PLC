@@ -20,6 +20,9 @@ void din_slave_loop_thread()
 {
 	while (1)
 	{
+		// Update pinstate.
+		din_pins_states = pin_validation(8, 15);
+
 		// Wait for message arrival
 		if(interrupt_flag) {
 
@@ -83,8 +86,6 @@ void send_false_command_err()
 
 void send_pins_states()
 {
-	din_pins_states = pin_validation(8, 15);
-
 	TX_buffer[0] = slave_address;		//Address
 	TX_buffer[1] = READ_SLAVE;			//Command
 	TX_buffer[2] = din_pins_states;		//Data

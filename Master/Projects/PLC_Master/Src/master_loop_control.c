@@ -80,7 +80,7 @@ void control_slaves_thread()
 
 	print_out_available_slaves();
 
-	HAL_Delay(4000);
+	HAL_Delay(2000);
 
 	while (1) {
 
@@ -91,12 +91,12 @@ void control_slaves_thread()
 
 		load_input_tables();
 
-		//print_out_digital_input_table();
-		print_out_analog_input_table();
+		print_out_digital_input_table();
+		//print_out_analog_input_table();
 
-		//execute_program();
+		execute_program();
 
-		//print_out_digital_output_table();
+		print_out_digital_output_table();
 		//print_out_analog_output_table();
 
 		//update_outputs();
@@ -111,12 +111,9 @@ void control_slaves_thread()
  */
 void scan_system_slaves()
 {
-	msg_command.command = SCAN_SLAVE;
-	msg_command.crc = 3333;
-
-	TX_buffer[1] = msg_command.command;
-	TX_buffer[2] = msg_command.crc;
-	TX_buffer[3] = msg_command.crc >> 8;
+	TX_buffer[1] = SCAN_SLAVE;
+	TX_buffer[2] = 3333;
+	TX_buffer[3] = 3333 >> 8;
 
 	for (uint8_t i = 0; i < 4; i++) {
 
@@ -180,11 +177,22 @@ uint8_t set_digital_output_slave_mode(uint8_t mode, uint8_t slave_index)
 {
 	if (slave_index > (num_of_dig_out - 1)) {
 		return 1;
+
 	} else {
 		TX_buffer[0] = digital_output_slaves[slave_index].slave_address;
 		TX_buffer[1] = mode;
+		TX_buffer[2] = 3333;
+		TX_buffer[3] = 3333 >> 8;
 
+		if (!wait_function()) {
+			// Checks the response if it was corrupted
+			if (verify_command_address_crc(2,2) == 0){
+				digital_output_slaves[slave_index].mode = mode;
+			}
+		}
 	}
+
+	return 0;
 }
 
 void slaves_check()
@@ -217,8 +225,8 @@ void slaves_check()
 
 void load_input_tables()
 {
-	// load_digital_input_table();
-	load_analog_input_table();
+	 load_digital_input_table();
+	//load_analog_input_table();
 }
 
 void load_digital_input_table()
@@ -356,13 +364,14 @@ void execute_program()
 
 	if (DIN1) DOU1_ON; else DOU1_OFF;
 	if (DIN2) DOU2_ON; else DOU2_OFF;
-
+/*
 	AOU1 = AIN1 / 2;
 	AOU2 = AIN2 / 2;
 	AOU3 = AIN3 / 2;
 	AOU4 = AIN4 / 2;
 	AOU5 = AIN5 / 2;
 	AOU6 = AIN6 / 2;
+*/
 
 }
 
@@ -479,6 +488,13 @@ void print_out_digital_input_table()
 	}
 }
 
+void print_out_digital_output_table()
+{
+	for (uint8_t i = 0; i < num_of_dig_out; i++) {
+		LCD_UsrLog("DOU[%d] adr: %d state: %d\n", i, digital_output_slaves[i].slave_address, digital_output_slaves[i].digital_pins_state);
+	}
+}
+
 void print_out_analog_input_table()
 {
 	for (uint8_t i = 0; i < num_of_an_in; i++) {
@@ -544,10 +560,12 @@ void master_loop_control_init()
 		digital_input_slaves[i].slave_address = 0;
 		digital_input_slaves[i].digital_pins_state = 0;
 		digital_input_slaves[i].slave_status = 0;
+		digital_input_slaves[i].mode = MODE_1;
 
 		digital_output_slaves[i].slave_address = 0;
 		digital_output_slaves[i].digital_pins_state = 0;
 		digital_output_slaves[i].slave_status = 0;
+		digital_output_slaves[i].mode = MODE_2;
 
 		analog_input_slaves[i].slave_address = 0;
 		analog_input_slaves[i].slave_status = 0;

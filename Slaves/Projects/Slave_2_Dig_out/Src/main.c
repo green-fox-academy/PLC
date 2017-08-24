@@ -55,7 +55,7 @@ void system_init()
 
 	gpio_set_address_pins();
 	
-	init_pwms();
+//	init_pwms();
 
 	slave_address = slave_address_set();
 

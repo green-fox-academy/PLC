@@ -183,7 +183,7 @@ void gpio_set_dig_out_pins()
 /* Init PINs from DPIN8 to DPIN15 as a digital inputs */
 void gpio_set_dig_in_pins()
 {
-	for (int i = 2; i < 16; i++) {
+	for (int i = 5; i < 16; i++) {
 		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
 	}
 }

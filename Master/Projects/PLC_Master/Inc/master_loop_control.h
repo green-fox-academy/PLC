@@ -31,11 +31,17 @@
  * status: 2 if CRC was corrupted
  * status: 3 if address or command and CRC was corrupted
  * status: 4 if message timed out
+ *
+ * mode:	MODE_1 if it is in GPIO input mode 			/ If its an input slave
+ * mode:	MODE_2 if it is in PWM mode	 				/ If its an input slave
+ * mode:	MODE_1 if it is in GPIO output mode 		/ If its an output slave
+ * mode:	MODE_2 if it is in Freq measurement mode	/ If its an output slave
  * */
 typedef struct {
 	uint8_t slave_address;
 	uint8_t digital_pins_state;
 	uint8_t slave_status;
+	uint8_t mode;
 }digital_table_t;
 
 /* Struct for store analog slaves address, pinstate, status
