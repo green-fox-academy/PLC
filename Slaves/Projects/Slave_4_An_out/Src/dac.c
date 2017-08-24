@@ -89,7 +89,7 @@ void dac_1_init(void) // voltage output on A2 pin (PA4), resolution: 12 bit
 	HAL_DAC_ConfigChannel(&dac_handle, &dac_channel_1, DAC_CHANNEL_1);	// Configures the selected DAC channel.
 
 	// Set DAC channel 1 DHR register
-	HAL_DAC_SetValue(&dac_handle, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 4095);	// Set the specified data holding register value for DAC channel.
+	HAL_DAC_SetValue(&dac_handle, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);	// Set the specified data holding register value for DAC channel.
 
 	// Enable DAC channel 1
 	HAL_DAC_Start(&dac_handle, DAC_CHANNEL_1);	// Enables DAC and starts conversion of channel.
@@ -119,7 +119,7 @@ void dac_2_init(void)
 	HAL_DAC_ConfigChannel(&dac_handle, &dac_channel_1, DAC_CHANNEL_2);	// Configures the selected DAC channel.
 
 	// Set DAC channel 2 DHR register
-	HAL_DAC_SetValue(&dac_handle, DAC_CHANNEL_2, DAC_ALIGN_12B_R, 2483);	// Set the specified data holding register value for DAC channel.
+	HAL_DAC_SetValue(&dac_handle, DAC_CHANNEL_2, DAC_ALIGN_12B_R, 0);	// Set the specified data holding register value for DAC channel.
 
 	// Enable DAC channel 2
 	HAL_DAC_Start(&dac_handle, DAC_CHANNEL_2);	// Enables DAC and starts conversion of channel.
