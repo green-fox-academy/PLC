@@ -43,8 +43,6 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-//uint16_t A2_output_volt = 4000; // set A2 pin (PA4 pin) output voltage
-//uint16_t D13_output_volt = 4000; // set D13 pin (PA5 pin) output voltage
 
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
@@ -77,67 +75,24 @@ int main(void)
 	// Init DAC
 	uart_send("DAC initialized\n\r");
 
-/*	uart_send("Output voltage on A2 pin: continious");
-	char A2_voltt[1];
-	sprintf(A2_voltt, "%d", A2_output_volt);
-	uart_send(A2_voltt);
-	uart_send("\n\r");
-
-	uart_send("Output voltage on D13 pin: ");
-	char D13_voltt[1];
-	sprintf(D13_voltt, "%d", D13_output_volt);
-	uart_send(D13_voltt);
-	uart_send("\n\r");
-*/
 	// Init both DAC channels
 	dac_init();
 
-	// forever loop: change LED brightness
+	// forever loop: change LED brightness with DAC
 	while (1) {
-		for (uint16_t i = 0; i < 4095; i++) {
+		for (uint16_t i = 0; i < 4097; i++) {
 			dac_1_setval(i);
-			//dac_2_setval(i);
-			for (uint16_t j = 4095; j > 0; j--) {
-				dac_2_setval(j);
-			}
+			dac_2_setval(4096-i);
+			HAL_Delay(1);
 		}
 
+		for (uint16_t j = 4096; j > 0; j--) {
+			dac_1_setval(j);
+			dac_2_setval(4096-j);
+			HAL_Delay(1);
+		}
 	}
 }
-
-
-/* while amivel egy led halványul
- * 	while (1) {
-		for (uint16_t i = 0; i < 4095; i++) {
-			dac_1_setval(i);
-			dac_2_setval(i);
-			for (uint16_t j = 0; j < 4095; j++) {
-				dac_2_setval(j);
-			}
-		}
-	}
- */
-
-
-
-/*		for (uint16_t k = 4095; k > 0; k--) {
-			dac_2_setval(k);
-			for (uint16_t l = 0; l < 4095; l++) {
-				dac_2_setval(l);
-			}
-		}*/
-
-		// Listen to Master and receive data
-		//rcv data from master
-
-		// incoming data: uint16_t array with numbers
-
-		// function to do with analog out
-		// 0) Test mode: send data to terminal with polling uart
-		// a) control LED's brightness with the An in potentiometers
-		// b) create a number from the state of switches on the control panel,
-		//	4 switches, each switch has 3 statements -> 0, 1, 2 --> 3^4 way of setting = 0..81
-
 
 /**
   * @brief  System Clock Configuration
