@@ -1,6 +1,6 @@
 /** UART in polling mode between L4-RealTerm terminal
   ******************************************************************************
-  * @file    Templates/Src/main.c 
+  * @file    UART_polling_for_terminal.c 
   * @author  Gyula
   * @version V1.8.0
   * @date    17-08-2017
@@ -10,7 +10,7 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "uart.h"
+#include "UART_polling_for_terminal.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/

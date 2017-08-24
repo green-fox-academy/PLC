@@ -58,7 +58,7 @@ static DAC_ChannelConfTypeDef dac_channel;
   */
 void dac_init(void)
 {
-	// Enable ADC clock
+	// Enable DAC clock
 	__HAL_RCC_ADC_CLK_ENABLE();
 
 	// Config ADC

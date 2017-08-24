@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
-  * @file    PLC\Slaves\Slave_drivers\Inc\uart.h
+  * @file    PLC\Slaves\Slave_drivers\Inc\UART_polling_for_terminal.h
   * @author  Gyula Rasztovich
   * @version V1.0
   * @date    17-08-2017
-  * @brief   Header for uart.c module. Base: L4 Cube main.h template
+  * @brief   Header for UART_poll_for_terminal.c module. Base: L4 Cube main.h template
   ******************************************************************************
   * @attention
   *
@@ -36,8 +36,8 @@
   */
   
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __UART_H
-#define __UART_H
+#ifndef __UART_polling_for_terminal_H
+#define __UART_polling_for_terminal_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_hal.h"
@@ -52,6 +52,6 @@ void uart_send(char* buffer);
 void uart_receive(void);
 
 
-#endif /* __UART_H */
+#endif /* __UART_polling_for_terminal_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

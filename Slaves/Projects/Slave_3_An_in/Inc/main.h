@@ -6,11 +6,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx_nucleo.h"
-#include "stm32l476xx.h"
+//#include "stm32l476xx.h"
 #include "GPIO.h"
 #include "adc.h"
-#include "uart.h"
-#include "stdio.h"
+#include "UART_polling_for_terminal.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
