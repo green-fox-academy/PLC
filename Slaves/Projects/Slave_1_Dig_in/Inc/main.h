@@ -7,6 +7,7 @@
 #include "stm32l4xx_nucleo.h"
 #include "uart.h"
 #include "GPIO.h"
+#include "validation.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/

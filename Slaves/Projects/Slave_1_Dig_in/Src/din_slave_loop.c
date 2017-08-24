@@ -83,7 +83,7 @@ void send_false_command_err()
 
 void send_pins_states()
 {
-	din_pins_states = gpio_read_8_pin(8, 15);
+	din_pins_states = pin_validation(8, 15);
 
 	TX_buffer[0] = slave_address;		//Address
 	TX_buffer[1] = READ_SLAVE;			//Command
