@@ -409,7 +409,7 @@ void check_mode_select()
 				LCD_UsrLog("DOU[%d] set mode: MODE_1, tmp_mode: 0\n", i);
 			}
 */
-			LCD_UsrLog("tmp_mode: 0\n");
+			LCD_UsrLog("mode: 0\n");
 		}
 
 	} else if (D2_pinstate && !D3_pinstate) {
@@ -428,7 +428,7 @@ void check_mode_select()
 				LCD_UsrLog("DOU[%d] set mode: MODE_1, tmp_mode: 1\n", i);
 			}
 */
-			LCD_UsrLog("tmp_mode: 1\n");
+			LCD_UsrLog("mode: 1\n");
 		}
 
 	} else if (D3_pinstate && !D2_pinstate) {
@@ -445,7 +445,7 @@ void check_mode_select()
 				LCD_UsrLog("DOU[%d] set mode: MODE_2, tmp_mode: 2\n", i);
 			}
 */
-			LCD_UsrLog("tmp_mode: 2\n");
+			LCD_UsrLog("mode: 2\n");
 		}
 	}
 }
@@ -472,20 +472,48 @@ void send_mode_switch(uint8_t mode, uint8_t slave_index)
 void execute_program()
 {
 
-	if (temp_mode == 0) {			// Starting mode: DOUT
+	if (temp_mode == 0) {
 
-		DOU2_OFF;
-		DOU3_ON;
-		DOU4_OFF;
+		// Direct connection between switchies and LEDS from 1 - 6
+		if (DIN1) DOU1_ON; else DOU1_OFF;
+		if (DIN2) DOU2_ON; else DOU2_OFF;
+		if (DIN3) DOU3_ON; else DOU3_OFF;
+		if (DIN4) DOU4_ON; else DOU4_OFF;
+		if (DIN5) DOU5_ON; else DOU5_OFF;
+		if (DIN6) DOU6_ON; else DOU6_OFF;
 
-	} else if (temp_mode == 1) {	//
+		// Direct connection between Potmeter 1,2 and LED 7,8
+		AOU1 = AIN1;
+		AOU2 = AIN2;
 
-		DOU2_ON;
-		DOU3_ON;
-		DOU4_ON;
+	} else if (temp_mode == 1) {
+
+		if (DIN1) {
+			DOU1_ON;
+			AOU1 = AIN1 / 2;
+		} else {
+			DOU1_OFF;
+			AOU1 = 0;
+		}
+
+		if (DIN2 && !DIN1) {
+			DOU2_ON;
+			AOU1 = AIN1;
+		} else {
+			DOU2_OFF;
+			AOU1 = 0;
+		}
+
+		if (DIN3) {
+			DOU3_ON;
+			AOU2 = AIN1 / 2 + AIN2 / 4 + AIN3 / 4;
+		} else {
+			DOU3_OFF;
+			AOU2 = 0;
+		}
 
 
-	} else if (temp_mode == 2) {	// DOUT: PWM mode
+	} else if (temp_mode == 2) {
 /*
 		if (temp_counter >= 10) {
 			temp_counter = 1;
@@ -499,19 +527,6 @@ void execute_program()
 */
 
 	}
-
-
-/*
-	if (DIN1) DOU1_ON; else DOU1_OFF;
-	if (DIN2) DOU2_ON; else DOU2_OFF;
-
-	AOU1 = AIN1 / 2;
-	AOU2 = AIN2 / 2;
-	AOU3 = AIN3 / 2;
-	AOU4 = AIN4 / 2;
-	AOU5 = AIN5 / 2;
-	AOU6 = AIN6 / 2;
-*/
 
 }
 
