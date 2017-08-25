@@ -56,7 +56,7 @@ typedef struct {
 	uint8_t slave_address;
 	uint16_t analoge_pins_state[6];
 	uint8_t slave_status;
-}analog_tale_t;
+}analog_table_t;
 
 
 /* ###############################################
@@ -114,11 +114,11 @@ digital_table_t digital_output_slaves[4];
 uint8_t num_of_dig_out;
 
 /* This array stores data from analog input slaves */
-analog_tale_t analog_input_slaves[4];
+analog_table_t analog_input_slaves[4];
 uint8_t num_of_an_in;
 
 /* This array stores data for analog otput slaves */
-analog_tale_t analog_output_slaves[4];
+analog_table_t analog_output_slaves[4];
 uint8_t num_of_an_out;
 
 

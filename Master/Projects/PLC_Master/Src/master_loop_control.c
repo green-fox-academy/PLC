@@ -99,12 +99,12 @@ void control_slaves_thread()
 		load_input_tables();
 
 		print_out_digital_input_table();
-		//print_out_analog_input_table();
+		print_out_analog_input_table();
 
 		execute_program();
 
-		print_out_digital_output_table();
-		//print_out_analog_output_table();
+		// print_out_digital_output_table();
+		// print_out_analog_output_table();
 
 		update_outputs();
 
@@ -362,8 +362,8 @@ void update_analog_output_tables()
 
 		// Set command and CRC
 		TX_buffer[1] = WRITE_SLAVE;
-		TX_buffer[14] = 33;
-		TX_buffer[15] = 44;
+		TX_buffer[6] = 33;
+		TX_buffer[7] = 44;
 
 		for (uint8_t i = 0; i < num_of_an_out; i++) {
 
@@ -381,7 +381,7 @@ void update_analog_output_tables()
 
 			if (!wait_function())
 				// Checks the response if it was corrupted
-				analog_output_slaves[i].slave_status = verify_command_address_crc(14,14);
+				analog_output_slaves[i].slave_status = verify_command_address_crc(6,6);
 			else
 				// Time out
 				analog_output_slaves[i].slave_status = 4;
