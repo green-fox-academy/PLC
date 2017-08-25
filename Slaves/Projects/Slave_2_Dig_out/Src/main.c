@@ -51,9 +51,9 @@ void system_init()
 	/* Init Uart and modbus protocol C11 : RX and C10 : TX */
 	modbus_init();
 
-	//init_gpio_digital_pins();
+	init_gpio_digital_pins();
 
-	init_pwms();
+	//init_pwms();
 
 	gpio_set_address_pins();
 

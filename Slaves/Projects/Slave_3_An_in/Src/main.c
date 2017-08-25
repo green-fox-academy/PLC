@@ -24,7 +24,7 @@ int main(void)
 {
 	system_init();
 
-	slave_address = 11;
+	//slave_address = 11;
 
 	ain_slave_loop_thread();
 
