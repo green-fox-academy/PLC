@@ -108,7 +108,7 @@ void control_slaves_thread()
 
 		update_outputs();
 
-		HAL_Delay(1000);
+		HAL_Delay(250);
 	}
 }
 
