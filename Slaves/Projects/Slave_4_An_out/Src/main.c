@@ -9,7 +9,7 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
-static_void SystemClock_Config(void);
+static void SystemClock_Config(void);
 void system_init();
 
 /* Private functions ---------------------------------------------------------*/
@@ -24,7 +24,7 @@ int main(void)
 
 	system_init();
 
-	slave_address = 13;
+	//slave_address = 13;
 
 	aout_slave_loop_thread();
 
@@ -46,14 +46,14 @@ void system_init()
 	/* Configure the System clock to have a frequency of 80 MHz */
 	SystemClock_Config();
 
-	//dac_init();
+	dac_init();
 
 	/* Init Uart and modbus protocol C11 : RX and C10 : TX */
 	modbus_init();
 
 	gpio_set_address_pins();
 
-	//slave_address = slave_address_set();
+	slave_address = slave_address_set();
 
 }
 

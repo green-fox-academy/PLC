@@ -43,116 +43,111 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 DAC_HandleTypeDef dac_handle;
-static DAC_ChannelConfTypeDef dac_channel;
-//uint16_t temp_data[10];
-
+static DAC_ChannelConfTypeDef dac_channel_1;
+static DAC_ChannelConfTypeDef dac_channel_2;
+uint16_t A2_pin_output_voltage; // set A2 pin (PA4 pin) output voltage
+uint16_t D13_pin_output_voltage; // set D13 pin (PA5 pin) output voltage
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
-
-/**
-  * @brief  DAC initialization and configuration
-  * @param  None
-  * @retval None
-  */
-void dac_init(void)
+// Set DAC handle struct
+void dac_set_handle(void)
 {
 	// Enable DAC clock
-	__HAL_RCC_ADC_CLK_ENABLE();
+	__HAL_RCC_DAC1_CLK_ENABLE();
 
-	// Config ADC
-	dac_handle.Instance 			= DAC;						// Register base address - ADC1 for all
-	dac_handle.Init.ClockPrescaler	= ADC_CLOCK_SYNC_PCLK_DIV2;	// Select ADC clock source
-	dac_handle.Init.Resolution 		= ADC_RESOLUTION_12B;		// Resolution: measurement values will between 0...4095 ((2^12)-1)
-	dac_handle.Init.DataAlign 		= ADC_DATAALIGN_RIGHT;		// Data right alignment
-	dac_handle.Init.EOCSelection	= ADC_EOC_SINGLE_CONV;		// Specify which EOC (End Of Conversion) flag is used for conversion by polling and interruption
-	/* Other optional ADC settings
-		adc_handle.State= HAL_ADC_STATE_RESET;					// ADC communication state (bit-map of ADC states)
-		adc_handle.Init.ScanConvMode= ADC_SCAN_DISABLE;			// Sequencer disabled (ADC conversion on only 1 channel: channel set on rank 1)
-		adc_handle.Init.EOCSelection= ADC_EOC_SEQ_CONV;			// Specify which EOC (End Of Conversion) flag is used for conversion by polling and interruption
-		adc_handle.Init.LowPowerAutoWait= DISABLE;				// Select the dynamic low power Auto Delay
-		adc_handle.Init.ContinuousConvMode= DISABLE;			// Continuous mode disabled to have only 1 conversion at each conversion trig
-		adc_handle.Init.NbrOfConversion= 1;						// Parameter discarded because sequencer is disabled
-		adc_handle.Init.DiscontinuousConvMode= DISABLE;			// Parameter discarded because sequencer is disabled
-		adc_handle.Init.NbrOfDiscConversion= DISABLE;			// Parameter discarded because sequencer is disabled
-		adc_handle.Init.ExternalTrigConv= ADC_SOFTWARE_START;	// Software start to trig the 1st conversion manually, without external event
-		adc_handle.Init.DMAContinuousRequests= DISABLE;			// ADC with DMA transfer: continuous requests to DMA disabled (default state) since DMA is not used in this example.
-		adc_handle.Init.Overrun= ADC_OVR_DATA_OVERWRITTEN;		// Select the behavior in case of overrun: data overwritten or preserved
-	*/
-	HAL_ADC_Init(&dac_handle);
+	// Config DAC handle
+	dac_handle.Instance = DAC;		//Register base address
 
-	// Config ADC channel - channels are different for each pin, other settings are the same for each.
-	dac_channel[0].Channel 	= ADC_CHANNEL_5;					// A0 - PA0 - ADC12_IN5 	Specify the channel to configure into ADC regular group.
-	dac_channel[1].Channel 	= ADC_CHANNEL_6;					// A1 - PA1 - ADC12_IN6		ref: user manual's Table 23.
-	dac_channel[2].Channel 	= ADC_CHANNEL_9;					// A2 - PA4 - ADC12_IN9
-	dac_channel[3].Channel 	= ADC_CHANNEL_15;					// A3 - PB0 - ADC12_IN15
-	dac_channel[4].Channel 	= ADC_CHANNEL_2;					// A4 - PC1 - ADC123_IN2
-	dac_channel[5].Channel 	= ADC_CHANNEL_1;					// A5 - PC0 - ADC123_IN1
-	for (uint8_t i = 0; i < 6; i++) {
-		dac_channel[i].Rank 		= ADC_REGULAR_RANK_1;		// Specify the rank in the regular group sequencer.
-		dac_channel[i].SamplingTime = ADC_SAMPLETIME_24CYCLES_5;// Sampling time value to be set for the selected channel.
-		dac_channel[i].Offset 		= 0;						// Offset to be subtracted from the raw converted data.
-	}
-	/* Other optional channel settings
-		adc_channel[i].SingleDiff   = ADC_SINGLE_ENDED;			// Select single-ended or differential input.
-		adc_channel[i].OffsetNumber = ADC_OFFSET_1;				// Select the offset number
-	}
-	*/
+	// Init DAC handle
+	HAL_DAC_Init(&dac_handle);
 }
 
-/**
-  * @brief  deinit ADC1
-  * @param  None
-  * @retval None
-  */
-void adc_deinit(void)
+// Init DAC channel 1
+void dac_1_init(void) // voltage output on A2 pin (PA4), resolution: 12 bit
 {
-	HAL_ADC_Stop(&dac_handle);
+	dac_set_handle();
+
+	// Config DAC channel 1
+	dac_channel_1.DAC_SampleAndHold = DAC_SAMPLEANDHOLD_DISABLE;	// Specifies whether the DAC mode.
+	dac_channel_1.DAC_Trigger = DAC_TRIGGER_NONE;					// Specifies the external trigger for the selected DAC channel.
+	dac_channel_1.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;		// Specifies whether the DAC channel output buffer is enabled or disabled.
+	dac_channel_1.DAC_ConnectOnChipPeripheral = DAC_CHIPCONNECT_DISABLE;	// Specifies whether the DAC output is connected or not to on chip peripheral
+	dac_channel_1.DAC_UserTrimming = DAC_TRIMMING_FACTORY;				// Specifies the trimming mode
+	/* alternate settings
+		dac_channel_1.DAC_SampleAndHold = DAC_SAMPLEANDHOLD_ENABLE;
+		dac_channel_1.DAC_Trigger = DAC_TRIGGER_NONE;
+		dac_channel_1.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
+		dac_channel_1.DAC_ConnectOnChipPeripheral = DAC_CHIPCONNECT_DISABLE;
+		dac_channel_1.DAC_UserTrimming = DAC_TRIMMING_FACTORY;
+		*/
+		dac_channel_1.DAC_SampleAndHoldConfig.DAC_SampleTime = 20;
+		dac_channel_1.DAC_SampleAndHoldConfig.DAC_HoldTime = 10;
+		dac_channel_1.DAC_SampleAndHoldConfig.DAC_RefreshTime = 5;
+
+	HAL_DAC_ConfigChannel(&dac_handle, &dac_channel_1, DAC_CHANNEL_1);	// Configures the selected DAC channel.
+
+	// Set DAC channel 1 DHR register
+	HAL_DAC_SetValue(&dac_handle, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);	// Set the specified data holding register value for DAC channel.
+
+	// Enable DAC channel 1
+	HAL_DAC_Start(&dac_handle, DAC_CHANNEL_1);	// Enables DAC and starts conversion of channel.
+}
+
+// Init DAC channel 2
+void dac_2_init(void)
+{
+	dac_set_handle();
+
+	// Config DAC channel 2
+	dac_channel_2.DAC_SampleAndHold = DAC_SAMPLEANDHOLD_DISABLE;	// Specifies whether the DAC mode.
+	dac_channel_2.DAC_Trigger = DAC_TRIGGER_NONE;					// Specifies the external trigger for the selected DAC channel.
+	dac_channel_2.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;		// Specifies whether the DAC channel output buffer is enabled or disabled.
+	dac_channel_2.DAC_ConnectOnChipPeripheral = DAC_CHIPCONNECT_DISABLE;	// Specifies whether the DAC output is connected or not to on chip peripheral
+	dac_channel_2.DAC_UserTrimming = DAC_TRIMMING_FACTORY;				// Specifies the trimming mode
+	/* alternate settings
+		dac_channel_2.DAC_SampleAndHold = DAC_SAMPLEANDHOLD_ENABLE;
+		dac_channel_2.DAC_Trigger = DAC_TRIGGER_NONE;
+		dac_channel_2.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
+		dac_channel_2.DAC_ConnectOnChipPeripheral = DAC_CHIPCONNECT_DISABLE;
+		dac_channel_2.DAC_UserTrimming = DAC_TRIMMING_FACTORY;
+		dac_channel_2.DAC_SampleAndHoldConfig.DAC_SampleTime = 20;
+		dac_channel_2.DAC_SampleAndHoldConfig.DAC_HoldTime = 10;
+		dac_channel_2.DAC_SampleAndHoldConfig.DAC_RefreshTime = 5;
+	*/
+	HAL_DAC_ConfigChannel(&dac_handle, &dac_channel_1, DAC_CHANNEL_2);	// Configures the selected DAC channel.
+
+	// Set DAC channel 2 DHR register
+	HAL_DAC_SetValue(&dac_handle, DAC_CHANNEL_2, DAC_ALIGN_12B_R, 0);	// Set the specified data holding register value for DAC channel.
+
+	// Enable DAC channel 2
+	HAL_DAC_Start(&dac_handle, DAC_CHANNEL_2);	// Enables DAC and starts conversion of channel.
+
+}
+
+void dac_1_setval(uint16_t dat1)
+{
+	HAL_DAC_SetValue(&dac_handle, DAC_CHANNEL_1, DAC_ALIGN_12B_R, dat1);
+}
+
+void dac_2_setval(uint16_t dat2)
+{
+	HAL_DAC_SetValue(&dac_handle, DAC_CHANNEL_2, DAC_ALIGN_12B_R, dat2);
+}
+
+// Init both DAC channels
+void dac_init()
+{
+	dac_1_init();
+	dac_2_init();
+}
+
+// Deinit DAC
+void dac_deinit(void)
+{
+	HAL_DAC_DeInit(&dac_handle);
 	return;
 }
-
-/**
-  * @brief  ADC measurement program.
-  * @param  pin number of potmeter's connection to board between 0..5 (refers to A0..A5 pins)
-  * @retval measurement value between 0...4095 (note: adc is initialized for 12 bit resolution)
-  */
-uint16_t adc_measure(uint8_t index)
-{
-	HAL_ADC_ConfigChannel(&dac_handle, &dac_channel[index]);
-	HAL_ADC_Start(&dac_handle);
-	HAL_ADC_PollForConversion(&dac_handle, HAL_MAX_DELAY);
-	return HAL_ADC_GetValue(&dac_handle);
-}
-
-void adc_valid_measurement(void)
-{
-	for (uint8_t i = 0; i < 6; i++) {
-		temp_sum = 0;
-		for (uint8_t j = 0; j < 10; j++) {
-			temp_data[j] = adc_measure(i);
-			temp_sum += temp_data[j];
-		}
-		valid_data[i] = trimmed_mean();
-	}
-}
-
-uint16_t trimmed_mean()
-{
-	uint16_t max = temp_data[0];
-	for (uint8_t i = 0; i < 10; i++) {
-		if (temp_data[i] > max) {
-			max = temp_data[i];
-		}
-	}
-	uint16_t min = temp_data[0];
-	for (uint8_t i = 0; i < 10; i++) {
-		if (temp_data[i] < min) {
-			min = temp_data[i];
-		}
-	}
-	return (temp_sum - min - max)/8;
-}
-
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
