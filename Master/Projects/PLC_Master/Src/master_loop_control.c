@@ -282,7 +282,7 @@ void load_analog_input_table()
 			// Set the address and send the message
 			TX_buffer[0] = analog_input_slaves[i].slave_address;
 			UART_send(TX_buffer);
-			print_out_TX(2,6);
+	//		print_out_TX(2,6);
 			if (!wait_function()) {
 				// Checks the response if it was corrupted
 				analog_input_slaves[i].slave_status = verify_command_address_crc(2,14);
