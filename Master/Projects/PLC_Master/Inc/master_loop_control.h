@@ -54,7 +54,7 @@ typedef struct {
  * */
 typedef struct {
 	uint8_t slave_address;
-	uint16_t analoge_pins_state[6];
+	uint16_t analoge_pins_state[2];
 	uint8_t slave_status;
 }analog_tale_t;
 

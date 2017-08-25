@@ -371,7 +371,7 @@ void update_analog_output_tables()
 			TX_buffer[0] = analog_output_slaves[i].slave_address;
 
 			// Set uint16_t pinstate data to TX_buffer, from buffer[2] to buffer[13]
-			for (uint8_t j = 0; j < 6; j++) {
+			for (uint8_t j = 0; j < 2; j++) {
 				TX_buffer[(j + 1) * 2] = analog_output_slaves[i].analoge_pins_state[j];
 				TX_buffer[((j + 1) * 2) + 1] = analog_output_slaves[i].analoge_pins_state[j] >> 8;
 			}
@@ -398,7 +398,7 @@ void check_mode_select()
 		if (temp_mode != 0) {
 
 			temp_mode = 0;
-
+/*
 			for (uint8_t i = 0; i < num_of_dig_out; i++) {
 
 				digital_output_slaves[i].mode = MODE_1; // Set it to pwm mode
@@ -408,6 +408,8 @@ void check_mode_select()
 
 				LCD_UsrLog("DOU[%d] set mode: MODE_1, tmp_mode: 0\n", i);
 			}
+*/
+			LCD_UsrLog("tmp_mode: 0\n");
 		}
 
 	} else if (D2_pinstate && !D3_pinstate) {
@@ -415,6 +417,7 @@ void check_mode_select()
 
 			temp_mode = 1;
 
+			/*
 			for (uint8_t i = 0; i < num_of_dig_out; i++) {
 
 				digital_output_slaves[i].mode = MODE_1; // Set it to pwm mode
@@ -424,12 +427,14 @@ void check_mode_select()
 
 				LCD_UsrLog("DOU[%d] set mode: MODE_1, tmp_mode: 1\n", i);
 			}
+*/
+			LCD_UsrLog("tmp_mode: 1\n");
 		}
 
 	} else if (D3_pinstate && !D2_pinstate) {
 		if (temp_mode != 2) {
 			temp_mode = 2;
-
+/*
 			for (uint8_t i = 0; i < num_of_dig_out; i++) {
 
 				digital_output_slaves[i].mode = MODE_2; // Set it to pwm mode
@@ -439,6 +444,8 @@ void check_mode_select()
 
 				LCD_UsrLog("DOU[%d] set mode: MODE_2, tmp_mode: 2\n", i);
 			}
+*/
+			LCD_UsrLog("tmp_mode: 2\n");
 		}
 	}
 }
@@ -479,7 +486,7 @@ void execute_program()
 
 
 	} else if (temp_mode == 2) {	// DOUT: PWM mode
-
+/*
 		if (temp_counter >= 10) {
 			temp_counter = 1;
 		}
@@ -489,7 +496,10 @@ void execute_program()
 		digital_output_slaves[0].pwm_duty_arr[2] = temp_counter * 10;
 
 		temp_counter++;
+*/
+
 	}
+
 
 /*
 	if (DIN1) DOU1_ON; else DOU1_OFF;
@@ -502,8 +512,6 @@ void execute_program()
 	AOU5 = AIN5 / 2;
 	AOU6 = AIN6 / 2;
 */
-
-
 
 }
 
@@ -697,7 +705,7 @@ void master_loop_control_init()
 		digital_output_slaves[i].slave_address = 0;
 		digital_output_slaves[i].digital_pins_state = 0;
 		digital_output_slaves[i].slave_status = 0;
-		digital_output_slaves[i].mode = MODE_2;
+		digital_output_slaves[i].mode = MODE_1;
 
 		for (uint8_t j = 0; j < 3; j++) {
 			digital_output_slaves[i].pwm_duty_arr[j] = 0;
