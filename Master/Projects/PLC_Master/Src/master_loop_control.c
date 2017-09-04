@@ -34,6 +34,7 @@ uint8_t analog_output_slaves_address[]  = {13,14,15,16};
 
 // Functions needed for communication
 uint16_t generate_crc();
+void empty_output_tables();
 uint8_t wait_function();
 uint8_t verify_command_address_crc(uint8_t tx_crc_start, uint8_t rx_crc_start);
 
@@ -50,6 +51,7 @@ void print_out_analog_input_table();
 void print_out_analog_output_table();
 
 void scan_system_slaves();
+uint8_t scan_slave(uint8_t slave_address);
 void slaves_check();
 
 // Message functions
@@ -93,12 +95,12 @@ void control_slaves_thread()
 
 		// system_check();
 
-		check_mode_select();
-
 		load_input_tables();
 
 		// print_out_digital_input_table();
 		// print_out_analog_input_table();
+
+		check_mode_select();
 
 		execute_program();
 
@@ -109,7 +111,7 @@ void control_slaves_thread()
 
 		slaves_check();
 
-		HAL_Delay(1000);
+		HAL_Delay(500);
 	}
 }
 
@@ -119,67 +121,53 @@ void control_slaves_thread()
  */
 void scan_system_slaves()
 {
-	TX_buffer[1] = SCAN_SLAVE;
-	TX_buffer[2] = 3333;
-	TX_buffer[3] = 3333 >> 8;
-
 	for (uint8_t i = 0; i < 4; i++) {
 
 		// #### SCAN DIGITAL INPUT ####
-		TX_buffer[0] = digital_input_slaves_address[i];
-		UART_send(TX_buffer);
-		// If it isn't time out
-		if (!wait_function()) {
-			// Checks the response if it was corrupted
-			if (verify_command_address_crc(2,2) == 0){
-				// Loads the DIGITAL INPUT table with address
-				digital_input_slaves[num_of_dig_in].slave_address = digital_input_slaves_address[i];
-				num_of_dig_in++;
-			}
+		if (!scan_slave(digital_input_slaves_address[i])) {
+			digital_input_slaves[num_of_dig_in].slave_address = digital_input_slaves_address[i];
+			num_of_dig_in++;
 		}
 
 		// #### SCAN DIGITAL OUTPUT ####
-		TX_buffer[0] = digital_output_slaves_address[i];
-		UART_send(TX_buffer);
-		// If it isn't time out
-		if (!wait_function()) {
-			// Checks the response if it was corrupted
-			if (verify_command_address_crc(2,2) == 0){
-				// Loads the DIGITAL OUTPUT table with address
-				digital_output_slaves[num_of_dig_out].slave_address = digital_output_slaves_address[i];
-				num_of_dig_out++;
-			}
+		if (!scan_slave(digital_output_slaves_address[i])) {
+			digital_output_slaves[num_of_dig_out].slave_address = digital_output_slaves_address[i];
+			num_of_dig_out++;
 		}
 
 		// #### SCAN ANALOG INPUT ####
-		TX_buffer[0] = analog_input_slaves_address[i];
-		UART_send(TX_buffer);
-
-		// If it isn't time out
-		if (!wait_function()) {
-			// Checks the response if it was corrupted
-			if (verify_command_address_crc(2,2) == 0){
-				// Loads the ANALOG INPUT table with address
-				analog_input_slaves[num_of_an_in].slave_address = analog_input_slaves_address[i];
-				num_of_an_in++;
-			}
+		if (!scan_slave(analog_input_slaves_address[i])) {
+			analog_input_slaves[num_of_an_in].slave_address = analog_input_slaves_address[i];
+			num_of_an_in++;
 		}
 
 		// #### SCAN ANALOG OUTPUT ####
-		TX_buffer[0] = analog_output_slaves_address[i];
-		UART_send(TX_buffer);
-
-		// If it isn't time out
-		if (!wait_function()) {
-			// Checks the response if it was corrupted
-			if (verify_command_address_crc(2,2) == 0){
-				// Loads the ANALOG OUTPUT table with address
-				analog_output_slaves[num_of_an_out].slave_address = analog_output_slaves_address[i];
-				num_of_an_out++;
-			}
+		if (!scan_slave(analog_output_slaves_address[i])) {
+			analog_output_slaves[num_of_an_out].slave_address = analog_output_slaves_address[i];
+			num_of_an_out++;
 		}
 	}
 }
+
+uint8_t scan_slave(uint8_t slave_address)
+{
+	uint8_t status;
+
+	TX_buffer[0] = slave_address;
+	TX_buffer[1] = SCAN_SLAVE;
+	TX_buffer[2] = 11;	// CRC LOW
+	TX_buffer[3] = 22;	// CRC HIGH
+
+	UART_send(TX_buffer);
+
+	if (!wait_function())
+		status = verify_command_address_crc(2,2);
+	else
+		status = 4;
+
+	return status;
+}
+
 
 void slaves_check()
 {
@@ -304,7 +292,9 @@ void update_digital_output_tables()
 				// If slave mode set successfully
 				if (!set_digital_output_slave_mode(digital_output_slaves[i].mode, i)) {
 					digital_output_slaves[i].mode_changed_flag = 0;
-					LCD_UsrLog("Dig out[%d] mode: %d", i, digital_output_slaves[i].mode);
+					//LCD_UsrLog("Dig out[%d] mode: %d", i, digital_output_slaves[i].mode);
+				} else {
+					LCD_UsrLog("Mode sending error");
 				}
 			}
 
@@ -381,36 +371,7 @@ void update_analog_output_tables()
 	}
 }
 
-void check_mode_select()
-{
-	uint8_t D2_pinstate = gpio_read_digital_pin(2);
-	uint8_t D3_pinstate = gpio_read_digital_pin(3);
 
-	if (!D2_pinstate && !D3_pinstate) {
-		if (program_mode != 0) {
-
-			program_mode = 0;
-
-			LCD_UsrLog("mode: 0\n");
-		}
-
-	} else if (D2_pinstate && !D3_pinstate) {
-		if (program_mode != 1) {
-
-			program_mode = 1;
-
-			LCD_UsrLog("mode: 1\n");
-		}
-
-	} else if (D3_pinstate && !D2_pinstate) {
-		if (program_mode != 2) {
-
-			program_mode = 2;
-
-			LCD_UsrLog("mode: 2\n");
-		}
-	}
-}
 
 uint8_t set_digital_output_slave_mode(uint8_t mode, uint8_t slave_index)
 {
@@ -433,10 +394,11 @@ uint8_t set_digital_output_slave_mode(uint8_t mode, uint8_t slave_index)
 			digital_output_slaves[slave_index].slave_status = verify_command_address_crc(2,2);
 
 			// Checks the response if it was corrupted
-			if (!digital_output_slaves[slave_index].slave_status){
+			if (!digital_output_slaves[slave_index].slave_status)
 				digital_output_slaves[slave_index].mode = mode;
+			else
 				set_done = 1;
-			}
+
 
 		} else {
 			// If it was timed out
@@ -447,6 +409,37 @@ uint8_t set_digital_output_slave_mode(uint8_t mode, uint8_t slave_index)
 	}
 
 	return set_done;
+}
+
+void check_mode_select()
+{
+	uint8_t D2_pinstate = gpio_read_digital_pin(2);
+	uint8_t D3_pinstate = gpio_read_digital_pin(3);
+
+	if (!D2_pinstate && !D3_pinstate) {
+		if (program_mode != 0) {
+			empty_output_tables();
+			print_out_digital_output_table();
+			program_mode = 0;
+			LCD_UsrLog("mode: 0\n");
+		}
+
+	} else if (D2_pinstate && !D3_pinstate) {
+		if (program_mode != 1) {
+			empty_output_tables();
+			print_out_digital_output_table();
+			program_mode = 1;
+			LCD_UsrLog("mode: 1\n");
+		}
+
+	} else if (D3_pinstate && !D2_pinstate) {
+		if (program_mode != 2) {
+			empty_output_tables();
+			print_out_digital_output_table();
+			program_mode = 2;
+			LCD_UsrLog("mode: 2\n");
+		}
+	}
 }
 
 void execute_program()
@@ -514,16 +507,18 @@ void execute_program()
 
 			digital_output_slaves[0].mode = SLAVE_MODE_2;
 			digital_output_slaves[0].mode_changed_flag = 1;
+			LCD_UsrLog("execution: ");
+			print_out_digital_output_table();
 
 		} else {
 
-			if (temp_counter >= 10) {
+			if (temp_counter >= 15) {
 				temp_counter = 1;
 			}
 
 			DOU1PWM1 = temp_counter * 5;
-			DOU1PWM2 = temp_counter * 7;
-			DOU1PWM3 = temp_counter * 10;
+			DOU1PWM2 = temp_counter * 5;
+			DOU1PWM3 = temp_counter * 5;
 
 			temp_counter++;
 		}
@@ -562,12 +557,11 @@ uint8_t verify_command_address_crc(uint8_t tx_crc_start, uint8_t rx_crc_start)
  */
 uint8_t wait_function()
 {
-
 	uint8_t counter = 0;
 	uint8_t time_out = 0;
 
 	while (!interrupt_flag && !time_out) {
-		if (counter >= 4)
+		if (counter >= 2)
 			time_out = 1;
 		counter++;
 		HAL_Delay(1);
@@ -587,6 +581,7 @@ uint8_t wait_function()
 	if (time_out_flag) {
 		time_out = 1;
 	}
+
 	HAL_TIM_Base_Stop_IT(&tim3_handle);
 
 	time_out_flag = 0;
@@ -595,6 +590,24 @@ uint8_t wait_function()
 	return time_out;
 */
 }
+
+void empty_output_tables()
+{
+	for(uint8_t i = 0; i < num_of_dig_out; i++) {
+		digital_output_slaves[i].digital_pins_state = 0;
+		for(uint8_t j = 0; j < 3; j++) {
+			digital_output_slaves[i].pwm_duty_arr[j] = 0;
+		}
+	}
+
+	for(uint8_t i = 0; i < num_of_an_out; i++) {
+		for(uint8_t j = 0; j < 3; j++) {
+			analog_output_slaves[i].analoge_pins_state[j] = 0;
+		}
+	}
+}
+
+
 
 /*	Function name:		print_out_available_slaves
  * 	Function purpose:	Prints out available slave's number, address, pinstate
