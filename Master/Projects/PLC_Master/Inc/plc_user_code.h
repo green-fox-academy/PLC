@@ -142,6 +142,12 @@
 #define DOU7 	(dout_state & 0b01000000)  //D14 status on output board
 #define DOU8	(dout_state & 0b10000000)  //D15 status on output board
 
+/* Digital output PWM value */
+
+#define DOU1PWM1 (digital_output_slaves[0].pwm_duty_arr[0]) // Digital output 1 board's PIN:9 PWM value
+#define DOU1PWM2 (digital_output_slaves[0].pwm_duty_arr[1]) // Digital output 1 board's PIN:10 PWM value
+#define DOU1PWM3 (digital_output_slaves[0].pwm_duty_arr[2]) // Digital output 1 board's PIN:11 PWM value
+
 /* ############################################## *
  * ##### GET ANALOG INPUT SLAVE'S PINSTATES ##### *
  * ############################################## */
