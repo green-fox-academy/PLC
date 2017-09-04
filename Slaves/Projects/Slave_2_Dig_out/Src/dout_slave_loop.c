@@ -124,6 +124,8 @@ void set_to_gpio_mode()
 
 void set_to_pwm_mode()
 {
+	gpio_set_8_pin(8, 15, 0);
+
 	if (slave_mode != SLAVE_MODE_2) {
 		slave_mode = SLAVE_MODE_2;
 		init_pwms();
