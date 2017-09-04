@@ -698,11 +698,13 @@ void master_loop_control_init()
 		digital_input_slaves[i].digital_pins_state = 0;
 		digital_input_slaves[i].slave_status = 0;
 		digital_input_slaves[i].mode = SLAVE_MODE_1;
+		digital_input_slaves[i].mode_changed_flag = 0;
 
 		digital_output_slaves[i].slave_address = 0;
 		digital_output_slaves[i].digital_pins_state = 0;
 		digital_output_slaves[i].slave_status = 0;
 		digital_output_slaves[i].mode = SLAVE_MODE_1;
+		digital_output_slaves[i].mode_changed_flag = 0;
 
 		for (uint8_t j = 0; j < 3; j++) {
 			digital_output_slaves[i].pwm_duty_arr[j] = 0;
