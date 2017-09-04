@@ -53,13 +53,11 @@ void system_init()
 
 	init_gpio_digital_pins();
 
-	//init_pwms();
-
 	gpio_set_address_pins();
 
 	slave_address = slave_address_set();
 
-	slave_mode = MODE_1; // GPIO MODE
+	slave_mode = SLAVE_MODE_1; // GPIO MODE
 
 	// set PWM array elements to 0
 	for (uint8_t i = 0; i < 3; i++) {

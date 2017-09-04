@@ -1,4 +1,5 @@
 #include "validation.h"
+#include "GPIO.h"
 
 uint8_t pin_validation(uint8_t from_pin_index, uint8_t to_pin_index)
 {

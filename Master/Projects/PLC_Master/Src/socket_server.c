@@ -81,7 +81,7 @@ void socket_server_thread(void const *argument)
 
 				// Send back the received string
 				send(slave_sock, buff, received_bytes, 0);
-				message_handler(buff);
+			//	message_handler(buff);
 
 			}
 		} while (received_bytes > 0);

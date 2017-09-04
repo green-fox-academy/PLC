@@ -109,7 +109,7 @@ void control_slaves_thread()
 
 		slaves_check();
 
-		HAL_Delay(250);
+		HAL_Delay(1000);
 	}
 }
 
@@ -298,6 +298,16 @@ void update_digital_output_tables()
 			// Set slave address
 			TX_buffer[0] = digital_output_slaves[i].slave_address;
 
+			// Send mode switch message if mode was changed
+			if (digital_output_slaves[i].mode_changed_flag) {
+
+				// If slave mode set successfully
+				if (!set_digital_output_slave_mode(digital_output_slaves[i].mode, i)) {
+					digital_output_slaves[i].mode_changed_flag = 0;
+					LCD_UsrLog("Dig out[%d] mode: %d", i, digital_output_slaves[i].mode);
+				}
+			}
+
 			// Normal Out mode
 			if (digital_output_slaves[i].mode == SLAVE_MODE_1) {
 
@@ -404,8 +414,10 @@ void check_mode_select()
 
 uint8_t set_digital_output_slave_mode(uint8_t mode, uint8_t slave_index)
 {
+	uint8_t set_done= 0;
+
 	if (slave_index > (num_of_dig_out - 1)) {
-		return 1;
+		set_done = 1;
 
 	} else {
 
@@ -423,15 +435,18 @@ uint8_t set_digital_output_slave_mode(uint8_t mode, uint8_t slave_index)
 			// Checks the response if it was corrupted
 			if (!digital_output_slaves[slave_index].slave_status){
 				digital_output_slaves[slave_index].mode = mode;
+				set_done = 1;
 			}
 
 		} else {
 			// If it was timed out
 			digital_output_slaves[slave_index].slave_status = 4;
+
+			set_done = 1;
 		}
 	}
 
-	return 0;
+	return set_done;
 }
 
 void execute_program()
@@ -442,6 +457,7 @@ void execute_program()
 		if (digital_output_slaves[0].mode != SLAVE_MODE_1) {
 
 			digital_output_slaves[0].mode = SLAVE_MODE_1;
+			digital_output_slaves[0].mode_changed_flag = 1;
 
 		} else {
 
@@ -463,6 +479,7 @@ void execute_program()
 		if (digital_output_slaves[0].mode != SLAVE_MODE_1) {
 
 			digital_output_slaves[0].mode = SLAVE_MODE_1;
+			digital_output_slaves[0].mode_changed_flag = 1;
 
 		} else {
 
@@ -496,6 +513,7 @@ void execute_program()
 		if (digital_output_slaves[0].mode != SLAVE_MODE_2) {
 
 			digital_output_slaves[0].mode = SLAVE_MODE_2;
+			digital_output_slaves[0].mode_changed_flag = 1;
 
 		} else {
 

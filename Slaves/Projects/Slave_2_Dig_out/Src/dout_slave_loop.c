@@ -36,10 +36,10 @@ void dout_slave_loop_thread()
 					case WRITE_SLAVE :
 						set_pins_state();
 						break;
-					case MODE_1 :
+					case SLAVE_MODE_1 :
 						set_to_gpio_mode();
 						break;
-					case MODE_2 :
+					case SLAVE_MODE_2 :
 						set_to_pwm_mode();
 						break;
 					case HOLD_INPUTS :
@@ -90,13 +90,13 @@ void send_false_command_err()
 void set_pins_state()
 {
 
-	if (slave_mode == MODE_1) {
+	if (slave_mode == SLAVE_MODE_1) {
 		// Temporally it will send the same msg back.
 		UART_send(RX_buffer);
 
 		gpio_set_8_pin(8, 15, RX_buffer[2]);
 
-	} else if (slave_mode == MODE_2) {
+	} else if (slave_mode == SLAVE_MODE_2) {
 
 		// Temporally it will send the same msg back.
 		UART_send(RX_buffer);
@@ -114,8 +114,8 @@ void set_pins_state()
 
 void set_to_gpio_mode()
 {
-	if (slave_mode != MODE_1) {
-		slave_mode = MODE_1;
+	if (slave_mode != SLAVE_MODE_1) {
+		slave_mode = SLAVE_MODE_1;
 		init_gpio_digital_pins();
 	}
 
@@ -124,8 +124,8 @@ void set_to_gpio_mode()
 
 void set_to_pwm_mode()
 {
-	if (slave_mode != MODE_2) {
-		slave_mode = MODE_2;
+	if (slave_mode != SLAVE_MODE_2) {
+		slave_mode = SLAVE_MODE_2;
 		init_pwms();
 	}
 
