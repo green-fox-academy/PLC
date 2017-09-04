@@ -149,6 +149,14 @@ void scan_system_slaves()
 	}
 }
 
+
+/*	Function name: scan slave
+ * 	Function purpose: send scan message to a slave
+ * 	Function input - : uint8_t slave_address: address of the slave
+ * 	Function Output - : 0 if it was OK
+ * 	Function Output - : 1-3 if message corrputed
+ * 	Function Output - : 4 if timed out
+ */
 uint8_t scan_slave(uint8_t slave_address)
 {
 	uint8_t status;
@@ -171,9 +179,11 @@ uint8_t scan_slave(uint8_t slave_address)
 
 void slaves_check()
 {
+
 	for (uint8_t i = 0; i < num_of_dig_in; i++) {
 		if (digital_input_slaves[i].slave_status == 4) {
 			LCD_UsrLog("DIN[%d] ERR: Timed Out.\n", i);
+
 		}
 	}
 
@@ -194,6 +204,27 @@ void slaves_check()
 			LCD_UsrLog("AOU[%d] ERR: Timed Out.\n", i);
 		}
 	}
+}
+
+uint8_t scan_slave_3_times(uint8_t slave_address)
+{
+	uint8_t counter = 0;
+	uint8_t status = 0;
+
+	while (!status || counter != 3)
+	{
+		counter++;
+
+		if(!scan_slave(slave_address))
+			status = 1;
+	}
+
+	if (status)
+		// Slave is online
+		return 0;
+	else
+		// Slave is offline
+		return 1;
 }
 
 
