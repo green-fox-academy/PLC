@@ -11,7 +11,7 @@
 #define TIMx_IRQn           TIM3_IRQn
 #define TIMx_IRQHandler     TIM3_IRQHandler
 #define PRESCALE 			5000
-#define PERIOD				400 // 10.000 = 1 Second
+#define PERIOD				1000 // 10.000 = 1 Second
 
 TIM_HandleTypeDef tim3_handle;
 
