@@ -53,9 +53,20 @@ TIM_HandleTypeDef htim4;
 TIM_HandleTypeDef htim17;
 
 /* Private typedef -----------------------------------------------------------*/
+
+typedef struct {
+	uint32_t ovf;
+	uint32_t prev;
+	uint32_t last;
+} input_capture_data_t;
+
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+
+input_capture_data_t ic_cntr = {0, 0, 0};
+uint32_t ovf_cntr = 0;
+
 /* Private function prototypes -----------------------------------------------*/
 static void SystemClock_Config(void);
 static void GPIO_Init(void);
