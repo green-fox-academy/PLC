@@ -6,11 +6,13 @@
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx_nucleo.h"
 #include "GPIO.h"
-//#include "adc.h"
+#include "adc.h"
 #include "uart.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
+/* Exported macro ------------------------------------------------------------*/
+/* Exported functions ------------------------------------------------------- */
 
 #endif /* __MAIN_H */
 

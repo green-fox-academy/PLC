@@ -84,10 +84,11 @@ void send_false_command_err()
 void set_pins_states()
 {
 
-	// Here set the pins wiht data came from RX
-	// UART_send(TX_buffer);
-	UART_send(RX_buffer);
+	dac_1_setval((RX_buffer[2] + (RX_buffer[3] << 8)));
+	dac_2_setval((RX_buffer[4] + (RX_buffer[5] << 8)));
 
+	// Send back the message
+	UART_send(RX_buffer);
 }
 
 void wait_function()

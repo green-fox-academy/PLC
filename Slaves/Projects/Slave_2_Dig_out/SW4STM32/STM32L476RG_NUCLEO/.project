@@ -341,6 +341,11 @@
 			<locationURI>PARENT-2-PROJECT_LOC/Src/dout_slave_loop.c</locationURI>
 		</link>
 		<link>
+			<name>Slave_2_Dig_out/User/PWM.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/PWM.c</locationURI>
+		</link>
+		<link>
 			<name>Slave_2_Dig_out/User/main.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/Src/main.c</locationURI>

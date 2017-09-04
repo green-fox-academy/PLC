@@ -25,7 +25,7 @@ int main(void)
 
 	system_init();
 
-	slave_address = 5;
+	//slave_address = 5;
 
 	dout_slave_loop_thread();
 
@@ -51,11 +51,21 @@ void system_init()
 	/* Init Uart and modbus protocol C11 : RX and C10 : TX */
 	modbus_init();
 
-	gpio_set_dig_out_pins();
+	init_gpio_digital_pins();
+
+	//init_pwms();
 
 	gpio_set_address_pins();
 
 	slave_address = slave_address_set();
+
+	slave_mode = MODE_1; // GPIO MODE
+
+	// set PWM array elements to 0
+	for (uint8_t i = 0; i < 3; i++) {
+		pwm_set_arr[i] = 0;
+	}
+
 
 }
 

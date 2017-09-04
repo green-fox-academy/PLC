@@ -1,20 +1,20 @@
-
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
+#ifndef __ADC_H
+#define __ADC_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32l4xx_hal.h"
-#include "stm32l4xx_nucleo.h"
-#include "uart.h"
-#include "GPIO.h"
-#include "dac.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
+void adc_init(void);
+void adc_valid_measurement(void);
 
-#endif /* __MAIN_H */
+/* Global variables --------------------------------------------------------- */
+uint16_t valid_data[6];
+
+#endif /* __ADC_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

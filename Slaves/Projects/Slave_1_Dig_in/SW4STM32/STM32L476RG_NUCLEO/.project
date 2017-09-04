@@ -351,6 +351,11 @@
 			<locationURI>PARENT-2-PROJECT_LOC/Src/stm32l4xx_it.c</locationURI>
 		</link>
 		<link>
+			<name>Slave_1_Dig_in/User/validation.c</name>
+			<type>1</type>
+			<locationURI>PARENT-2-PROJECT_LOC/Src/validation.c</locationURI>
+		</link>
+		<link>
 			<name>Slave_drivers/Src/GPIO.c</name>
 			<type>1</type>
 			<locationURI>PARENT-4-PROJECT_LOC/Slave_drivers/Src/GPIO.c</locationURI>

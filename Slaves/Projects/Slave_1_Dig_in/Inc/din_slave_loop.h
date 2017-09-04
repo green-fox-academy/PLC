@@ -6,6 +6,7 @@
 #include "stm32l4xx_hal.h"
 #include "uart.h"
 #include "GPIO.h"
+#include "validation.h"
 
 /* Exported constants --------------------------------------------------------*/
 

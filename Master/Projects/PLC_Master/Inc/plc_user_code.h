@@ -185,34 +185,22 @@
 // Analog output slave 1
 #define AOU1		analog_output_slaves[0].analoge_pins_state[0]
 #define AOU2		analog_output_slaves[0].analoge_pins_state[1]
-#define AOU3		analog_output_slaves[0].analoge_pins_state[2]
-#define AOU4		analog_output_slaves[0].analoge_pins_state[3]
-#define AOU5		analog_output_slaves[0].analoge_pins_state[4]
-#define AOU6		analog_output_slaves[0].analoge_pins_state[5]
+
 
 // Analog output slave 2
-#define AOU7		analog_output_slaves[1].analoge_pins_state[0]
-#define AOU8		analog_output_slaves[1].analoge_pins_state[1]
-#define AOU9		analog_output_slaves[1].analoge_pins_state[2]
-#define AOU10		analog_output_slaves[1].analoge_pins_state[3]
-#define AOU11		analog_output_slaves[1].analoge_pins_state[4]
-#define AOU12		analog_output_slaves[1].analoge_pins_state[5]
+#define AOU3		analog_output_slaves[1].analoge_pins_state[0]
+#define AOU4		analog_output_slaves[1].analoge_pins_state[1]
+
 
 // Analog output slave 3
-#define AOU13		analog_output_slaves[2].analoge_pins_state[0]
-#define AOU14		analog_output_slaves[2].analoge_pins_state[1]
-#define AOU15		analog_output_slaves[2].analoge_pins_state[2]
-#define AOU16		analog_output_slaves[2].analoge_pins_state[3]
-#define AOU17		analog_output_slaves[2].analoge_pins_state[4]
-#define AOU18		analog_output_slaves[2].analoge_pins_state[5]
+#define AOU5		analog_output_slaves[2].analoge_pins_state[0]
+#define AOU6		analog_output_slaves[2].analoge_pins_state[1]
+
 
 // Analog output slave 4
-#define AOU19		analog_output_slaves[3].analoge_pins_state[0]
-#define AOU20		analog_output_slaves[3].analoge_pins_state[1]
-#define AOU21		analog_output_slaves[3].analoge_pins_state[2]
-#define AOU22		analog_output_slaves[3].analoge_pins_state[3]
-#define AOU23		analog_output_slaves[3].analoge_pins_state[4]
-#define AOU24		analog_output_slaves[3].analoge_pins_state[5]
+#define AOU7		analog_output_slaves[3].analoge_pins_state[0]
+#define AOU8		analog_output_slaves[3].analoge_pins_state[1]
+
 
 
 /* Exported types ------------------------------------------------------------*/

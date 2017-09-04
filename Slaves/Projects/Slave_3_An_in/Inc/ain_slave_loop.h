@@ -6,6 +6,7 @@
 #include "stm32l4xx_hal.h"
 #include "uart.h"
 #include "GPIO.h"
+#include "adc.h"
 
 /* Exported constants --------------------------------------------------------*/
 
@@ -20,9 +21,6 @@
 /* Exported types ------------------------------------------------------------*/
 
 /* Exported variables ------------------------------------------------------- */
-
-// This data holds the actual pin states
-uint16_t ain_pins_states[6];
 
 /* Exported functions ------------------------------------------------------- */
 

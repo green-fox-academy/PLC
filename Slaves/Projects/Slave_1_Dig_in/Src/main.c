@@ -26,8 +26,6 @@ int main(void)
 
 	system_init();
 
-	slave_address = 1;
-
 	din_slave_loop_thread();
 
 }
