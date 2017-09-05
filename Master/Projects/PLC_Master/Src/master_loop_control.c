@@ -22,6 +22,7 @@
 /* Private variables ------------------------------------------------------- */
 uint8_t temp_counter = 1;
 uint8_t program_mode = 0;
+uint8_t slave_power = 0;
 
 
 /* These arrays contains the addresses of the slaves */
@@ -89,9 +90,13 @@ void control_slaves_thread()
 {
 	master_loop_control_init();
 
-	turn_on_slaves();
+	turn_off_slaves();
 
 	HAL_Delay(2000);
+
+	turn_on_slaves();
+
+	HAL_Delay(4000);
 
 	scan_system_slaves();
 
@@ -120,19 +125,21 @@ void control_slaves_thread()
 
 		slaves_check();
 
-		HAL_Delay(500);
+		HAL_Delay(50);
 	}
 }
 
 
 void turn_on_slaves()
 {
-
+	gpio_set_digital_pin(8);
+	slave_power = 1;
 }
 
 void turn_off_slaves()
 {
-
+	gpio_reset_digital_pin(8);
+	slave_power = 0;
 }
 
 /*	Function name:	 	scan_system_slaves
@@ -199,39 +206,42 @@ uint8_t scan_slave(uint8_t slave_address)
 
 void slaves_check()
 {
+	if (slave_power) {
 
-	for (uint8_t i = 0; i < num_of_dig_in; i++) {
-		if (digital_input_slaves[i].slave_status == 4) {
-			if (scan_slave_3_times(digital_input_slaves[i].slave_address)) {
-				turn_off_slaves();
-				LCD_UsrLog("Digital Input Slave adr:[%d] is Offline!\n", digital_input_slaves[i].slave_address);
+		for (uint8_t i = 0; i < num_of_dig_in; i++) {
+			if (digital_input_slaves[i].slave_status == 4) {
+				if (scan_slave_3_times(digital_input_slaves[i].slave_address)) {
+					turn_off_slaves();
+					LCD_UsrLog("Digital Input Slave adr:[%d] is Offline!\n", digital_input_slaves[i].slave_address);
+				}
 			}
 		}
-	}
 
-	for (uint8_t i = 0; i < num_of_dig_out; i++) {
-		if (digital_output_slaves[i].slave_status == 4) {
-			if (scan_slave_3_times(digital_output_slaves[i].slave_address)) {
-				turn_off_slaves();
-				LCD_UsrLog("Digital Input Slave adr:[%d] is Offline!\n", digital_output_slaves[i].slave_address);
+		for (uint8_t i = 0; i < num_of_dig_out; i++) {
+			if (digital_output_slaves[i].slave_status == 4) {
+				LCD_UsrLog("Slave adr:[%d] is Offline!\n", digital_output_slaves[i].slave_address);
+				if (scan_slave_3_times(digital_output_slaves[i].slave_address)) {
+					turn_off_slaves();
+					LCD_UsrLog("Digital Input Slave adr:[%d] is Offline!\n", digital_output_slaves[i].slave_address);
+				}
 			}
 		}
-	}
 
-	for (uint8_t i = 0; i < num_of_an_in; i++) {
-		if (analog_input_slaves[i].slave_status == 4) {
-			if (scan_slave_3_times(analog_input_slaves[i].slave_address)) {
-				turn_off_slaves();
-				LCD_UsrLog("Digital Input Slave adr:[%d] is Offline!\n", analog_input_slaves[i].slave_address);
+		for (uint8_t i = 0; i < num_of_an_in; i++) {
+			if (analog_input_slaves[i].slave_status == 4) {
+				if (scan_slave_3_times(analog_input_slaves[i].slave_address)) {
+					turn_off_slaves();
+					LCD_UsrLog("Digital Input Slave adr:[%d] is Offline!\n", analog_input_slaves[i].slave_address);
+				}
 			}
 		}
-	}
 
-	for (uint8_t i = 0; i < num_of_an_out; i++) {
-		if (analog_output_slaves[i].slave_status == 4) {
-			if (scan_slave_3_times(analog_output_slaves[i].slave_address)) {
-				turn_off_slaves();
-				LCD_UsrLog("Digital Input Slave adr:[%d] is Offline!\n", analog_output_slaves[i].slave_address);
+		for (uint8_t i = 0; i < num_of_an_out; i++) {
+			if (analog_output_slaves[i].slave_status == 4) {
+				if (scan_slave_3_times(analog_output_slaves[i].slave_address)) {
+					turn_off_slaves();
+					LCD_UsrLog("Digital Input Slave adr:[%d] is Offline!\n", analog_output_slaves[i].slave_address);
+				}
 			}
 		}
 	}
@@ -242,7 +252,7 @@ uint8_t scan_slave_3_times(uint8_t slave_address)
 	uint8_t counter = 0;
 	uint8_t status = 0;
 
-	while (!status || counter != 3)
+	while (!status && counter != 3)
 	{
 		counter++;
 
@@ -569,8 +579,6 @@ void execute_program()
 
 			digital_output_slaves[0].mode = SLAVE_MODE_2;
 			digital_output_slaves[0].mode_changed_flag = 1;
-			LCD_UsrLog("execution: ");
-			print_out_digital_output_table();
 
 		} else {
 
