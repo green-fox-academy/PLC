@@ -101,7 +101,6 @@ int main(void)
 	//  osKernelStart();
 	*/
 
-
 }
 
 void system_init(void)
@@ -140,6 +139,7 @@ void system_init(void)
 	for (int i = 2; i < 8; i++) {
 		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
 	}
+
 
 	/* Initialize modbus */
 

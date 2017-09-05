@@ -50,8 +50,13 @@ void print_out_digital_output_table();
 void print_out_analog_input_table();
 void print_out_analog_output_table();
 
+// Power management
+void turn_on_slaves();
+void turn_off_slaves();
+
 void scan_system_slaves();
 uint8_t scan_slave(uint8_t slave_address);
+uint8_t scan_slave_3_times(uint8_t slave_address);
 void slaves_check();
 
 // Message functions
@@ -84,6 +89,10 @@ void control_slaves_thread()
 {
 	master_loop_control_init();
 
+	turn_on_slaves();
+
+	HAL_Delay(2000);
+
 	scan_system_slaves();
 
 	print_out_available_slaves();
@@ -113,6 +122,17 @@ void control_slaves_thread()
 
 		HAL_Delay(500);
 	}
+}
+
+
+void turn_on_slaves()
+{
+
+}
+
+void turn_off_slaves()
+{
+
 }
 
 /*	Function name:	 	scan_system_slaves
@@ -182,26 +202,37 @@ void slaves_check()
 
 	for (uint8_t i = 0; i < num_of_dig_in; i++) {
 		if (digital_input_slaves[i].slave_status == 4) {
-			LCD_UsrLog("DIN[%d] ERR: Timed Out.\n", i);
-
+			if (scan_slave_3_times(digital_input_slaves[i].slave_address)) {
+				turn_off_slaves();
+				LCD_UsrLog("Digital Input Slave adr:[%d] is Offline!\n", digital_input_slaves[i].slave_address);
+			}
 		}
 	}
 
 	for (uint8_t i = 0; i < num_of_dig_out; i++) {
 		if (digital_output_slaves[i].slave_status == 4) {
-			LCD_UsrLog("DOU[%d] ERR: Timed Out.\n", i);
+			if (scan_slave_3_times(digital_output_slaves[i].slave_address)) {
+				turn_off_slaves();
+				LCD_UsrLog("Digital Input Slave adr:[%d] is Offline!\n", digital_output_slaves[i].slave_address);
+			}
 		}
 	}
 
 	for (uint8_t i = 0; i < num_of_an_in; i++) {
 		if (analog_input_slaves[i].slave_status == 4) {
-			LCD_UsrLog("AIN[%d] ERR: Timed Out.\n", i);
+			if (scan_slave_3_times(analog_input_slaves[i].slave_address)) {
+				turn_off_slaves();
+				LCD_UsrLog("Digital Input Slave adr:[%d] is Offline!\n", analog_input_slaves[i].slave_address);
+			}
 		}
 	}
 
 	for (uint8_t i = 0; i < num_of_an_out; i++) {
 		if (analog_output_slaves[i].slave_status == 4) {
-			LCD_UsrLog("AOU[%d] ERR: Timed Out.\n", i);
+			if (scan_slave_3_times(analog_output_slaves[i].slave_address)) {
+				turn_off_slaves();
+				LCD_UsrLog("Digital Input Slave adr:[%d] is Offline!\n", analog_output_slaves[i].slave_address);
+			}
 		}
 	}
 }
