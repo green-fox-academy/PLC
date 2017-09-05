@@ -62,6 +62,7 @@
 #include "master_loop_control.h"
 #include "uart.h"
 #include "timer.h"
+#include "gui.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -91,20 +92,18 @@ int main(void)
 {
 	system_init();
 
-	//control_slaves_thread();
-
-
-
 	// Init thread
 	//	osThreadDef(Start, StartThread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 5);
 	//	osThreadCreate (osThread(Start), NULL);
 
-	osThreadDef(CONTROL_SLAVES, control_slaves_thread, osPriorityBelowNormal, 0, configMINIMAL_STACK_SIZE * 2);
-	osThreadCreate (osThread(CONTROL_SLAVES), &gnetif);
+//	osThreadDef(CONTROL_SLAVES, control_slaves_thread, osPriorityBelowNormal, 0, configMINIMAL_STACK_SIZE * 2);
+//	osThreadCreate (osThread(CONTROL_SLAVES), &gnetif);
 
 	// Start scheduler
-	 osKernelStart();
+//	 osKernelStart();
 
+
+	starting_screen();
 
 }
 

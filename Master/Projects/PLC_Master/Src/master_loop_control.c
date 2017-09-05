@@ -6,6 +6,7 @@
 #include "lcd_log.h"
 #include "plc_user_code.h"
 #include "timer.h"
+#include "msg_queue.h"
 
  /*	Function name:
   * 	Function purpose:
