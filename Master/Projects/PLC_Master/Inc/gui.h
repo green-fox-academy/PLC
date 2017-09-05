@@ -6,6 +6,7 @@
 #include "stm32f7xx_hal.h"
 
 /* Exported functions ------------------------------------------------------- */
+void starting_screen();
 
 
 

@@ -96,14 +96,13 @@ int main(void)
 	//	osThreadDef(Start, StartThread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 5);
 	//	osThreadCreate (osThread(Start), NULL);
 
-//	osThreadDef(CONTROL_SLAVES, control_slaves_thread, osPriorityBelowNormal, 0, configMINIMAL_STACK_SIZE * 2);
-//	osThreadCreate (osThread(CONTROL_SLAVES), &gnetif);
+	osThreadDef(CONTROL_SLAVES, control_slaves_thread, osPriorityBelowNormal, 0, configMINIMAL_STACK_SIZE * 2);
+	osThreadCreate (osThread(CONTROL_SLAVES), &gnetif);
 
 	// Start scheduler
-//	 osKernelStart();
+	 osKernelStart();
 
-
-	starting_screen();
+	//starting_screen();
 
 }
 

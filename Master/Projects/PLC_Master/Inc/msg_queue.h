@@ -16,6 +16,9 @@ typedef struct {
 	uint16_t aou_state[3];
 };
 
+osPoolDef_t ()
+osMessageQDef_t
+
 
 #endif /* __MSG_QUEUE_H */
 
