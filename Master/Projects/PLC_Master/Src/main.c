@@ -91,15 +91,20 @@ int main(void)
 {
 	system_init();
 
-	control_slaves_thread();
+	//control_slaves_thread();
 
-	/* Init thread
+
+
+	// Init thread
 	//	osThreadDef(Start, StartThread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 5);
 	//	osThreadCreate (osThread(Start), NULL);
 
+	osThreadDef(CONTROL_SLAVES, control_slaves_thread, osPriorityBelowNormal, 0, configMINIMAL_STACK_SIZE * 2);
+	osThreadCreate (osThread(CONTROL_SLAVES), &gnetif);
+
 	// Start scheduler
-	//  osKernelStart();
-	*/
+	 osKernelStart();
+
 
 }
 
@@ -167,11 +172,11 @@ static void StartThread(void const * argument)
 	User_notification(&gnetif);
 
 	/* Start  control_slaves_thread*/
-//	osThreadDef(CONTROL_SLAVES, control_slaves_thread, osPriorityBelowNormal, 0, configMINIMAL_STACK_SIZE * 2);
-//	osThreadCreate (osThread(CONTROL_SLAVES), &gnetif);
+	osThreadDef(CONTROL_SLAVES, control_slaves_thread, osPriorityBelowNormal, 0, configMINIMAL_STACK_SIZE * 2);
+	osThreadCreate (osThread(CONTROL_SLAVES), &gnetif);
 
 	/* Start DHCPClient */
-/*
+
 	osThreadDef(DHCP, DHCP_thread, osPriorityBelowNormal, 0, configMINIMAL_STACK_SIZE * 2);
 	osThreadCreate (osThread(DHCP), &gnetif);
 	osDelay(2000);
@@ -184,7 +189,6 @@ static void StartThread(void const * argument)
 	// Define and start the client thread
 	osThreadDef(send_message, socket_client_thread, osPriorityLow, 0, configMINIMAL_STACK_SIZE * 2);
 	osThreadCreate (osThread(send_message), &gnetif);
-*/
 
 	osDelay(2000);
 
