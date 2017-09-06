@@ -9,7 +9,10 @@ typedef struct {
 	uint8_t din_state;
 	uint8_t dout_state;
 	uint16_t ain_state[6];
-	uint16_t aou_state[3];
+	uint16_t aou_state[2];
+	uint8_t pwm[3];
+	uint8_t mode;
+	char message[50];
 }gui_data;
 
 gui_data gui_status;

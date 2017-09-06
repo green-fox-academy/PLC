@@ -93,6 +93,9 @@ void display_status();
 
 void control_slaves_thread()
 {
+	turn_off_slaves();
+	osDelay(1000);
+
 	master_loop_control_init();
 	LCD_UsrLog("Control - Init done.\n");
 
@@ -500,25 +503,19 @@ void check_mode_select()
 	if (!D2_pinstate && !D3_pinstate) {
 		if (program_mode != 0) {
 			empty_output_tables();
-			print_out_digital_output_table();
 			program_mode = 0;
-			LCD_UsrLog("mode: 0\n");
 		}
 
 	} else if (D2_pinstate && !D3_pinstate) {
 		if (program_mode != 1) {
 			empty_output_tables();
-			print_out_digital_output_table();
 			program_mode = 1;
-			LCD_UsrLog("mode: 1\n");
 		}
 
 	} else if (D3_pinstate && !D2_pinstate) {
 		if (program_mode != 2) {
 			empty_output_tables();
-			print_out_digital_output_table();
 			program_mode = 2;
-			LCD_UsrLog("mode: 2\n");
 		}
 	}
 }
@@ -802,9 +799,15 @@ void display_status()
 		gui_status.ain_state[i] = analog_input_slaves[0].analoge_pins_state[i];
 	}
 
-	for (uint8_t i = 0; i < 3; i++) {
+	for (uint8_t i = 0; i < 2; i++) {
 		gui_status.aou_state[i] = analog_output_slaves[0].analoge_pins_state[i];
 	}
+
+	for (uint8_t i = 0; i < 3; i++) {
+		gui_status.pwm[i] = digital_output_slaves[0].pwm_duty_arr[i];
+	}
+
+	gui_status.mode = program_mode;
 
 	gui_display_status();
 }
@@ -820,6 +823,7 @@ void master_loop_control_init()
 	num_of_an_out = 0;
 
 	for (int i = 0; i < 4; i++) {
+
 		digital_input_slaves[i].slave_address = 0;
 		digital_input_slaves[i].digital_pins_state = 0;
 		digital_input_slaves[i].slave_status = 0;
@@ -838,12 +842,14 @@ void master_loop_control_init()
 
 		analog_input_slaves[i].slave_address = 0;
 		analog_input_slaves[i].slave_status = 0;
+
 		for (uint8_t j = 0; j < 6; j++) {
 			analog_input_slaves[i].analoge_pins_state[j] = 0;
 		}
 
 		analog_output_slaves[i].slave_address = 0;
 		analog_output_slaves[i].slave_status = 0;
+
 		for (uint8_t j = 0; j < 6; j++) {
 			analog_output_slaves[i].analoge_pins_state[j] = 0;
 		}
