@@ -6,7 +6,7 @@
 #include "lcd_log.h"
 #include "plc_user_code.h"
 #include "timer.h"
-#include "msg_queue.h"
+#include "gui.h"
 
  /*	Function name:
   * 	Function purpose:
@@ -56,6 +56,7 @@ void print_out_analog_output_table();
 void turn_on_slaves();
 void turn_off_slaves();
 
+// Check system functions
 void scan_system_slaves();
 uint8_t scan_slave(uint8_t slave_address);
 uint8_t scan_slave_3_times(uint8_t slave_address);
@@ -78,6 +79,9 @@ void update_outputs();
 void update_digital_output_tables();
 void update_analog_output_tables();
 
+// Gui functions
+void display_status();
+
 /*
  * Loop  cycle:
  * 	1 - CPU check
@@ -90,20 +94,20 @@ void update_analog_output_tables();
 void control_slaves_thread()
 {
 	master_loop_control_init();
-
-	turn_off_slaves();
-
-	HAL_Delay(2000);
+	LCD_UsrLog("Control - Init done.\n");
 
 	turn_on_slaves();
+	LCD_UsrLog("Control - Slaves turned on.\n");
 
-	HAL_Delay(4000);
+	osDelay(4000);
 
 	scan_system_slaves();
 
 	print_out_available_slaves();
 
-	HAL_Delay(2000);
+	osDelay(2000);
+
+	starting_screen();
 
 	while (1) {
 
@@ -126,7 +130,11 @@ void control_slaves_thread()
 
 		slaves_check();
 
-		HAL_Delay(50);
+		//send_data();
+		display_status();
+
+		osDelay(50);
+
 	}
 }
 
@@ -783,6 +791,22 @@ uint16_t generate_crc()
 	uint16_t crc;
 	crc = 10000;
 	return crc;
+}
+
+void display_status()
+{
+	gui_status.din_state  = digital_input_slaves[0].digital_pins_state;
+	gui_status.dout_state = digital_output_slaves[0].digital_pins_state;
+
+	for (uint8_t i = 0; i < 6; i++) {
+		gui_status.ain_state[i] = analog_input_slaves[0].analoge_pins_state[i];
+	}
+
+	for (uint8_t i = 0; i < 3; i++) {
+		gui_status.aou_state[i] = analog_output_slaves[0].analoge_pins_state[i];
+	}
+
+	gui_display_status();
 }
 
 /*	Function name:		master_loop_control_init

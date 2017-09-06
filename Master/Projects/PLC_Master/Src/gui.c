@@ -1,7 +1,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "gui.h"
 #include "stm32746g_discovery_lcd.h"
-#include "msg_queue.h"
+#include "lcd_log.h"
+
+uint8_t temp_din = 0;
+uint8_t temp_dout = 0;
 
 void starting_screen()
 {
@@ -33,6 +36,21 @@ void starting_screen()
 	}
 }
 
+
+void gui_display_status()
+{
+	char analog[4];
+
+	for (uint8_t i = 0; i < 6; i++) {
+		sprintf(analog, "%d", gui_status.ain_state[i]);
+		BSP_LCD_DisplayStringAt(150, i * 30 + 40, analog, LEFT_MODE);
+	}
+
+	for (uint8_t i = 0; i < 3; i++) {
+		sprintf(analog, "%d", gui_status.aou_state[i]);
+		BSP_LCD_DisplayStringAt(200, i * 30 + 40, analog, LEFT_MODE);
+	}
+}
 
 
 /* Private define ------------------------------------------------------------*/

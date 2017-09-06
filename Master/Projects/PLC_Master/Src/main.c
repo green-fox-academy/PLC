@@ -96,8 +96,11 @@ int main(void)
 	//	osThreadDef(Start, StartThread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 5);
 	//	osThreadCreate (osThread(Start), NULL);
 
-	osThreadDef(CONTROL_SLAVES, control_slaves_thread, osPriorityBelowNormal, 0, configMINIMAL_STACK_SIZE * 2);
+	osThreadDef(CONTROL_SLAVES, control_slaves_thread, osPriorityHigh, 0, configMINIMAL_STACK_SIZE * 2);
 	osThreadCreate (osThread(CONTROL_SLAVES), &gnetif);
+
+//	osThreadDef(GUI, gui_thread, osPriorityBelowNormal, 0, configMINIMAL_STACK_SIZE * 2);
+//	osThreadCreate (osThread(GUI), &gnetif);
 
 	// Start scheduler
 	 osKernelStart();
@@ -142,9 +145,6 @@ void system_init(void)
 	for (int i = 2; i < 8; i++) {
 		gpio_init_digital_pin(i, GPIO_MODE_INPUT, GPIO_PULLDOWN);
 	}
-
-
-	/* Initialize modbus */
 
 	modbus_init();
 
