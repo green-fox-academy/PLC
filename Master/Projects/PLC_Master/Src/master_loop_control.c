@@ -22,6 +22,7 @@
 
 /* Private variables ------------------------------------------------------- */
 uint8_t temp_counter = 0;
+uint8_t pwm_duty_counter = 0;
 uint8_t temp_pwm = 0;
 uint8_t program_mode = 0;
 uint8_t slave_power = 0;
@@ -136,7 +137,7 @@ void control_slaves_thread()
 
 		display_status();
 
-		osDelay(50);
+		osDelay(10);
 
 	}
 }
@@ -564,35 +565,10 @@ void execute_program()
 				DOU1PWM1 = AIN1 / 40.6; // RED
 				DOU1PWM2 = AIN2 / 40.6;	// GREEN
 				DOU1PWM3 = AIN3 / 40.6;	// BLUE
-			} else {
-				DOU1_OFF;
 			}
 
 			if (DIN2 && !DIN1) {
 
-				temp_pwm = AIN4 / 40.6;
-
-				if (temp_pwm <= 33) {
-
-				} else if (temp_pwm <= 66 && temp_pwm > 33) {
-
-				} else {
-
-				}
-				DOU1PWM1 = AIN4 / 40.6; // RED
-				DOU1PWM2 = AIN4 / 40.6;	// GREEN
-				DOU1PWM3 = AIN4 / 40.6;	// BLUE
-			} else {
-				DOU2_OFF;
-				AOU1 = 0;
-			}
-
-			if (DIN3) {
-				DOU3_ON;
-				AOU2 = AIN1 / 2 + AIN2 / 4 + AIN3 / 4;
-			} else {
-				DOU3_OFF;
-				AOU2 = 0;
 			}
 		}
 
@@ -605,15 +581,84 @@ void execute_program()
 
 		} else {
 
-			if (temp_counter >= 15) {
-				temp_counter = 1;
+			if ( temp_counter == 0) {
+				if (pwm_duty_counter < 100) {
+
+					DOU1PWM1 = 100; 				// RED
+					DOU1PWM2 = pwm_duty_counter;	// GREEN
+					DOU1PWM3 = 0;					// BLUE
+
+					pwm_duty_counter++;
+				} else {
+					temp_counter ++;
+					pwm_duty_counter = 0;
+				}
+
+			} else if (temp_counter == 1) {
+				if (pwm_duty_counter < 100) {
+
+					DOU1PWM1 = 100 - pwm_duty_counter; 	// RED
+					DOU1PWM2 = 100;						// GREEN
+					DOU1PWM3 = 0;						// BLUE
+
+					pwm_duty_counter++;
+				} else {
+					temp_counter ++;
+					pwm_duty_counter = 0;
+				}
+
+			}  else if (temp_counter == 2) {
+				if (pwm_duty_counter < 100) {
+
+					DOU1PWM1 = 0; 					// RED
+					DOU1PWM2 = 100;					// GREEN
+					DOU1PWM3 = pwm_duty_counter;	// BLUE
+
+					pwm_duty_counter++;
+				} else {
+					temp_counter ++;
+					pwm_duty_counter = 0;
+				}
+
+			}  else if (temp_counter == 3) {
+				if (pwm_duty_counter < 100) {
+
+					DOU1PWM1 = 0; 						// RED
+					DOU1PWM2 = 100 - pwm_duty_counter;	// GREEN
+					DOU1PWM3 = 100;						// BLUE
+
+					pwm_duty_counter++;
+				} else {
+					temp_counter ++;
+					pwm_duty_counter = 0;
+				}
+
+			}  else if (temp_counter == 4) {
+				if (pwm_duty_counter < 100) {
+
+					DOU1PWM1 = pwm_duty_counter; 	// RED
+					DOU1PWM2 = 0;					// GREEN
+					DOU1PWM3 = 100;					// BLUE
+
+					pwm_duty_counter++;
+				} else {
+					temp_counter ++;
+					pwm_duty_counter = 0;
+				}
+
+			} else {
+				if (pwm_duty_counter < 100) {
+
+					DOU1PWM1 = 100; 					// RED
+					DOU1PWM2 = 0;						// GREEN
+					DOU1PWM3 = 100 - pwm_duty_counter;	// BLUE
+
+					pwm_duty_counter++;
+				} else {
+					temp_counter = 0;
+					pwm_duty_counter = 0;
+				}
 			}
-
-			DOU1PWM1 = temp_counter * 5;
-			DOU1PWM2 = temp_counter * 5;
-			DOU1PWM3 = temp_counter * 5;
-
-			temp_counter++;
 		}
 	}
 }
