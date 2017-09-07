@@ -21,7 +21,8 @@
 /* Private typedef -----------------------------------------------------------*/
 
 /* Private variables ------------------------------------------------------- */
-uint8_t temp_counter = 1;
+uint8_t temp_counter = 0;
+uint8_t temp_pwm = 0;
 uint8_t program_mode = 0;
 uint8_t slave_power = 0;
 
@@ -541,32 +542,46 @@ void execute_program()
 			if (DIN4) DOU4_ON; else DOU4_OFF;
 			if (DIN5) DOU5_ON; else DOU5_OFF;
 			if (DIN6) DOU6_ON; else DOU6_OFF;
+			if (DIN7) DOU7_ON; else DOU7_OFF;
+			if (DIN8) DOU8_ON; else DOU8_OFF;
 
-			// Direct connection between Potmeter 1,2 and LED 7,8
+			// Direct connection between Potmeter 1,2 and Analog out 1 2
 			AOU1 = AIN1;
 			AOU2 = AIN2;
 		}
 
 	} else if (program_mode == 1) {
 
-		if (digital_output_slaves[0].mode != SLAVE_MODE_1) {
+		if (digital_output_slaves[0].mode != SLAVE_MODE_2) {
 
-			digital_output_slaves[0].mode = SLAVE_MODE_1;
+			digital_output_slaves[0].mode = SLAVE_MODE_2;
 			digital_output_slaves[0].mode_changed_flag = 1;
 
 		} else {
 
-			if (DIN1) {
-				DOU1_ON;
-				AOU1 = AIN1 / 2;
+			if (DIN1 && !DIN2) {
+				// Set PWM with AIN 1 - 3
+				DOU1PWM1 = AIN1 / 40.6; // RED
+				DOU1PWM2 = AIN2 / 40.6;	// GREEN
+				DOU1PWM3 = AIN3 / 40.6;	// BLUE
 			} else {
 				DOU1_OFF;
-				AOU1 = 0;
 			}
 
 			if (DIN2 && !DIN1) {
-				DOU2_ON;
-				AOU1 = AIN1;
+
+				temp_pwm = AIN4 / 40.6;
+
+				if (temp_pwm <= 33) {
+
+				} else if (temp_pwm <= 66 && temp_pwm > 33) {
+
+				} else {
+
+				}
+				DOU1PWM1 = AIN4 / 40.6; // RED
+				DOU1PWM2 = AIN4 / 40.6;	// GREEN
+				DOU1PWM3 = AIN4 / 40.6;	// BLUE
 			} else {
 				DOU2_OFF;
 				AOU1 = 0;
