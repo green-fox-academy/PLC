@@ -13,6 +13,7 @@ uint8_t temp_mode = 10;
 void starting_screen()
 {
 	char num[2];
+	gui_status.message_flag = 0;
 
 	BSP_LCD_Clear(LCD_COLOR_LIGHTGREEN);
 
@@ -170,6 +171,15 @@ void gui_display_status()
 	}
 
 	//Display Message
+	if (gui_status.message_flag) {
+		gui_status.message_flag = 0;
+		LCD_UsrLog("gui - Message flag: %d", gui_status.message_flag);
+		BSP_LCD_SetFont(&Font16);
+		BSP_LCD_SetTextColor(LCD_COLOR_RED);
+		BSP_LCD_DisplayStringAt(310, 40, gui_status.message, LEFT_MODE);
+		BSP_LCD_SetFont(&Font12);
+		BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+	}
 
 }
 

@@ -13,6 +13,7 @@ typedef struct {
 	uint8_t pwm[3];
 	uint8_t mode;
 	char message[50];
+	uint8_t message_flag;
 }gui_data;
 
 gui_data gui_status;
