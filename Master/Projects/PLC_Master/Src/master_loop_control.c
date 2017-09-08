@@ -116,20 +116,11 @@ void control_slaves_thread()
 
 	while (1) {
 
-
-		// system_check();
-
 		load_input_tables();
-
-		// print_out_digital_input_table();
-		// print_out_analog_input_table();
 
 		check_mode_select();
 
 		execute_program();
-
-		// print_out_digital_output_table();
-		// print_out_analog_output_table();
 
 		update_outputs();
 

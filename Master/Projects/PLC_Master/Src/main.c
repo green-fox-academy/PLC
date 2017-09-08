@@ -92,15 +92,12 @@ int main(void)
 {
 	system_init();
 
-	// Init thread
+	//  Init thread (Server andClient not modified jet)
 	//	osThreadDef(Start, StartThread, osPriorityNormal, 0, configMINIMAL_STACK_SIZE * 5);
 	//	osThreadCreate (osThread(Start), NULL);
 
 	osThreadDef(CONTROL_SLAVES, control_slaves_thread, osPriorityHigh, 0, configMINIMAL_STACK_SIZE * 2);
 	osThreadCreate (osThread(CONTROL_SLAVES), &gnetif);
-
-//	osThreadDef(GUI, gui_thread, osPriorityBelowNormal, 0, configMINIMAL_STACK_SIZE * 2);
-//	osThreadCreate (osThread(GUI), &gnetif);
 
 	// Start scheduler
 	 osKernelStart();
