@@ -37,7 +37,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stm32l4xx_hal.h"
+#include "stm32l4xx_hal_tim.h"
 
 /** @addtogroup STM32L4xx_HAL_Examples
   * @{
@@ -64,6 +64,9 @@ typedef struct {
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 
+TIM_HandleTypeDef ic_handle;
+TIM_IC_InitTypeDef ic_ic_init;
+
 input_capture_data_t ic_cntr = {0, 0, 0};
 uint32_t ovf_cntr = 0;
 
@@ -75,6 +78,7 @@ static void TIM3_Init(void);
 static void TIM4_Init(void);
 static void TIM17_Init(void);
 static void TIM2_Init(void);
+void _Error_Handler(char * file, int line);
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -83,6 +87,26 @@ static void TIM2_Init(void);
   * @param  None
   * @retval None
   */
+
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim1)
+{
+	ic_cntr.prev = ic_cntr.last;
+	ic_cntr.last = TIM2->CCR1;
+	ic_cntr.ovf = ovf_cntr;
+	ovf_cntr = 0;
+}
+
+/**
+  * @brief  This function will be called if a timer overflow occures
+  * @param  Timer handle, which identifies which timer had overflow
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim1)
+{
+	ovf_cntr++;
+}
+
+
 int main(void)
 {
 
@@ -96,11 +120,11 @@ int main(void)
        - Low Level Initialization
      */
 
-void HAL_TIM_IC_Init(ic_init)
+/*void HAL_TIM_IC_Init(ic_init)
 		{
 
 		}
-  HAL_Init();
+  HAL_Init();*/
 
   /* Configure the System clock to have a frequency of 80 MHz */
   SystemClock_Config();
@@ -185,25 +209,27 @@ static void TIM1_Init(void)
   TIM_IC_InitTypeDef sConfigIC;
 
   htim1.Instance = TIM1;
+  htim1.State = HAL_TIM_STATE_RESET;
+  htim1.Channel = HAL_TIM_ACTIVE_CHANNEL_2;
   htim1.Init.Prescaler = 0;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 0;
+  htim1.Init.Period = 0xFFFF;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   if (HAL_TIM_IC_Init(&htim1) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
+//
+//  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+//  sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_RESET;
+//  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+//  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
+//  {
+//    _Error_Handler(__FILE__, __LINE__);
+//  }
 
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
-  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_RISING;
+  sConfigIC.ICPolarity = TIM_ICPOLARITY_RISING;
   sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
   sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
   sConfigIC.ICFilter = 0;
@@ -211,6 +237,9 @@ static void TIM1_Init(void)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
+  HAL_TIM_Base_Start_IT(&htim1);
+  HAL_TIM_IC_Start_IT(&htim1, TIM_CHANNEL_2);
+
 
 }
 

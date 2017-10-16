@@ -54,8 +54,6 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 
-extern TIM_HandleTypeDef    htim1;
-
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -167,11 +165,6 @@ void SysTick_Handler(void)
 /*  available peripheral interrupt handler's name please refer to the startup */
 /*  file (startup_stm32l4xxxx.s).                                             */
 /******************************************************************************/
-
-void TIM1_IRQHandler(void)
-{
-	HAL_TIM_IRQHandler(&htim1);
-}
 
 /**
   * @brief  This function handles PPP interrupt request.
