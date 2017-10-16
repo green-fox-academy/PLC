@@ -800,21 +800,32 @@ void execute_program()
 
 	} else if (program_mode == 1) {
 
-		if (digital_output_slaves[0].mode != SLAVE_MODE_2) {
+			if (DIN1 && !DIN2 && !DIN3 && !DIN4 && !DIN5 && !DIN6 && !DIN7 && !DIN8) {
+				if (digital_output_slaves[0].mode != SLAVE_MODE_2) {
 
-			digital_output_slaves[0].mode = SLAVE_MODE_2;
-			digital_output_slaves[0].mode_changed_flag = 1;
+					digital_output_slaves[0].mode = SLAVE_MODE_2;
+					digital_output_slaves[0].mode_changed_flag = 1;
 
-		} else {
-
-			if (DIN1 && !DIN2) {
+				} else {
 				// Set PWM with AIN 1 - 3
 				DOU1PWM1 = AIN1 / 40.6; // RED
 				DOU1PWM2 = AIN2 / 40.6;	// GREEN
 				DOU1PWM3 = AIN3 / 40.6;	// BLUE
+				}
 			}
 
-			if (DIN1 && DIN2) DOU8_ON; else DOU8_OFF;
+			if (DIN1 && DIN2 && !DIN3 && !DIN4 && !DIN5 && !DIN6 && !DIN7 && !DIN8) {
+				if (digital_output_slaves[0].mode != SLAVE_MODE_1) {
+
+					digital_output_slaves[0].mode = SLAVE_MODE_1;
+					digital_output_slaves[0].mode_changed_flag = 1;
+
+				} else {
+					DOU8_ON;
+				}
+			} else {
+				 DOU8_OFF;
+			}
 
 
 
@@ -853,7 +864,7 @@ void execute_program()
 
 				}
 
-			}
+
 		}
 
 	} else if (program_mode == 2) {
