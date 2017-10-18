@@ -24,9 +24,12 @@
 uint8_t temp_counter = 0;
 uint8_t pwm_duty_counter = 0;
 uint8_t light_duty_counter = 0;
+uint8_t proc_duty_counter = 0;
+uint8_t proc_counter = 1;
 uint8_t temp_pwm = 0;
 uint8_t program_mode = 0;
 uint8_t slave_power = 0;
+
 
 
 /* These arrays contains the addresses of the slaves */
@@ -534,264 +537,9 @@ void execute_program()
 			if (DIN3) DOU3_ON; else DOU3_OFF;
 			if (DIN4) DOU4_ON; else DOU4_OFF;
 			if (DIN5) DOU5_ON; else DOU5_OFF;
-			//if (DIN6) DOU6_ON; else DOU6_OFF;
-			//if (DIN7) DOU7_ON; else DOU7_OFF;
-			if (DIN8 && !DIN1 && !DIN2 && !DIN3 && !DIN5 && !DIN6 && !DIN7) {
-				if ( temp_counter == 0) {
-					if (pwm_duty_counter < value) {
-						DOU1_ON;
-						pwm_duty_counter++;
-					} else {
-						DOU8_OFF;
-						temp_counter ++;
-						pwm_duty_counter = 0;
-					}
-
-				}else if ( temp_counter == 1) {
-					if (pwm_duty_counter < value) {
-						DOU2_ON;
-						pwm_duty_counter++;
-					} else {
-						DOU1_OFF;
-						temp_counter ++;
-						pwm_duty_counter = 0;
-					}
-				}else if ( temp_counter == 2) {
-					if (pwm_duty_counter < value) {
-						DOU3_ON;
-						pwm_duty_counter++;
-					} else {
-						DOU2_OFF;
-						temp_counter ++;
-						pwm_duty_counter = 0;
-					}
-				}else if ( temp_counter == 3) {
-					if (pwm_duty_counter < value) {
-						DOU4_ON;
-						pwm_duty_counter++;
-					} else {
-						DOU3_OFF;
-						temp_counter ++;
-						pwm_duty_counter = 0;
-					}
-				}else if ( temp_counter == 4) {
-					if (pwm_duty_counter < value) {
-						DOU5_ON;
-						pwm_duty_counter++;
-					} else {
-						DOU4_OFF;
-						temp_counter ++;
-						pwm_duty_counter = 0;
-					}
-				}else if ( temp_counter == 5) {
-					if (pwm_duty_counter < value) {
-						DOU6_ON;
-						pwm_duty_counter++;
-					} else {
-						DOU5_OFF;
-						temp_counter ++;
-						pwm_duty_counter = 0;
-					}
-				}else if ( temp_counter == 6) {
-					if (pwm_duty_counter < value) {
-						DOU6_OFF;
-						DOU7_ON;
-						pwm_duty_counter++;
-					} else {
-						DOU6_OFF;
-						temp_counter ++;
-						pwm_duty_counter = 0;
-					}
-				}else if ( temp_counter == 7) {
-					if (pwm_duty_counter < value) {
-						DOU7_OFF;
-						DOU8_ON;
-						pwm_duty_counter++;
-					} else {
-						DOU7_OFF;
-						DOU8_OFF;
-						temp_counter = 0;
-						pwm_duty_counter = 0;
-					}
-				}
-			}
-			if (DIN7 && !DIN1 && !DIN2 && !DIN3 && !DIN5 && !DIN6 && !DIN8) {
-				if (AIN6 < 455) {
-					DOU1_OFF;
-					DOU2_OFF;
-					DOU3_OFF;
-					DOU4_OFF;
-					DOU5_OFF;
-					DOU6_OFF;
-					DOU7_OFF;
-					DOU8_OFF;
-				}
-				if (AIN6 > 455 && AIN6 < 910) {
-					DOU1_ON;
-					DOU2_OFF;
-					DOU3_OFF;
-					DOU4_OFF;
-					DOU5_OFF;
-					DOU6_OFF;
-					DOU7_OFF;
-					DOU8_OFF;
-				}
-				if (AIN6 > 910 && AIN6 < 1315) {
-					DOU1_ON;
-					DOU2_ON;
-					DOU3_OFF;
-					DOU4_OFF;
-					DOU5_OFF;
-					DOU6_OFF;
-					DOU7_OFF;
-					DOU8_OFF;
-				}
-				if (AIN6 > 1315 && AIN6 < 1820) {
-					DOU1_ON;
-					DOU2_ON;
-					DOU3_ON;
-					DOU4_OFF;
-					DOU5_OFF;
-					DOU6_OFF;
-					DOU7_OFF;
-					DOU8_OFF;
-				}
-				if (AIN6 > 1820 && AIN6 < 2275) {
-					DOU1_ON;
-					DOU2_ON;
-					DOU3_ON;
-					DOU4_ON;
-					DOU5_OFF;
-					DOU6_OFF;
-					DOU7_OFF;
-					DOU8_OFF;
-				}
-				if (AIN6 > 2275 && AIN6 < 2730) {
-					DOU1_ON;
-					DOU2_ON;
-					DOU3_ON;
-					DOU4_ON;
-					DOU5_ON;
-					DOU6_OFF;
-					DOU7_OFF;
-					DOU8_OFF;
-				}
-				if (AIN6 > 2730 && AIN6 < 3185) {
-					DOU1_ON;
-					DOU2_ON;
-					DOU3_ON;
-					DOU4_ON;
-					DOU5_ON;
-					DOU6_ON;
-					DOU7_OFF;
-					DOU8_OFF;
-				}
-				if (AIN6 > 3185 && AIN6 < 3640) {
-					DOU1_ON;
-					DOU2_ON;
-					DOU3_ON;
-					DOU4_ON;
-					DOU5_ON;
-					DOU6_ON;
-					DOU7_ON;
-					DOU8_OFF;
-				}
-				if (AIN6 > 3640 && AIN6 < 4095) {
-					DOU1_ON;
-					DOU2_ON;
-					DOU3_ON;
-					DOU4_ON;
-					DOU5_ON;
-					DOU6_ON;
-					DOU7_ON;
-					DOU8_ON;
-				}
-			}
-
-			if (DIN6 && !DIN1 && !DIN2 && !DIN3 && !DIN5 && !DIN8 && !DIN7) {
-				if ( temp_counter == 0) {
-					if (light_duty_counter < AIN6 / 40.95) {
-						DOU1_ON;
-						light_duty_counter++;
-					} else {
-						DOU8_OFF;
-						temp_counter ++;
-						light_duty_counter = 0;
-					}
-
-				}else if ( temp_counter == 1) {
-					if (light_duty_counter < AIN6 / 40.95) {
-						DOU2_ON;
-						light_duty_counter++;
-					} else {
-						DOU1_OFF;
-						temp_counter ++;
-						light_duty_counter = 0;
-					}
-				}else if ( temp_counter == 2) {
-					if (light_duty_counter < AIN6 / 40.95) {
-						DOU3_ON;
-						light_duty_counter++;
-					} else {
-						DOU2_OFF;
-						temp_counter ++;
-						light_duty_counter = 0;
-					}
-				}else if ( temp_counter == 3) {
-					if (light_duty_counter < AIN6 / 40.95) {
-						DOU4_ON;
-						light_duty_counter++;
-					} else {
-						DOU3_OFF;
-						temp_counter ++;
-						light_duty_counter = 0;
-					}
-				}else if ( temp_counter == 4) {
-					if (light_duty_counter < AIN6 / 40.95) {
-						DOU5_ON;
-						light_duty_counter++;
-					} else {
-						DOU4_OFF;
-						temp_counter ++;
-						light_duty_counter = 0;
-					}
-				}else if ( temp_counter == 5) {
-					if (light_duty_counter < AIN6 / 40.95) {
-						DOU6_ON;
-						light_duty_counter++;
-					} else {
-						DOU5_OFF;
-						temp_counter ++;
-						light_duty_counter = 0;
-					}
-				}else if ( temp_counter == 6) {
-					if (light_duty_counter < AIN6 / 40.95) {
-						DOU6_OFF;
-						DOU7_ON;
-						light_duty_counter++;
-					} else {
-						DOU6_OFF;
-						temp_counter ++;
-						light_duty_counter = 0;
-					}
-				}else if ( temp_counter == 7) {
-					if (light_duty_counter < AIN6 / 40.95) {
-						DOU7_OFF;
-						DOU8_ON;
-						light_duty_counter++;
-					} else {
-						DOU7_OFF;
-						DOU8_OFF;
-						temp_counter = 0;
-						light_duty_counter = 0;
-					}
-				}
-			}
-
-
-
-
-
+			if (DIN6) DOU6_ON; else DOU6_OFF;
+			if (DIN7) DOU7_ON; else DOU7_OFF;
+			if (DIN8) DOU8_ON; else DOU8_OFF;
 
 			// Direct connection between Potmeter 1,2 and Analog out 1 2
 			AOU1 = AIN1;
@@ -799,6 +547,19 @@ void execute_program()
 		}
 
 	} else if (program_mode == 1) {
+
+			if (!DIN1 && !DIN2 && !DIN3 && !DIN4 && !DIN5 && !DIN6 && !DIN7 && !DIN8) {
+				DOU1_OFF;
+				DOU2_OFF;
+				DOU3_OFF;
+				DOU4_OFF;
+				DOU5_OFF;
+				DOU6_OFF;
+				DOU7_OFF;
+				DOU8_OFF;
+
+				temp_counter = 0;
+			}
 
 			if (DIN1 && !DIN2 && !DIN3 && !DIN4 && !DIN5 && !DIN6 && !DIN7 && !DIN8) {
 				if (digital_output_slaves[0].mode != SLAVE_MODE_2) {
@@ -814,58 +575,774 @@ void execute_program()
 				}
 			}
 
-			if (DIN1 && DIN2 && !DIN3 && !DIN4 && !DIN5 && !DIN6 && !DIN7 && !DIN8) {
+			if (!DIN1 && !DIN2 && !DIN3 && !DIN4 && DIN5 && !DIN6 && !DIN7 && !DIN8) {
 				if (digital_output_slaves[0].mode != SLAVE_MODE_1) {
 
 					digital_output_slaves[0].mode = SLAVE_MODE_1;
 					digital_output_slaves[0].mode_changed_flag = 1;
 
+					temp_counter = 0;
+
 				} else {
-					DOU8_ON;
+					if ( temp_counter == 0) {
+						if (pwm_duty_counter < value) {
+							DOU1_ON;
+							pwm_duty_counter++;
+						} else {
+							DOU8_OFF;
+							temp_counter ++;
+							pwm_duty_counter = 0;
+						}
+
+					}else if ( temp_counter == 1) {
+						if (pwm_duty_counter < value) {
+							DOU2_ON;
+							pwm_duty_counter++;
+						} else {
+							DOU1_OFF;
+							temp_counter ++;
+							pwm_duty_counter = 0;
+						}
+					}else if ( temp_counter == 2) {
+						if (pwm_duty_counter < value) {
+							DOU3_ON;
+							pwm_duty_counter++;
+						} else {
+							DOU2_OFF;
+							temp_counter ++;
+							pwm_duty_counter = 0;
+						}
+					}else if ( temp_counter == 3) {
+						if (pwm_duty_counter < value) {
+							DOU4_ON;
+							pwm_duty_counter++;
+						} else {
+							DOU3_OFF;
+							temp_counter ++;
+							pwm_duty_counter = 0;
+						}
+					}else if ( temp_counter == 4) {
+						if (pwm_duty_counter < value) {
+							DOU5_ON;
+							pwm_duty_counter++;
+						} else {
+							DOU4_OFF;
+							temp_counter ++;
+							pwm_duty_counter = 0;
+						}
+					}else if ( temp_counter == 5) {
+						if (pwm_duty_counter < value) {
+							DOU6_ON;
+							pwm_duty_counter++;
+						} else {
+							DOU5_OFF;
+							temp_counter ++;
+							pwm_duty_counter = 0;
+						}
+					}else if ( temp_counter == 6) {
+						if (pwm_duty_counter < value) {
+							DOU7_ON;
+							pwm_duty_counter++;
+						} else {
+							DOU6_OFF;
+							temp_counter ++;
+							pwm_duty_counter = 0;
+						}
+					}else if ( temp_counter == 7) {
+						if (pwm_duty_counter < value) {
+							DOU8_ON;
+							pwm_duty_counter++;
+						} else {
+							DOU7_OFF;
+							DOU8_OFF;
+							temp_counter = 0;
+							pwm_duty_counter = 0;
+						}
+					}
 				}
-			} else {
-				 DOU8_OFF;
 			}
 
 
+			if (DIN6 && !DIN1 && !DIN2 && !DIN3 && !DIN5 && !DIN8 && !DIN7) {
+				if (digital_output_slaves[0].mode != SLAVE_MODE_1) {
 
-			if (DIN5 && DIN6 && DIN7 && DIN8) {
-				DOU1PWM1 = 0;
-				DOU1PWM2 = 0;
-				DOU1PWM3 = 0;
+					digital_output_slaves[0].mode = SLAVE_MODE_1;
+					digital_output_slaves[0].mode_changed_flag = 1;
+
+					temp_counter = 0;
+
+				} else {
+					if ( temp_counter == 0) {
+						if (light_duty_counter < 102 - (AIN6 / 40.95)) {
+							DOU1_ON;
+							light_duty_counter++;
+						} else {
+							DOU1_OFF;
+							temp_counter ++;
+							light_duty_counter = 0;
+						}
+
+					}else if ( temp_counter == 1) {
+						if (light_duty_counter < 102 - (AIN6 / 40.95)) {
+							DOU2_ON;
+							light_duty_counter++;
+						} else {
+							DOU2_OFF;
+							temp_counter ++;
+							light_duty_counter = 0;
+						}
+					}else if ( temp_counter == 2) {
+						if (light_duty_counter < 102 - (AIN6 / 40.95)) {
+							DOU3_ON;
+							light_duty_counter++;
+						} else {
+							DOU3_OFF;
+							temp_counter ++;
+							light_duty_counter = 0;
+						}
+					}else if ( temp_counter == 3) {
+						if (light_duty_counter < 102 - (AIN6 / 40.95)) {
+							DOU4_ON;
+							light_duty_counter++;
+						} else {
+							DOU4_OFF;
+							temp_counter ++;
+							light_duty_counter = 0;
+						}
+					}else if ( temp_counter == 4) {
+						if (light_duty_counter < 102 - (AIN6 / 40.95)) {
+							DOU5_ON;
+							light_duty_counter++;
+						} else {
+							DOU5_OFF;
+							temp_counter ++;
+							light_duty_counter = 0;
+						}
+					}else if ( temp_counter == 5) {
+						if (light_duty_counter < 102 - (AIN6 / 40.95)) {
+							DOU6_ON;
+							light_duty_counter++;
+						} else {
+							DOU6_OFF;
+							temp_counter ++;
+							light_duty_counter = 0;
+						}
+					}else if ( temp_counter == 6) {
+						if (light_duty_counter < 102 - (AIN6 / 40.95)) {
+							DOU7_ON;
+							light_duty_counter++;
+						} else {
+							DOU7_OFF;
+							temp_counter ++;
+							light_duty_counter = 0;
+						}
+					}else if ( temp_counter == 7) {
+						if (light_duty_counter < 102 - (AIN6 / 40.95)) {
+							DOU8_ON;
+							light_duty_counter++;
+						} else {
+							DOU8_OFF;
+							temp_counter = 0;
+							light_duty_counter = 0;
+						}
+					}
+				}
 			}
 
-			if (DIN7 && DIN8 && !DIN6 && !DIN5) {
-				if ( temp_counter == 0) {
-					if (pwm_duty_counter < 100) {
 
-						DOU1PWM1 = pwm_duty_counter;	// RED
-						DOU1PWM2 = pwm_duty_counter;	// GREEN
-						DOU1PWM3 = pwm_duty_counter;	// BLUE
+			if (DIN7 && !DIN1 && !DIN2 && !DIN3 && !DIN5 && !DIN6 && !DIN8) {
+				if (digital_output_slaves[0].mode != SLAVE_MODE_1) {
 
-						pwm_duty_counter++;
-					} else {
-						temp_counter ++;
-						pwm_duty_counter = 0;
+					digital_output_slaves[0].mode = SLAVE_MODE_1;
+					digital_output_slaves[0].mode_changed_flag = 1;
+
+					temp_counter = 0;
+
+				} else {
+					if (AIN5 < 455) {
+						DOU1_OFF;
+						DOU2_OFF;
+						DOU3_OFF;
+						DOU4_OFF;
+						DOU5_OFF;
+						DOU6_OFF;
+						DOU7_OFF;
+						DOU8_OFF;
 					}
-
-				} else if (temp_counter == 1) {
-					if (pwm_duty_counter < 100) {
-
-						DOU1PWM1 = 100 - pwm_duty_counter; 	// RED
-						DOU1PWM2 = 100 - pwm_duty_counter;	// GREEN
-						DOU1PWM3 = 100 - pwm_duty_counter;	// BLUE
-
-						pwm_duty_counter++;
-					} else {
-						temp_counter --;
-						pwm_duty_counter = 0;
+					if (AIN5 > 455 && AIN5 < 910) {
+						DOU1_ON;
+						DOU2_OFF;
+						DOU3_OFF;
+						DOU4_OFF;
+						DOU5_OFF;
+						DOU6_OFF;
+						DOU7_OFF;
+						DOU8_OFF;
 					}
-
+					if (AIN5 > 910 && AIN5 < 1315) {
+						DOU1_ON;
+						DOU2_ON;
+						DOU3_OFF;
+						DOU4_OFF;
+						DOU5_OFF;
+						DOU6_OFF;
+						DOU7_OFF;
+						DOU8_OFF;
+					}
+					if (AIN5 > 1315 && AIN5 < 1820) {
+						DOU1_ON;
+						DOU2_ON;
+						DOU3_ON;
+						DOU4_OFF;
+						DOU5_OFF;
+						DOU6_OFF;
+						DOU7_OFF;
+						DOU8_OFF;
+					}
+					if (AIN5 > 1820 && AIN5 < 2275) {
+						DOU1_ON;
+						DOU2_ON;
+						DOU3_ON;
+						DOU4_ON;
+						DOU5_OFF;
+						DOU6_OFF;
+						DOU7_OFF;
+						DOU8_OFF;
+					}
+					if (AIN5 > 2275 && AIN5 < 2730) {
+						DOU1_ON;
+						DOU2_ON;
+						DOU3_ON;
+						DOU4_ON;
+						DOU5_ON;
+						DOU6_OFF;
+						DOU7_OFF;
+						DOU8_OFF;
+					}
+					if (AIN5 > 2730 && AIN5 < 3185) {
+						DOU1_ON;
+						DOU2_ON;
+						DOU3_ON;
+						DOU4_ON;
+						DOU5_ON;
+						DOU6_ON;
+						DOU7_OFF;
+						DOU8_OFF;
+					}
+					if (AIN5 > 3185 && AIN5 < 3640) {
+						DOU1_ON;
+						DOU2_ON;
+						DOU3_ON;
+						DOU4_ON;
+						DOU5_ON;
+						DOU6_ON;
+						DOU7_ON;
+						DOU8_OFF;
+					}
+					if (AIN5 > 3640 && AIN5 < 4095) {
+						DOU1_ON;
+						DOU2_ON;
+						DOU3_ON;
+						DOU4_ON;
+						DOU5_ON;
+						DOU6_ON;
+						DOU7_ON;
+						DOU8_ON;
+					}
 				}
+			}
 
 
-		}
+			if (!DIN1 && !DIN2 && !DIN3 && !DIN4 && !DIN5 && !DIN6 && !DIN7 && DIN8) {
+				if (digital_output_slaves[0].mode != SLAVE_MODE_1) {
+
+					digital_output_slaves[0].mode = SLAVE_MODE_1;
+					digital_output_slaves[0].mode_changed_flag = 1;
+
+					temp_counter = 0;
+
+				} else {
+					if ( temp_counter == 0) {
+						if ((proc_counter % 2 == 0) && proc_counter <= 8) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_ON;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else if ((proc_counter % 2 != 0) && proc_counter <= 8) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_OFF;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else {
+							DOU1_OFF;
+							proc_counter = 0;
+							temp_counter ++;
+						}
+					}else if ( temp_counter == 1) {
+						if (proc_counter  == 0) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_ON;
+								DOU2_ON;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else if (proc_counter == 1) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_OFF;
+								DOU2_OFF;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else {
+							DOU1_OFF;
+							DOU2_OFF;
+							proc_counter = 0;
+							temp_counter ++;
+						}
+
+					}else if ( temp_counter == 2) {
+						if (proc_counter  == 0) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_ON;
+								DOU3_ON;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else if (proc_counter == 1) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_OFF;
+								DOU3_OFF;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else {
+							DOU1_OFF;
+							DOU3_OFF;
+							proc_counter = 0;
+							temp_counter ++;
+						}
+
+					}else if ( temp_counter == 3) {
+						if (proc_counter  == 0) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_ON;
+								DOU4_ON;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else if (proc_counter == 1) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_OFF;
+								DOU4_OFF;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else {
+							DOU1_OFF;
+							DOU4_OFF;
+							proc_counter = 0;
+							temp_counter ++;
+						}
+
+					}else if ( temp_counter == 4) {
+						if (proc_counter  == 0) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_ON;
+								DOU5_ON;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else if (proc_counter == 1) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_OFF;
+								DOU5_OFF;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else {
+							DOU1_OFF;
+							DOU5_OFF;
+							proc_counter = 0;
+							temp_counter ++;
+						}
+
+					}else if ( temp_counter == 5) {
+						if (proc_counter  == 0) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_ON;
+								DOU2_ON;
+								DOU5_ON;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else if (proc_counter == 1) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_OFF;
+								DOU2_OFF;
+								DOU5_OFF;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else {
+							DOU1_OFF;
+							DOU2_OFF;
+							DOU5_OFF;
+							proc_counter = 0;
+							temp_counter ++;
+						}
+
+					}else if ( temp_counter == 6) {
+						if (proc_counter  == 0) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_ON;
+								DOU3_ON;
+								DOU5_ON;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else if (proc_counter == 1) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_OFF;
+								DOU3_OFF;
+								DOU5_OFF;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else {
+							DOU1_OFF;
+							DOU3_OFF;
+							DOU5_OFF;
+							proc_counter = 0;
+							temp_counter ++;
+						}
+
+					}else if ( temp_counter == 7) {
+						if (proc_counter  == 0) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_ON;
+								DOU4_ON;
+								DOU5_ON;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else if (proc_counter == 1) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_OFF;
+								DOU4_OFF;
+								DOU5_OFF;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else {
+							DOU1_OFF;
+							DOU4_OFF;
+							DOU5_OFF;
+							proc_counter = 0;
+							temp_counter ++;
+						}
+
+					}else if ( temp_counter == 8) {
+						if (proc_counter  == 0) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_ON;
+								DOU5_ON;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else if (proc_counter == 1) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_OFF;
+								DOU5_OFF;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else {
+							DOU1_OFF;
+							DOU5_OFF;
+							proc_counter = 0;
+							temp_counter ++;
+						}
+
+					}else if ( temp_counter == 9) {
+						if (proc_counter  == 0) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_ON;
+								DOU2_ON;
+								DOU6_ON;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else if (proc_counter == 1) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_OFF;
+								DOU2_OFF;
+								DOU6_OFF;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else {
+							DOU1_OFF;
+							DOU2_OFF;
+							DOU6_OFF;
+							proc_counter = 0;
+							temp_counter ++;
+						}
+
+					}else if ( temp_counter == 10) {
+						if (proc_counter  == 0) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_ON;
+								DOU3_ON;
+								DOU6_ON;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else if (proc_counter == 1) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_OFF;
+								DOU3_OFF;
+								DOU6_OFF;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else {
+							DOU1_OFF;
+							DOU3_OFF;
+							DOU6_OFF;
+							proc_counter = 0;
+							temp_counter ++;
+						}
+
+					}else if ( temp_counter == 11) {
+						if (proc_counter  == 0) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_ON;
+								DOU4_ON;
+								DOU6_ON;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else if (proc_counter == 1) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_OFF;
+								DOU4_OFF;
+								DOU6_OFF;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else {
+							DOU1_OFF;
+							DOU4_OFF;
+							DOU6_OFF;
+							proc_counter = 0;
+							temp_counter ++;
+						}
+
+					}else if ( temp_counter == 12) {
+						if (proc_counter  == 0) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_ON;
+								DOU5_ON;
+								DOU7_ON;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else if (proc_counter == 1) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_OFF;
+								DOU5_OFF;
+								DOU7_OFF;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else {
+							DOU1_OFF;
+							DOU5_OFF;
+							DOU7_OFF;
+							proc_counter = 0;
+							temp_counter ++;
+						}
+
+					}else if ( temp_counter == 13) {
+						if (proc_counter  == 0) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_ON;
+								DOU2_ON;
+								DOU5_ON;
+								DOU7_ON;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else if (proc_counter == 1) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_OFF;
+								DOU2_OFF;
+								DOU5_OFF;
+								DOU7_OFF;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else {
+							DOU1_OFF;
+							DOU2_OFF;
+							DOU5_OFF;
+							DOU7_OFF;
+							proc_counter = 0;
+							temp_counter ++;
+						}
+
+					}else if ( temp_counter == 14) {
+						if (proc_counter  == 0) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_ON;
+								DOU3_ON;
+								DOU5_ON;
+								DOU8_ON;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else if (proc_counter == 1) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_OFF;
+								DOU3_OFF;
+								DOU5_OFF;
+								DOU8_OFF;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else {
+							DOU1_OFF;
+							DOU3_OFF;
+							DOU5_OFF;
+							DOU8_OFF;
+							proc_counter = 0;
+							temp_counter ++;
+						}
+
+					}else if ( temp_counter == 15) {
+						if (proc_counter  == 0) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_ON;
+								DOU4_ON;
+								DOU5_ON;
+								DOU8_ON;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else if (proc_counter == 1) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_OFF;
+								DOU4_OFF;
+								DOU5_OFF;
+								DOU8_OFF;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else {
+							DOU1_OFF;
+							DOU4_OFF;
+							DOU5_OFF;
+							DOU8_OFF;
+							proc_counter = 0;
+							temp_counter ++;
+						}
+
+					}else if ( temp_counter == 16) {
+						if (proc_counter  == 0) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_ON;
+								DOU5_ON;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else if (proc_counter == 1) {
+							if (proc_duty_counter < 105 - (AIN6 / 40.95)) {
+								DOU1_OFF;
+								DOU5_OFF;
+								proc_duty_counter++;
+							} else {
+								proc_duty_counter = 0;
+								proc_counter++;
+							}
+						} else {
+							DOU1_OFF;
+							DOU5_OFF;
+							proc_counter = 0;
+							temp_counter = 5;
+						}
+					}
+				}
+			}
+
+
 
 	} else if (program_mode == 2) {
 
